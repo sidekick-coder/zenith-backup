@@ -6,8 +6,16 @@ export interface BackupPlanTable extends WithTimestamp, WithSoftDelete {
   name: string
 }
 
+export interface BackupPlanTargetTable extends WithTimestamp, WithSoftDelete {
+  id: Generated<number>
+  backup_plan_id: number
+  path: string
+  options: any
+}
+
 declare module '#server/database/types.ts' {
     export interface Database  {
       backup_plans: BackupPlanTable
+      backup_plans_targets: BackupPlanTargetTable
     }
 }
