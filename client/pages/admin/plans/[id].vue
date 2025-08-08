@@ -3,7 +3,6 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/valibot'
-import * as v from 'valibot'
 import { toast } from 'vue-sonner'
 import AppLayout from '#client/layouts/AppLayout.vue'
 import FormTextField from '#client/components/FormTextField.vue'
@@ -32,10 +31,12 @@ import FormTextarea from '#client/components/FormTextarea.vue'
 import Icon from '#client/components/Icon.vue'
 import PlanTargetTable from '#modules/zenith-backup/client/components/PlanTargetTable.vue'
 import planValidator from '#modules/zenith-backup/shared/validators/plan.validator.ts'
+import Plan from '#modules/zenith-backup/shared/entities/plan.entity.ts'
 
 const route = useRoute()
 const router = useRouter()
 const planId = route.params.id as string
+const plan = ref<Plan>()
 
 const loading = ref(false)
 const saving = ref(false)
@@ -96,7 +97,7 @@ async function loadPlan() {
     loading.value = true
 
     const [error, response] = await tryCatch(() => 
-        $fetch(`/api/backup/plans/${planId}`, { method: 'GET' })
+        $fetch<Plan>(`/api/backup/plans/${planId}`, { method: 'GET' })
     )
 
     if (error) {
@@ -105,16 +106,14 @@ async function loadPlan() {
         router.push('/admin/plans')
         return
     }
-
-    const plan = response as any
-    const options = plan.options ? JSON.parse(plan.options) : {}
     
     setValues({
-        name: plan.name,
-        strategy: plan.strategy,
-        cron: plan.cron || '',
-        description: options.description || '',
+        name: response.name,
+        cron: response.cron || '',
+        description: response.description || '',
     })
+
+    plan.value = response
 
     loading.value = false
 }
@@ -219,6 +218,7 @@ onMounted(loadPlan)
 
                     <FormSelect
                         name="strategy"
+                        :model-value="plan?.strategy"
                         :label="$t('Strategy')"
                         :options="strategies"
                         disabled
