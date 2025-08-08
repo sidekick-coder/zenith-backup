@@ -6,18 +6,6 @@ import { $t } from '#shared/lang.ts'
 import AppLayout from '#client/layouts/AppLayout.vue'
 import { $fetch } from '#client/utils/fetcher.ts'
 import { tryCatch } from '#shared/tryCatch.ts'
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from '#client/components/ui/alert-dialog'
-import UserDialog from '#client/components/UserDialog.vue'
 import ClientOnly from '#client/components/ClientOnly.vue'
 import Button from '#client/components/Button.vue'
 import Icon from '#client/components/Icon.vue'
@@ -40,6 +28,11 @@ const columns = defineColumns<Drive>([
         id: 'name',
         header: $t('Name'),
         accessorKey: 'name'
+    },
+    {
+        id: 'cron',
+        header: $t('Cron'),
+        accessorKey: 'cron'
     },
     { id: 'actions' }
 ])
