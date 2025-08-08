@@ -1,17 +1,10 @@
+import planValidator from '../../shared/validators/plan.validator.ts'
 import { now } from '#server/database/common.ts'
 import BaseException from '#server/exceptions/base.ts'
 import db from '#server/facades/db.facade.ts'
 import router from '#server/facades/router.facade.ts'
 import authMiddleware from '#server/middlewares/auth.middleware.ts'
-import validator from '#server/services/validator.service.ts'
-
-const schema = validator.create(v => v.object({
-    name: v.string(),
-    description: v.optional(v.string()),
-    strategy: v.picklist(['zip', 'restic']),
-    cron: v.string(),
-    options: v.any()
-}))
+import validator from '#shared/services/validator.service.ts'
 
 const group = router.prefix('/api/backup/plans')
     .use(authMiddleware)
@@ -28,7 +21,7 @@ group.get('/', async () => {
 })
 
 group.post('/', async ({ body }) => {
-    const payload = validator.validate(body, v => v.omit(schema, ['cron', 'options']))
+    const payload = validator.validate(body, planValidator.create)
 
     const plan = await db.insertInto('backup_plans')
         .values(payload)
@@ -53,7 +46,7 @@ group.get('/:id', async ({ params }) => {
 })
 
 group.patch('/:id', async ({ params, body }) => {
-    const payload = validator.validate(body, v => v.partial(v.omit(schema, ['strategy'])))
+    const payload = validator.validate(body, planValidator.update)
 
     const plan = await db.selectFrom('backup_plans')
         .selectAll()

@@ -31,6 +31,7 @@ import { $t } from '#shared/lang.ts'
 import FormTextarea from '#client/components/FormTextarea.vue'
 import Icon from '#client/components/Icon.vue'
 import PlanTargetTable from '#modules/zenith-backup/client/components/PlanTargetTable.vue'
+import planValidator from '#modules/zenith-backup/shared/validators/plan.validator.ts'
 
 const route = useRoute()
 const router = useRouter()
@@ -50,18 +51,11 @@ const strategies = [
     }
 ]
 
-const schema = v.object({
-    name: v.pipe(v.string(), v.minLength(1, $t('Name is required'))),
-    strategy: v.picklist(['zip', 'restic'], $t('Strategy is required')),
-    cron: v.optional(v.string()),
-    description: v.optional(v.string()),
-})
 
 const { handleSubmit, setValues, setFieldValue } = useForm({
-    validationSchema: toTypedSchema(schema),
+    validationSchema: toTypedSchema(planValidator.update),
     initialValues: {
         name: '',
-        strategy: 'zip' as 'zip' | 'restic',
         cron: '',
         description: '',
     },
@@ -190,22 +184,6 @@ onMounted(loadPlan)
                         :placeholder="$t('Enter plan name')"
                     />
 
-                    <FormSelect
-                        name="strategy"
-                        :label="$t('Strategy')"
-                        :options="strategies"
-                        disabled
-                        label-key="label"
-                        value-key="value"
-                    />
-                    
-                    <FormTextarea
-                        name="description"
-                        :label="$t('Description')"
-                        :placeholder="$t('Enter plan description')"
-                        :hint="$t('Optional description for this backup plan')"
-                    />
-
                     <div class="flex gap-x-2 items-end">
                         <div class="flex-1">
                             <FormTextField
@@ -238,6 +216,22 @@ onMounted(loadPlan)
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </div>
+
+                    <FormSelect
+                        name="strategy"
+                        :label="$t('Strategy')"
+                        :options="strategies"
+                        disabled
+                        label-key="label"
+                        value-key="value"
+                    />
+                    
+                    <FormTextarea
+                        name="description"
+                        :label="$t('Description')"
+                        :placeholder="$t('Enter plan description')"
+                        :hint="$t('Optional description for this backup plan')"
+                    />
                 </CardContent>
                 <CardFooter class="flex justify-end gap-4">
                     <Button

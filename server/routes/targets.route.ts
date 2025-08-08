@@ -3,7 +3,7 @@ import BaseException from '#server/exceptions/base.ts'
 import db from '#server/facades/db.facade.ts'
 import router from '#server/facades/router.facade.ts'
 import authMiddleware from '#server/middlewares/auth.middleware.ts'
-import validator from '#server/services/validator.service.ts'
+import validator from '#shared/services/validator.service.ts'
 
 const schema = validator.create(v => v.object({
     backup_plan_id: v.number(),
