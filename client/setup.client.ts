@@ -4,8 +4,9 @@ import { $t } from '#shared/lang.ts'
 
 export default defineClientSetup(({ router, menu }) => {
     router.auto(import.meta.glob<any>('./pages/admin/**/*.vue'), {
+        strip: ['pages', 'admin'],
+        prefix: '/admin/backup',
         guards: [authGuard],
-        strip: ['pages'] 
     })
 
     menu.add({
@@ -14,7 +15,7 @@ export default defineClientSetup(({ router, menu }) => {
         items: [
             {
                 label: $t('Plans'),
-                to: '/admin/plans',
+                to: '/admin/backup/plans',
                 icon: 'FolderIcon'
             }
         ]

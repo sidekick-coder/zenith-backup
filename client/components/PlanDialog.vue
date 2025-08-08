@@ -3,6 +3,7 @@ import { useForm } from 'vee-validate'
 import * as v from 'valibot'
 import { toTypedSchema } from '@vee-validate/valibot'
 import { ref } from 'vue'
+import { toast } from 'vue-sonner'
 import { $t } from '#shared/lang.ts'
 import FormTextField from '#client/components/FormTextField.vue'
 import { $fetch } from '#client/utils/fetcher.ts'
@@ -60,6 +61,7 @@ const onSubmit = handleSubmit(async (form) => {
         loading.value = false
         resetForm()
         emit('submit')
+        toast.success($t('Created successfully'))
     }, 1000)
 
 })

@@ -23,6 +23,7 @@ import Button from '#client/components/Button.vue'
 import Icon from '#client/components/Icon.vue'
 import type { Drive } from '#client/types.ts'
 import PlanDialog from '#modules/zenith-backup/client/components/PlanDialog.vue'
+import AlertButton from '#client/components/AlertButton.vue'
 
 const items = ref<Drive[]>([])
 const page = ref(1)
@@ -57,8 +58,6 @@ async function load(){
         return
     }
 
-    console.log(response)
-
     items.value = response.data || []
 }
 
@@ -72,13 +71,14 @@ async function destroy(id: string) {
     const [error] = await tryCatch(() => $fetch(`/api/backup/plans/${id}`, { method: 'DELETE', }))
 
     if (error) {
-        toast.error($t('Failed to delete backup plan.'))
+        toast.error($t('Failed to delete.'))
         deletingItems.value = []
         return
     }
 
     setTimeout(() => {
-        toast.success($t('User deleted successfully.'))
+        toast.success($t('Deleted successfully.'))
+        deletingItems.value = []
         reset()
     }, 1000)
 
@@ -113,32 +113,14 @@ watch(page, load, { immediate: true })
                     >
                         <Icon name="pen" />
                     </Button>
-
-                    <AlertDialog>
-                        <AlertDialogTrigger>
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                :loading="deletingItems.includes(row.id)"
-                            >
-                                <Icon name="trash" />
-                            </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                            <AlertDialogHeader>
-                                <AlertDialogTitle>{{ $t('Delete User') }}</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                    {{ $t('Are you sure you want to delete this user? This action cannot be undone.') }}
-                                </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                                <AlertDialogCancel>{{ $t('Cancel') }}</AlertDialogCancel>
-                                <AlertDialogAction @click="destroy(row.id)">
-                                    {{ $t('Confirm') }}
-                                </AlertDialogAction>
-                            </AlertDialogFooter>
-                        </AlertDialogContent>
-                    </AlertDialog>
+                    <AlertButton
+                        variant="ghost"
+                        size="sm"
+                        :loading="deletingItems.includes(row.id)"
+                        @confirm="destroy(row.id)"
+                    >
+                        <Icon name="trash" />
+                    </AlertButton>
                 </div>
             </template>
         </DataTable>
