@@ -9,6 +9,11 @@ export default defineClientSetup(({ router, menu }) => {
         guards: [authGuard],
     })
 
+    router.addRoute({
+        path: '/admin/backup',
+        redirect: '/admin/backup/plans',
+    })
+
     menu.add({
         label: $t('Backups'),
         group: true,

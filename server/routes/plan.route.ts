@@ -5,6 +5,14 @@ import router from '#server/facades/router.facade.ts'
 import authMiddleware from '#server/middlewares/auth.middleware.ts'
 import validator from '#server/services/validator.service.ts'
 
+const schema = validator.create(v => v.object({
+    name: v.string(),
+    description: v.optional(v.string()),
+    strategy: v.picklist(['zip', 'restic']),
+    cron: v.string(),
+    options: v.any()
+}))
+
 const group = router.prefix('/api/backup/plans')
     .use(authMiddleware)
     .group()
@@ -20,11 +28,7 @@ group.get('/', async () => {
 })
 
 group.post('/', async ({ body }) => {
-    const payload = validator.validate(body, v => v.object({ 
-        name: v.string(), 
-        strategy: v.picklist(['zip', 'restic']),
-        cron: v.optional(v.string())
-    }))
+    const payload = validator.validate(body, v => v.omit(schema, ['cron', 'options']))
 
     const plan = await db.insertInto('backup_plans')
         .values(payload)
@@ -40,16 +44,16 @@ group.get('/:id', async ({ params }) => {
         .where('id', '=', params.id)
         .where('deleted_at', 'is', null)
         .executeTakeFirst()
-    if (!plan) return { error: 'Not found' }
+    
+    if (!plan) {
+        throw new BaseException('Not found', 404)
+    }
+
     return plan
 })
 
 group.patch('/:id', async ({ params, body }) => {
-    const payload = validator.validate(body, v => v.object({
-        name: v.optional(v.string()),
-        strategy: v.optional(v.picklist(['zip', 'restic'])),
-        cron: v.optional(v.string())
-    }))
+    const payload = validator.validate(body, v => v.partial(v.omit(schema, ['strategy'])))
 
     const plan = await db.selectFrom('backup_plans')
         .selectAll()
