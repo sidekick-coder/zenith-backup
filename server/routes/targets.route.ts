@@ -15,10 +15,14 @@ const group = router.prefix('/api/backup/targets')
     .use(authMiddleware)
     .group()
 
-group.get('/', async () => {
-    const data = await db.selectFrom('backup_plans_targets')
-        .selectAll()
-        .execute()
+group.get('/', async ({ query }) => {
+    let dbQuery = db.selectFrom('backup_plans_targets').selectAll()
+    
+    if (query.backup_plan_id) {
+        dbQuery = dbQuery.where('backup_plan_id', '=', Number(query.backup_plan_id))
+    }
+    
+    const data = await dbQuery.execute()
     return { data }
 })
 
@@ -29,6 +33,18 @@ group.get('/:id', async ({ params }) => {
         .executeTakeFirst()
     if (!target) {
         throw new BaseException('Not found', 404)
+    }
+    return target
+})
+
+group.post('/', async ({ body }) => {
+    const payload = validator.validate(body, schema)
+    const target = await db.insertInto('backup_plans_targets')
+        .values(payload)
+        .returningAll()
+        .executeTakeFirst()
+    if (!target) {
+        throw new BaseException('Create failed', 500)
     }
     return target
 })

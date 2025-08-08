@@ -30,6 +30,7 @@ import { tryCatch } from '#shared/tryCatch.ts'
 import { $t } from '#shared/lang.ts'
 import FormTextarea from '#client/components/FormTextarea.vue'
 import Icon from '#client/components/Icon.vue'
+import PlanTargetTable from '#modules/zenith-backup/client/components/PlanTargetTable.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -172,6 +173,7 @@ onMounted(loadPlan)
 
         <form 
             v-if="!loading" 
+            class="mb-5"
             @submit.prevent="onSubmit"
         >
             <Card>
@@ -253,5 +255,7 @@ onMounted(loadPlan)
                 </CardFooter>
             </Card>
         </form>
+
+        <PlanTargetTable :plan-id="planId" />
     </AppLayout>
 </template>
