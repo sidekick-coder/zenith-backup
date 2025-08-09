@@ -43,7 +43,10 @@ const { handleSubmit, setValues } = useForm({
 const onSubmit = handleSubmit(async (payload) => {
     saving.value = true
 
-    const url = isEdit.value ? `/api/backup/plans/${props.planId}/${props.target?.id}` : `/api/backup/plans/${props.planId}/targets`
+    const url = isEdit.value 
+        ? `/api/backup/plans/${props.planId}/targets/${props.target?.id}` 
+        : `/api/backup/plans/${props.planId}/targets`
+        
     const method = isEdit.value ? 'PATCH' : 'POST'
 
     const [error] = await tryCatch(() => $fetch(url, {

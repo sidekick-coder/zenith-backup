@@ -32,11 +32,11 @@ export class BackupService {
         }))
 
         if (error) {
-            logger.error('Backup failed', {
-                error,
-                planId 
-            })
-            return
+            logger.error(error)
+
+            console.log(error)
+
+            throw new BaseException('Backup failed')
         }
 
         logger.info('Backup completed successfully', { planId })
