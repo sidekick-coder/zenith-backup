@@ -1,7 +1,6 @@
 import planValidator from '../../shared/validators/plan.validator.ts'
-import { now } from '#server/database/common.ts'
+import { planRepository } from '../repositories/plan.repository.ts'
 import BaseException from '#server/exceptions/base.ts'
-import db from '#server/facades/db.facade.ts'
 import router from '#server/facades/router.facade.ts'
 import authMiddleware from '#server/middlewares/auth.middleware.ts'
 import validator from '#shared/services/validator.service.ts'
@@ -12,31 +11,21 @@ const group = router.prefix('/api/backup/plans')
 
 
 group.get('/', async () => {
-    const data = await db.selectFrom('backup_plans')
-        .where('deleted_at', 'is', null)
-        .selectAll()
-        .execute()
+    const plans = await planRepository.list()
 
-    return { data }
+    return { data: plans }
 })
 
 group.post('/', async ({ body }) => {
     const payload = validator.validate(body, planValidator.create)
 
-    const plan = await db.insertInto('backup_plans')
-        .values(payload)
-        .returningAll()
-        .execute()
+    const plan = await planRepository.create(payload)
 
     return plan
 })
 
 group.get('/:id', async ({ params }) => {
-    const plan = await db.selectFrom('backup_plans')
-        .selectAll()
-        .where('id', '=', params.id)
-        .where('deleted_at', 'is', null)
-        .executeTakeFirst()
+    const plan = await planRepository.find(Number(params.id))
     
     if (!plan) {
         throw new BaseException('Not found', 404)
@@ -48,48 +37,19 @@ group.get('/:id', async ({ params }) => {
 group.patch('/:id', async ({ params, body }) => {
     const payload = validator.validate(body, planValidator.update)
 
-    const plan = await db.selectFrom('backup_plans')
-        .selectAll()
-        .where('id', '=', params.id)
-        .where('deleted_at', 'is', null)
-        .executeTakeFirst()
-    
-    if (!plan) {
-        throw new BaseException('Not found', 404)
-    }
+    const data = await planRepository.update(Number(params.id), payload)
 
-    const updated = await db.updateTable('backup_plans')
-        .set(payload)
-        .where('id', '=', params.id)
-        .returningAll()
-        .executeTakeFirst()
-    
-    if (!updated) {
-        throw new BaseException('Update failed', 500)
+    return {
+        success: true,
+        data
     }
-
-    return { success: true }
 })
 
 group.delete('/:id', async ({ params }) => {
-    const plan = await db.selectFrom('backup_plans')
-        .selectAll()
-        .where('deleted_at', 'is', null)
-        .where('id', '=', params.id)
-        .executeTakeFirst()
-    
-    if (!plan) {
-        throw new BaseException('Not found', 404)
+    const data = await planRepository.delete(Number(params.id))
+
+    return {
+        success: true,
+        data 
     }
-
-    const deleted = await db.updateTable('backup_plans')
-        .set({ deleted_at: now() })
-        .where('id', '=', params.id)
-        .executeTakeFirst()
-
-    if (!deleted.numUpdatedRows) {
-        throw new BaseException('Delete failed', 500)
-    }
-
-    return { success: true }
 })

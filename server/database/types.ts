@@ -1,9 +1,13 @@
-import type { Generated } from 'kysely'
+import type { ColumnType, Generated } from 'kysely'
 import type { WithSoftDelete, WithTimestamp } from '#server/database/common.ts'
 
 export interface BackupPlanTable extends WithTimestamp, WithSoftDelete {
   id: Generated<number>
   name: string
+  description: string | null
+  cron: string | null
+  options: ColumnType<string, never, string>
+  strategy: string
 }
 
 export interface BackupPlanTargetTable extends WithTimestamp, WithSoftDelete {
