@@ -2,7 +2,6 @@
 import { ref, onMounted } from 'vue'
 import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/valibot'
-import * as v from 'valibot'
 import { toast } from 'vue-sonner'
 import FormTextField from '#client/components/FormTextField.vue'
 import Button from '#client/components/Button.vue'
@@ -17,13 +16,8 @@ import {
 import { $fetch } from '#client/utils/fetcher.ts'
 import { tryCatch } from '#shared/tryCatch.ts'
 import { $t } from '#shared/lang.ts'
-
-interface Target {
-    id: number
-    backup_plan_id: number
-    path: string
-    options: string
-}
+import Target from '#modules/zenith-backup/shared/entities/target.entity.ts'
+import targetValidator from '#modules/zenith-backup/shared/validators/target.validator.ts'
 
 interface Props {
     planId: string
@@ -41,23 +35,15 @@ const emit = defineEmits<Emits>()
 const saving = ref(false)
 const isEdit = ref(!!props.target)
 
-const schema = v.object({ path: v.pipe(v.string(), v.minLength(1, $t('Path is required'))) })
-
 const { handleSubmit, setValues } = useForm({
-    validationSchema: toTypedSchema(schema),
+    validationSchema: toTypedSchema(props.target ? targetValidator.update : targetValidator.create),
     initialValues: { path: '' },
 })
 
-const onSubmit = handleSubmit(async (form) => {
+const onSubmit = handleSubmit(async (payload) => {
     saving.value = true
 
-    const payload = {
-        ...form,
-        backup_plan_id: Number(props.planId),
-        options: '{}',
-    }
-
-    const url = isEdit.value ? `/api/backup/targets/${props.target?.id}` : '/api/backup/targets'
+    const url = isEdit.value ? `/api/backup/plans/${props.planId}/${props.target?.id}` : `/api/backup/plans/${props.planId}/targets`
     const method = isEdit.value ? 'PATCH' : 'POST'
 
     const [error] = await tryCatch(() => $fetch(url, {

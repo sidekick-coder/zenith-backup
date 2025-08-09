@@ -23,6 +23,7 @@ export class TargetRepository {
     public toRow<T>(target: Partial<Target>): T {
         return {
             id: target.id,
+            backup_plan_id: target.backup_plan_id,
             path: target.path,
             options: JSON.stringify(target.options),
             created_at: target.created_at,

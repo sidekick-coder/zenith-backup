@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { useForm } from 'vee-validate'
-import * as v from 'valibot'
 import { toTypedSchema } from '@vee-validate/valibot'
 import { ref } from 'vue'
 import { toast } from 'vue-sonner'
@@ -20,6 +19,7 @@ import {
 import { tryCatch } from '#shared/tryCatch.ts'
 import DialogClose from '#client/components/ui/dialog/DialogClose.vue'
 import FormSelect from '#client/components/FormSelect.vue'
+import planValidator from '#modules/zenith-backup/shared/validators/plan.validator.ts'
 
 const emit = defineEmits(['submit'])
 
@@ -28,15 +28,8 @@ const open = ref(false)
 
 const strategies = ref(['zip', 'restic'])
 
-const schema = v.pipe(
-    v.object({
-        name: v.string(),
-        strategy: v.string(), 
-    }),
-)
-
 const { handleSubmit, resetForm } = useForm({
-    validationSchema: toTypedSchema(schema),
+    validationSchema: toTypedSchema(planValidator.create),
     initialValues: { name: '', },
 })
 

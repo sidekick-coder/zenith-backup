@@ -16,13 +16,7 @@ import {
     CardHeader,
     CardTitle,
 } from '#client/components/ui/card'
-
-interface Target {
-    id: number
-    backup_plan_id: number
-    path: string
-    options: string
-}
+import type Target from '#modules/zenith-backup/shared/entities/target.entity.ts'
 
 interface Props {
     planId: string
@@ -55,10 +49,7 @@ const columns = defineColumns<Target>([
 async function loadTargets() {
     loading.value = true
     
-    const [error, response] = await tryCatch(() => $fetch('/api/backup/targets', {
-        method: 'GET',
-        query: { backup_plan_id: props.planId },
-    }))
+    const [error, response] = await tryCatch(() => $fetch(`/api/backup/plans/${props.planId}/targets`, { method: 'GET', }))
 
     if (error) {
         console.error('Failed to load targets:', error)
@@ -73,7 +64,7 @@ async function loadTargets() {
 async function deleteTarget(id: number) {
     deletingItems.value.push(id)
     
-    const [error] = await tryCatch(() => $fetch(`/api/backup/targets/${id}`, { method: 'DELETE' }))
+    const [error] = await tryCatch(() => $fetch(`/api/backup/plans/${props.planId}/targets/${id}`, { method: 'DELETE' }))
 
     if (error) {
         toast.error($t('Failed to delete.'))
