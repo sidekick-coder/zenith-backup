@@ -1,6 +1,11 @@
-import type BackupPlanTarget from '../../shared/entities/plan-target.entity'
+import type BackupPlanTarget from '../../shared/entities/target.entity'
 import type BackupPlan from '../../shared/entities/plan.entity'
 
+export interface RunPayload {
+    plan: BackupPlan
+    targets: BackupPlanTarget[]
+}
+
 export default interface BackupStrategy {
-    run(plan: BackupPlan, targets: BackupPlanTarget[]): Promise<void>;   
+    run(payload: RunPayload): Promise<void>;   
 }

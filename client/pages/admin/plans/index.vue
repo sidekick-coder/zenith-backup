@@ -78,6 +78,30 @@ async function destroy(id: string) {
 }
 
 watch(page, load, { immediate: true })
+
+// excute 
+
+const executingId = ref<number[]>([])
+
+async function execute(id: number) {
+    if (executingId.value.includes(id)) return
+
+    executingId.value.push(id)
+
+    const [error] = await tryCatch(() => $fetch(`/api/backup/plans/${id}/execute`, { method: 'POST', }))
+
+    if (error) {
+        executingId.value = executingId.value.filter(i => i !== id)
+        return
+    }
+
+    setTimeout(() => {
+        toast.success($t('Execution started.'))
+        executingId.value = executingId.value.filter(i => i !== id)
+    }, 800)
+
+}
+
 </script>
 <template>
     <AppLayout>
@@ -99,6 +123,16 @@ watch(page, load, { immediate: true })
         >
             <template #row-actions="{ row }">
                 <div class="flex items-center gap-2 justify-end">
+                    <AlertButton
+                        variant="ghost"
+                        size="sm"
+                        :title="$t('Execute backup')"
+                        :description="$t('This action can not be stopped once started.')"
+                        :loading="executingId.includes(row.id)"
+                        @confirm="execute(row.id)"
+                    >
+                        <Icon name="play" />
+                    </AlertButton>
                     <Button
                         variant="ghost"
                         :to="`/admin/backup/plans/${row.id}`"

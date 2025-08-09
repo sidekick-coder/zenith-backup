@@ -1,4 +1,5 @@
 import { Kysely } from 'kysely'
+import { withSoftDelete, withTimestamps } from '#server/database/common.ts'
 
 const table = 'backup_plans_targets'
 
@@ -8,6 +9,8 @@ export async function up(db: Kysely<any>): Promise<void> {
         .addColumn('backup_plan_id', 'integer', col => col.notNull())
         .addColumn('path', 'text', col => col.notNull())
         .addColumn('options', 'text', col => col.notNull().defaultTo('{}'))
+        .$call(withTimestamps)
+        .$call(withSoftDelete)
         .execute()
 }
 

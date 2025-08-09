@@ -56,6 +56,16 @@ export class PlanRepository {
         return this.toEntity(row)
     }
 
+    public async findOrFail(id: number) {
+        const plan = await this.find(id)
+
+        if (!plan) {
+            throw new BaseException('Plan not found', 404)
+        }
+
+        return plan
+    }
+
     public async create(data: Partial<Plan>) {
         const parsed = this.toRow<Insertable<BackupPlanTable>>(data)
 

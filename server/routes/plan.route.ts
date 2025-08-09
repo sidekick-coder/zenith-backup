@@ -1,5 +1,6 @@
 import planValidator from '../../shared/validators/plan.validator.ts'
 import { planRepository } from '../repositories/plan.repository.ts'
+import backupService from '../services/backup.service.ts'
 import BaseException from '#server/exceptions/base.ts'
 import router from '#server/facades/router.facade.ts'
 import authMiddleware from '#server/middlewares/auth.middleware.ts'
@@ -52,4 +53,10 @@ group.delete('/:id', async ({ params }) => {
         success: true,
         data 
     }
+})
+
+group.post('/:id/execute', async ({ params }) => {
+    await backupService.execute(Number(params.id))
+
+    return { success: true, }
 })
