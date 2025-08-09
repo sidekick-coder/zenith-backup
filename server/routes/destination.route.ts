@@ -10,12 +10,12 @@ const schema = validator.create(v => v.object({
     options: v.any()
 }))
 
-const group = router.prefix('/api/backup/destinations')
+const group = router.prefix('/api/backup/plans/:planId/destinations')
     .use(authMiddleware)
     .group()
 
 group.get('/', async ({ query }) => {
-    const data = await destinationRepository.list(query.backup_plan_id ? Number(query.backup_plan_id) : undefined)
+    const data = await destinationRepository.list(Number(query.planId))
     return { data }
 })
 
@@ -29,7 +29,10 @@ group.get('/:id', async ({ params }) => {
 
 group.post('/', async ({ body }) => {
     const payload = validator.validate(body, schema)
-    const destination = await destinationRepository.create(payload)
+    const destination = await destinationRepository.create({
+        ...payload,
+        backup_plan_id: Number(body.planId)
+    })
     if (!destination) {
         throw new BaseException('Create failed', 500)
     }
