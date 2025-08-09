@@ -1,4 +1,4 @@
-import type { ColumnType, Generated } from 'kysely'
+import type { Generated } from 'kysely'
 import type { WithSoftDelete, WithTimestamp } from '#server/database/common.ts'
 
 export interface PlanTable extends WithTimestamp, WithSoftDelete {
@@ -20,8 +20,8 @@ export interface PlanTargetTable extends WithTimestamp, WithSoftDelete {
 export interface PlanDestinationTable extends WithTimestamp, WithSoftDelete {
   id: Generated<number>
   backup_plan_id: number
-  type: string
-  options: any
+  drive_id: string
+  folder: string
 }
 
 declare module '#server/database/types.ts' {

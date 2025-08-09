@@ -30,6 +30,7 @@ import { $t } from '#shared/lang.ts'
 import FormTextarea from '#client/components/FormTextarea.vue'
 import Icon from '#client/components/Icon.vue'
 import PlanTargetTable from '#modules/zenith-backup/client/components/PlanTargetTable.vue'
+import PlanDestinationTable from '#modules/zenith-backup/client/components/PlanDestinationTable.vue'
 import planValidator from '#modules/zenith-backup/shared/validators/plan.validator.ts'
 import Plan from '#modules/zenith-backup/shared/entities/plan.entity.ts'
 import ClientOnly from '#client/components/ClientOnly.vue'
@@ -254,5 +255,7 @@ onMounted(loadPlan)
         </form>
 
         <PlanTargetTable :plan-id="planId" />
+
+        <PlanDestinationTable :plan-id="planId" />
     </AppLayout>
 </template>

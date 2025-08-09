@@ -12,8 +12,8 @@ export class DestinationRepository {
         return new Destination({
             id: row.id,
             backup_plan_id: row.backup_plan_id,
-            type: row.type,
-            options: typeof row.options === 'string' ? JSON.parse(row.options || '{}') : row.options || {},
+            drive_id: row.drive_id,
+            folder: row.folder,
             created_at: row.created_at,
             updated_at: row.updated_at,
             deleted_at: row.deleted_at || null,
@@ -23,8 +23,9 @@ export class DestinationRepository {
     public toRow<T>(destination: Partial<Destination>): T {
         return {
             id: destination.id,
-            type: destination.type,
-            options: JSON.stringify(destination.options),
+            backup_plan_id: destination.backup_plan_id,
+            drive_id: destination.drive_id,
+            folder: destination.folder,
             created_at: destination.created_at,
             updated_at: destination.updated_at,
             deleted_at: destination.deleted_at,
