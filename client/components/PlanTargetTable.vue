@@ -16,7 +16,7 @@ import {
     CardHeader,
     CardTitle,
 } from '#client/components/ui/card'
-import type Target from '#modules/zenith-backup/shared/entities/target.entity.ts'
+import type Target from '#zenith-backup/shared/entities/target.entity.ts'
 
 interface Props {
     planId: string

@@ -2,7 +2,7 @@ import type {
     Insertable, Selectable, Updateable 
 } from 'kysely'
 import type { PlanTable } from '../database/types'
-import Plan from '#modules/zenith-backup/shared/entities/plan.entity.ts'
+import Plan from '#zenith-backup/shared/entities/plan.entity.ts'
 import db from '#server/facades/db.facade.ts'
 import { now } from '#server/database/common.ts'
 import BaseException from '#server/exceptions/base.ts'

@@ -10,7 +10,7 @@ import ClientOnly from '#client/components/ClientOnly.vue'
 import Button from '#client/components/Button.vue'
 import Icon from '#client/components/Icon.vue'
 import type { Drive } from '#client/types.ts'
-import PlanDialog from '#modules/zenith-backup/client/components/PlanDialog.vue'
+import PlanDialog from '#zenith-backup/client/components/PlanDialog.vue'
 import AlertButton from '#client/components/AlertButton.vue'
 
 const items = ref<Drive[]>([])

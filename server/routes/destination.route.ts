@@ -3,7 +3,7 @@ import router from '#server/facades/router.facade.ts'
 import authMiddleware from '#server/middlewares/auth.middleware.ts'
 import validator from '#shared/services/validator.service.ts'
 import BaseException from '#server/exceptions/base.ts'
-import destinationValidator from '#modules/zenith-backup/shared/validators/destination.validator.ts'
+import destinationValidator from '#zenith-backup/shared/validators/destination.validator.ts'
 
 const group = router.prefix('/api/backup/plans/:planId/destinations')
     .use(authMiddleware)

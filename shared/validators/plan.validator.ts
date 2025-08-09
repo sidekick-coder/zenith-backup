@@ -8,10 +8,16 @@ const schema = validator.create(v => v.object({
     options: v.any()
 }))
 
+const zipOptions = validator.create(v => v.object({
+    drive_id: v.optional(v.string()),
+    folder: v.optional(v.string()) 
+}))
+
 const planValidator = {
     schema,
+    zipOptions,
     create: validator.create(v => v.omit(schema, ['cron', 'options'])),
-    update: validator.create(v => v.partial(v.omit(schema, ['strategy'])))
+    update: validator.create(v => v.partial(v.omit(schema, ['strategy']))),
 }
 
 export default planValidator

@@ -19,7 +19,7 @@ import {
 import { tryCatch } from '#shared/tryCatch.ts'
 import DialogClose from '#client/components/ui/dialog/DialogClose.vue'
 import FormSelect from '#client/components/FormSelect.vue'
-import planValidator from '#modules/zenith-backup/shared/validators/plan.validator.ts'
+import planValidator from '#zenith-backup/shared/validators/plan.validator.ts'
 
 const emit = defineEmits(['submit'])
 

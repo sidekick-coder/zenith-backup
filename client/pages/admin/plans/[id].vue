@@ -29,11 +29,12 @@ import { tryCatch } from '#shared/tryCatch.ts'
 import { $t } from '#shared/lang.ts'
 import FormTextarea from '#client/components/FormTextarea.vue'
 import Icon from '#client/components/Icon.vue'
-import PlanTargetTable from '#modules/zenith-backup/client/components/PlanTargetTable.vue'
-import PlanDestinationTable from '#modules/zenith-backup/client/components/PlanDestinationTable.vue'
-import planValidator from '#modules/zenith-backup/shared/validators/plan.validator.ts'
-import Plan from '#modules/zenith-backup/shared/entities/plan.entity.ts'
+import PlanTargetTable from '#zenith-backup/client/components/PlanTargetTable.vue'
+import PlanDestinationTable from '#zenith-backup/client/components/PlanDestinationTable.vue'
+import planValidator from '#zenith-backup/shared/validators/plan.validator.ts'
+import Plan from '#zenith-backup/shared/entities/plan.entity.ts'
 import ClientOnly from '#client/components/ClientOnly.vue'
+import PlanStrategyZip from '#zenith-backup/client/components/PlanStrategyZip.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -166,96 +167,102 @@ onMounted(loadPlan)
             </div>
         </div>
 
-        <form 
-            v-if="!loading" 
-            class="mb-5"
-            @submit.prevent="onSubmit"
+        <div
+            v-if="!loading && plan"
+            class="flex flex-col gap-y-5"
         >
-            <Card>
-                <CardHeader>
-                    <CardTitle>{{ $t('Edit Plan') }}</CardTitle>
-                    <CardDescription>
-                        {{ $t('Edit backup plan details and configuration.') }}
-                    </CardDescription>
-                </CardHeader>
-                <CardContent class="space-y-6">
-                    <FormTextField
-                        name="name"
-                        :label="$t('Name')"
-                        :placeholder="$t('Enter plan name')"
-                    />
+            <form @submit.prevent="onSubmit">
+                <Card>
+                    <CardHeader>
+                        <CardTitle>{{ $t('Edit Plan') }}</CardTitle>
+                        <CardDescription>
+                            {{ $t('Edit backup plan details and configuration.') }}
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent class="space-y-6">
+                        <FormTextField
+                            name="name"
+                            :label="$t('Name')"
+                            :placeholder="$t('Enter plan name')"
+                        />
 
-                    <div class="flex gap-x-2 items-end">
-                        <div class="flex-1">
-                            <FormTextField
-                                name="cron"
-                                :label="$t('Cron Schedule')"
-                                :placeholder="$t('0 2 * * *')"
-                            />
+                        <div class="flex gap-x-2 items-end">
+                            <div class="flex-1">
+                                <FormTextField
+                                    name="cron"
+                                    :label="$t('Cron Schedule')"
+                                    :placeholder="$t('0 2 * * *')"
+                                />
+                            </div>
+                            <ClientOnly>
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger>
+                                        <Button
+                                            variant="outline"
+                                            class="h-10"
+                                        >
+                                            <Icon name="calendar" />
+                                        </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end">
+                                        <DropdownMenuLabel>
+                                            {{ $t('Common schedules') }}
+                                        </DropdownMenuLabel>
+                                        <DropdownMenuSeparator />
+                                        <DropdownMenuItem
+                                            v-for="shortcut in cronShortcuts"
+                                            :key="shortcut.value"
+                                            @click="setCronShortcut(shortcut.value)"
+                                        >
+                                            {{ shortcut.label }}
+                                        </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            </ClientOnly>
                         </div>
-                        <ClientOnly>
-                            <DropdownMenu>
-                                <DropdownMenuTrigger>
-                                    <Button
-                                        variant="outline"
-                                        class="h-10"
-                                    >
-                                        <Icon name="calendar" />
-                                    </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
-                                    <DropdownMenuLabel>
-                                        {{ $t('Common schedules') }}
-                                    </DropdownMenuLabel>
-                                    <DropdownMenuSeparator />
-                                    <DropdownMenuItem
-                                        v-for="shortcut in cronShortcuts"
-                                        :key="shortcut.value"
-                                        @click="setCronShortcut(shortcut.value)"
-                                    >
-                                        {{ shortcut.label }}
-                                    </DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </ClientOnly>
-                    </div>
 
-                    <FormSelect
-                        name="strategy"
-                        :model-value="plan?.strategy"
-                        :label="$t('Strategy')"
-                        :options="strategies"
-                        disabled
-                        label-key="label"
-                        value-key="value"
-                    />
+                        <FormSelect
+                            name="strategy"
+                            :model-value="plan?.strategy"
+                            :label="$t('Strategy')"
+                            :options="strategies"
+                            disabled
+                            label-key="label"
+                            value-key="value"
+                        />
                     
-                    <FormTextarea
-                        name="description"
-                        :label="$t('Description')"
-                        :placeholder="$t('Enter plan description')"
-                        :hint="$t('Optional description for this backup plan')"
-                    />
-                </CardContent>
-                <CardFooter class="flex justify-end gap-4">
-                    <Button
-                        variant="outline"
-                        @click="router.back()"
-                    >
-                        {{ $t('Cancel') }}
-                    </Button>
-                    <Button
-                        type="submit"
-                        :loading="saving"
-                    >
-                        {{ $t('Save') }}
-                    </Button>
-                </CardFooter>
-            </Card>
-        </form>
+                        <FormTextarea
+                            name="description"
+                            :label="$t('Description')"
+                            :placeholder="$t('Enter plan description')"
+                            :hint="$t('Optional description for this backup plan')"
+                        />
+                    </CardContent>
+                    <CardFooter class="flex justify-end gap-4">
+                        <Button
+                            variant="outline"
+                            @click="router.back()"
+                        >
+                            {{ $t('Cancel') }}
+                        </Button>
+                        <Button
+                            type="submit"
+                            :loading="saving"
+                        >
+                            {{ $t('Save') }}
+                        </Button>
+                    </CardFooter>
+                </Card>
+            </form>
 
-        <PlanTargetTable :plan-id="planId" />
+            <PlanStrategyZip
+                v-if="plan?.strategy === 'zip'"
+                :plan="plan"
+            />
 
-        <PlanDestinationTable :plan-id="planId" />
+            <PlanTargetTable :plan-id="planId" />
+
+            <PlanDestinationTable :plan-id="planId" />
+        </div>
     </AppLayout>
 </template>

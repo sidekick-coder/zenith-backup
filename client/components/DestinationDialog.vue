@@ -17,8 +17,8 @@ import {
 import { $fetch } from '#client/utils/fetcher.ts'
 import { tryCatch } from '#shared/tryCatch.ts'
 import { $t } from '#shared/lang.ts'
-import Destination from '#modules/zenith-backup/shared/entities/destination.entity.ts'
-import destinationValidator from '#modules/zenith-backup/shared/validators/destination.validator.ts'
+import Destination from '#zenith-backup/shared/entities/destination.entity.ts'
+import destinationValidator from '#zenith-backup/shared/validators/destination.validator.ts'
 
 interface Props {
     planId: string

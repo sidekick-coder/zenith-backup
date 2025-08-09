@@ -1,0 +1,29 @@
+{
+  "name": "zenith-backup",
+  "version": "1.0.0",
+  "imports": {    
+    "#client/*": "./root/client/*",
+    "#server/*": "./root/server/*",
+    "#shared/*": "./root/shared/*",
+    "#config/*": "./root/config/*",
+
+    "#zenith-backup/server/*": "./server/*",
+    "#zenith-backup/shared/*": "./shared/*",
+    "#zenith-backup/client/*": "./client/*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sidekick-coder/zenith-backup.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sidekick-coder/zenith-backup/issues"
+  },
+  "homepage": "https://github.com/sidekick-coder/zenith-backup#readme",
+  "description": "",
+  "dependencies": {
+    "archiver": "^7.0.1"
+  }
+}
