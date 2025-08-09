@@ -36,7 +36,6 @@ const emit = defineEmits<Emits>()
 const saving = ref(false)
 const loading = ref(false)
 const isEdit = ref(!!props.destination)
-const drives = ref<{ label: string; value: string }[]>([])
 
 const { handleSubmit, setValues } = useForm({
     validationSchema: toTypedSchema(props.destination ? destinationValidator.update : destinationValidator.create),
@@ -45,26 +44,6 @@ const { handleSubmit, setValues } = useForm({
         folder: '/' 
     },
 })
-
-async function loadDrives() {
-    loading.value = true
-    
-    const [error, response] = await tryCatch(() => $fetch('/api/drives', { method: 'GET' }))
-
-    if (error) {
-        console.error('Failed to load drives:', error)
-        loading.value = false
-        return
-    }
-
-    const data = response as { data: any[] }
-    drives.value = (data.data || []).map((drive: any) => ({
-        label: drive.metas?.name || drive.id,
-        value: drive.id
-    }))
-    
-    loading.value = false
-}
 
 const onSubmit = handleSubmit(async (payload) => {
     saving.value = true
@@ -94,9 +73,7 @@ function close() {
     emit('close')
 }
 
-onMounted(() => {
-    loadDrives()
-    
+onMounted(() => {    
     if (props.destination) {
         setValues({ 
             drive_id: props.destination.drive_id,
@@ -125,10 +102,11 @@ onMounted(() => {
                 <div class="space-y-4">
                     <FormSelect
                         name="drive_id"
-                        :label="$t('Drive ID')"
-                        :options="drives"
-                        label-key="label"
-                        value-key="value"
+                        label-key="name"
+                        value-key="id"
+                        fetch="/api/drives"
+                        fetch-key="data"
+                        :label="$t('Drive')"
                         :hint="$t('Select the drive where the backup will be stored')"
                         :loading="loading"
                     />
