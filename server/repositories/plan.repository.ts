@@ -1,14 +1,14 @@
 import type {
     Insertable, Selectable, Updateable 
 } from 'kysely'
-import type { BackupPlanTable } from '../database/types'
+import type { PlanTable } from '../database/types'
 import Plan from '#modules/zenith-backup/shared/entities/plan.entity.ts'
 import db from '#server/facades/db.facade.ts'
 import { now } from '#server/database/common.ts'
 import BaseException from '#server/exceptions/base.ts'
 
 export class PlanRepository {
-    public toEntity(row: Selectable<BackupPlanTable>): Plan {
+    public toEntity(row: Selectable<PlanTable>): Plan {
         return new Plan({
             id: row.id,
             name: row.name,
@@ -67,7 +67,7 @@ export class PlanRepository {
     }
 
     public async create(data: Partial<Plan>) {
-        const parsed = this.toRow<Insertable<BackupPlanTable>>(data)
+        const parsed = this.toRow<Insertable<PlanTable>>(data)
 
         const [row] = await db.insertInto('backup_plans').values(parsed).returningAll().execute()
 
@@ -75,7 +75,7 @@ export class PlanRepository {
     }
 
     public async update(id: number, data: Partial<Plan>) {
-        const parsed = this.toRow<Updateable<BackupPlanTable>>(data)
+        const parsed = this.toRow<Updateable<PlanTable>>(data)
 
         parsed.updated_at = now()
 

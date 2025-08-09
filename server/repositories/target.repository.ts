@@ -1,16 +1,17 @@
 import type {
     Insertable, Selectable, Updateable 
 } from 'kysely'
-import type { BackupPlanTargetTable } from '../database/types'
+import type { PlanTargetTable } from '../database/types'
 import Target from '#modules/zenith-backup/shared/entities/target.entity.ts'
 import db from '#server/facades/db.facade.ts'
 import { now } from '#server/database/common.ts'
 import BaseException from '#server/exceptions/base.ts'
 
 export class TargetRepository {
-    public toEntity(row: Selectable<BackupPlanTargetTable>): Target {
+    public toEntity(row: Selectable<PlanTargetTable>): Target {
         return new Target({
             id: row.id,
+            backup_plan_id: row.backup_plan_id,
             path: row.path,
             options: typeof row.options === 'string' ? JSON.parse(row.options || '{}') : row.options || {},
             created_at: row.created_at,
@@ -60,15 +61,14 @@ export class TargetRepository {
         return target
     }
 
-    public async create(data: Partial<Target> & { backup_plan_id: number }) {
-        const parsed = this.toRow<Insertable<BackupPlanTargetTable>>(data)
-        parsed['backup_plan_id'] = data.backup_plan_id
+    public async create(data: Partial<Target>) {
+        const parsed = this.toRow<Insertable<PlanTargetTable>>(data)
         const [row] = await db.insertInto('backup_plans_targets').values(parsed).returningAll().execute()
         return this.toEntity(row)
     }
 
     public async update(id: number, data: Partial<Target>) {
-        const parsed = this.toRow<Updateable<BackupPlanTargetTable>>(data)
+        const parsed = this.toRow<Updateable<PlanTargetTable>>(data)
         parsed.updated_at = now()
         const [row] = await db.updateTable('backup_plans_targets').set(parsed).where('id', '=', id).returningAll().execute()
         if (!row) {
