@@ -32,6 +32,7 @@ import Icon from '#client/components/Icon.vue'
 import PlanTargetTable from '#modules/zenith-backup/client/components/PlanTargetTable.vue'
 import planValidator from '#modules/zenith-backup/shared/validators/plan.validator.ts'
 import Plan from '#modules/zenith-backup/shared/entities/plan.entity.ts'
+import ClientOnly from '#client/components/ClientOnly.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -191,29 +192,31 @@ onMounted(loadPlan)
                                 :placeholder="$t('0 2 * * *')"
                             />
                         </div>
-                        <DropdownMenu>
-                            <DropdownMenuTrigger>
-                                <Button
-                                    variant="outline"
-                                    class="h-10"
-                                >
-                                    <Icon name="calendar" />
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                                <DropdownMenuLabel>
-                                    {{ $t('Common schedules') }}
-                                </DropdownMenuLabel>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem
-                                    v-for="shortcut in cronShortcuts"
-                                    :key="shortcut.value"
-                                    @click="setCronShortcut(shortcut.value)"
-                                >
-                                    {{ shortcut.label }}
-                                </DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
+                        <ClientOnly>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger>
+                                    <Button
+                                        variant="outline"
+                                        class="h-10"
+                                    >
+                                        <Icon name="calendar" />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                    <DropdownMenuLabel>
+                                        {{ $t('Common schedules') }}
+                                    </DropdownMenuLabel>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem
+                                        v-for="shortcut in cronShortcuts"
+                                        :key="shortcut.value"
+                                        @click="setCronShortcut(shortcut.value)"
+                                    >
+                                        {{ shortcut.label }}
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </ClientOnly>
                     </div>
 
                     <FormSelect
