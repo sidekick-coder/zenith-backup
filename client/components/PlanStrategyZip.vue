@@ -27,13 +27,7 @@ const props = defineProps<Props>()
 const saving = ref(false)
 const loading = ref(false)
 
-const { handleSubmit, setValues } = useForm({
-    validationSchema: toTypedSchema(planValidator.zipOptions),
-    initialValues: {
-        drive_id: props.plan?.options?.drive_id || '',
-        folder: props.plan?.options?.folder || '/',
-    },
-})
+const { handleSubmit, setValues } = useForm({ validationSchema: toTypedSchema(planValidator.zipOptions), })
 
 const onSubmit = handleSubmit(async (payload) => {
     saving.value = true
@@ -58,10 +52,7 @@ const onSubmit = handleSubmit(async (payload) => {
 
 onMounted(() => {
     if (props.plan?.options) {
-        setValues({
-            drive_id: props.plan.options.drive_id || '',
-            folder: props.plan.options.folder || '/',
-        })
+        setValues(props.plan.options)
     }
 })
 </script>
@@ -89,7 +80,7 @@ onMounted(() => {
                 <FormTextField
                     name="folder"
                     :label="$t('Folder')"
-                    :placeholder="$t('Enter folder path')"
+                    :placeholder="$t('backups')"
                     :hint="$t('Folder path within the drive where backups will be stored')"
                 />
             </CardContent>

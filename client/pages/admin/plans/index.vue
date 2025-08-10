@@ -9,15 +9,15 @@ import { tryCatch } from '#shared/tryCatch.ts'
 import ClientOnly from '#client/components/ClientOnly.vue'
 import Button from '#client/components/Button.vue'
 import Icon from '#client/components/Icon.vue'
-import type { Drive } from '#client/types.ts'
 import PlanDialog from '#zenith-backup/client/components/PlanDialog.vue'
 import AlertButton from '#client/components/AlertButton.vue'
+import type Plan from '#zenith-backup/shared/entities/plan.entity.ts'
 
-const items = ref<Drive[]>([])
+const items = ref<Plan[]>([])
 const page = ref(1)
 const deletingItems = ref<string[]>([])
 
-const columns = defineColumns<Drive>([
+const columns = defineColumns<Plan>([
     {
         id: 'id',
         header: 'ID',
@@ -38,7 +38,7 @@ const columns = defineColumns<Drive>([
 ])
 
 async function load(){
-    const [error, response] = await tryCatch(() => $fetch('/api/backup/plans', {
+    const [error, response] = await tryCatch(() => $fetch<{ data: Plan[] }>('/api/backup/plans', {
         method: 'GET',
         query: {
             page: page.value,

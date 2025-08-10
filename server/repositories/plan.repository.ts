@@ -29,7 +29,7 @@ export class PlanRepository {
             description: plan.description,
             strategy: plan.strategy,
             cron: plan.cron,
-            options: JSON.stringify(plan.options),
+            options: plan.options ? JSON.stringify(plan.options) : undefined,
             created_at: plan.created_at,
             updated_at: plan.updated_at,
             deleted_at: plan.deleted_at,

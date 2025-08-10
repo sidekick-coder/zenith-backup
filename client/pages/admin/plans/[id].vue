@@ -35,6 +35,7 @@ import planValidator from '#zenith-backup/shared/validators/plan.validator.ts'
 import Plan from '#zenith-backup/shared/entities/plan.entity.ts'
 import ClientOnly from '#client/components/ClientOnly.vue'
 import PlanStrategyZip from '#zenith-backup/client/components/PlanStrategyZip.vue'
+import validator from '#shared/services/validator.service.ts'
 
 const route = useRoute()
 const router = useRouter()
@@ -57,7 +58,7 @@ const strategies = [
 
 
 const { handleSubmit, setValues, setFieldValue } = useForm({
-    validationSchema: toTypedSchema(planValidator.update),
+    validationSchema: toTypedSchema(validator.create(v => v.omit(planValidator.update, ['options']))),
     initialValues: {
         name: '',
         cron: '',
@@ -121,23 +122,14 @@ async function loadPlan() {
     loading.value = false
 }
 
-const onSubmit = handleSubmit(async (form) => {
+const onSubmit = handleSubmit(async (data) => {
     saving.value = true
-
-    // Extract description and put it in options
-    const { description, ...planData } = form
-    const options = JSON.stringify({ description })
-
-    const payload = {
-        ...planData,
-        options,
-    }
 
     const [error] = await tryCatch(() => 
         $fetch(`/api/backup/plans/${planId}`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload),
+            data
         })
     )
 
