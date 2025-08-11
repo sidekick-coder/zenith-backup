@@ -109,6 +109,7 @@ onMounted(() => {
                         <DriveEntryPicker
                             drive-id="root"
                             class="h-10"
+                            :initial-path="props.target?.path || '/'"
                             @update:model-value="setValues({
                                 path: $event[0]?.path || ''
                             })"
