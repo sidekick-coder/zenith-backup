@@ -10,24 +10,25 @@ export interface PlanTable extends WithTimestamp, WithSoftDelete {
   strategy: string
 }
 
-export interface PlanTargetTable extends WithTimestamp, WithSoftDelete {
+export interface TargetTable extends WithTimestamp, WithSoftDelete {
   id: Generated<number>
   backup_plan_id: number
   path: string
-  options: any
+  metadata: string
 }
 
-export interface PlanDestinationTable extends WithTimestamp, WithSoftDelete {
+export interface SnapshotTable extends WithTimestamp, WithSoftDelete {
   id: Generated<number>
   backup_plan_id: number
-  drive_id: string
-  folder: string
+  backup_target_id: number
+  snapshot_id: string
+  metadata: string
 }
 
 declare module '#server/database/types.ts' {
     export interface Database  {
       backup_plans: PlanTable
-      backup_plans_targets: PlanTargetTable
-      backup_plan_destinations: PlanDestinationTable
+      backup_plans_targets: TargetTable
+      backup_snapshots: SnapshotTable
     }
 }

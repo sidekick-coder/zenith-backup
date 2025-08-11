@@ -1,19 +1,19 @@
 import type {
     Insertable, Selectable, Updateable 
 } from 'kysely'
-import type { PlanTargetTable } from '../database/types'
+import type { TargetTable } from '../database/types'
 import Target from '#zenith-backup/shared/entities/target.entity.ts'
 import db from '#server/facades/db.facade.ts'
 import { now } from '#server/database/common.ts'
 import BaseException from '#server/exceptions/base.ts'
 
 export class TargetRepository {
-    public toEntity(row: Selectable<PlanTargetTable>): Target {
+    public toEntity(row: Selectable<TargetTable>): Target {
         return new Target({
             id: row.id,
-            backup_plan_id: row.backup_plan_id,
+            plan_id: row.backup_plan_id,
             path: row.path,
-            options: typeof row.options === 'string' ? JSON.parse(row.options || '{}') : row.options || {},
+            metadata: JSON.parse(row.metadata),
             created_at: row.created_at,
             updated_at: row.updated_at,
             deleted_at: row.deleted_at || null,
@@ -23,9 +23,9 @@ export class TargetRepository {
     public toRow<T>(target: Partial<Target>): T {
         return {
             id: target.id,
-            backup_plan_id: target.backup_plan_id,
+            backup_plan_id: target.plan_id,
             path: target.path,
-            options: JSON.stringify(target.options),
+            metadata: JSON.stringify(target.metadata),
             created_at: target.created_at,
             updated_at: target.updated_at,
             deleted_at: target.deleted_at,
@@ -63,13 +63,13 @@ export class TargetRepository {
     }
 
     public async create(data: Partial<Target>) {
-        const parsed = this.toRow<Insertable<PlanTargetTable>>(data)
+        const parsed = this.toRow<Insertable<TargetTable>>(data)
         const [row] = await db.insertInto('backup_plans_targets').values(parsed).returningAll().execute()
         return this.toEntity(row)
     }
 
     public async update(id: number, data: Partial<Target>) {
-        const parsed = this.toRow<Updateable<PlanTargetTable>>(data)
+        const parsed = this.toRow<Updateable<TargetTable>>(data)
         parsed.updated_at = now()
         const [row] = await db.updateTable('backup_plans_targets').set(parsed).where('id', '=', id).returningAll().execute()
         if (!row) {

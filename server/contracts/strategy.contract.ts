@@ -1,11 +1,20 @@
-import type BackupPlanTarget from '../../shared/entities/target.entity'
-import type BackupPlan from '../../shared/entities/plan.entity'
+import type Target from '#zenith-backup/shared/entities/target.entity.ts'
+import type Plan from '#zenith-backup/shared/entities/plan.entity.ts'
+import type Snapshot from '#zenith-backup/shared/entities/snapshot.entity.ts'
 
-export interface RunPayload {
-    plan: BackupPlan
-    targets: BackupPlanTarget[]
+
+export interface BackupPayload {
+    plan: Plan
+    targets: Target[]
+}
+
+export interface RestorePayload {
+    plan: Plan
+    target: Target
+    snapshot: Snapshot
 }
 
 export default interface BackupStrategy {
-    run(payload: RunPayload): Promise<void>;   
+    backup(payload: BackupPayload): Promise<void>;
+    restore(payload: BackupPayload): Promise<void>;
 }
