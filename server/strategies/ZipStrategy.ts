@@ -3,11 +3,13 @@ import path from 'path'
 import archiver from 'archiver'
 import { format } from 'date-fns'
 import type BackupStrategy from '../contracts/strategy.contract'
+import type { BackupPayload } from '../contracts/strategy.contract'
+import { snapshotRepository } from '../repositories/snapshot.repository.ts'
 import { tmpPath } from '#server/utils/paths.ts'
 import drive from '#server/facades/drive.facade.ts'
 
 export default class ZipStrategy implements BackupStrategy {
-    public run: BackupStrategy['run'] = async ({ plan, targets }) => {
+    public backup: BackupStrategy['backup'] = async ({ plan, targets }) => {
         const planDrive = drive.use(plan.options.drive_id)
 
         const tmpFolder = tmpPath(`backups/${plan.id}`)
@@ -26,7 +28,17 @@ export default class ZipStrategy implements BackupStrategy {
             await this.compress(target.path, tmpCompresedFilename)
 
             await planDrive.writeFromLocalFile(tmpCompresedFilename, filenameInDrive)
+
+            await snapshotRepository.create({
+                plan_id: plan.id,
+                target_id: target.id,
+                snapshot_id: filenameInDrive
+            })
         }
+    }
+
+    public restore: BackupStrategy['restore'] = async (payload: BackupPayload) => {
+        throw new Error('Method not implemented.')
     }
 
     /**

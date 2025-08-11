@@ -127,6 +127,26 @@ watch(() => props.plan, (newPlan: Plan) => {
         })
     }
 }, { immediate: true })
+
+// execute 
+const executing = ref(false)
+
+async function execute() {
+    executing.value = true
+
+    const [error] = await tryCatch(() => $fetch(`/api/backup/plans/${props.planId}/execute`, { method: 'POST', }))
+
+    if (error) {
+        executing.value = false
+        return
+    }
+
+    setTimeout(() => {
+        toast.success($t('Execution started.'))
+        executing.value = false
+    }, 800)
+
+}
 </script>
 
 <template>
@@ -200,9 +220,11 @@ watch(() => props.plan, (newPlan: Plan) => {
             <CardFooter class="flex justify-end gap-4">
                 <Button
                     variant="outline"
-                    @click="router.back()"
+                    :loading="executing"
+                    @click="execute"
                 >
-                    {{ $t('Cancel') }}
+                    <Icon name="play" />
+                    {{ $t('Run') }}
                 </Button>
                 <Button
                     type="submit"

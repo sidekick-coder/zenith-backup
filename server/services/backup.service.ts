@@ -26,7 +26,7 @@ export class BackupService {
             throw new BaseException('Backup strategy not found')
         }
 
-        const [error] = await tryCatch(() => strategy.run({
+        const [error] = await tryCatch(() => strategy.backup({
             plan,
             targets 
         }))

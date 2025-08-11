@@ -34,7 +34,7 @@ group.post('/', async ({ body, params }) => {
     
     const target = await targetRepository.create({
         ...payload,
-        backup_plan_id: planId
+        plan_id: planId
     })
     
     if (!target) {
