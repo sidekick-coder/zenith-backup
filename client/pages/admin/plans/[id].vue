@@ -10,6 +10,12 @@ import TargetTable from '#zenith-backup/client/components/TargetTable.vue'
 import Plan from '#zenith-backup/shared/entities/plan.entity.ts'
 import PlanStrategyZip from '#zenith-backup/client/components/PlanStrategyZip.vue'
 import PlanDetails from '#zenith-backup/client/components/PlanDetails.vue'
+import {
+    Tabs,
+    TabsContent,
+    TabsList,
+    TabsTrigger,
+} from '#client/components/ui/tabs'
 
 const route = useRoute()
 const router = useRouter()
@@ -54,17 +60,49 @@ onMounted(loadPlan)
             v-if="!loading && plan"
             class="flex flex-col gap-y-5"
         >
-            <PlanDetails
-                :plan="plan"
-                :plan-id="planId"
-            />
+            <Tabs
+                default-value="details"
+                class="w-full"
+            >
+                <TabsList class="grid w-full grid-cols-3">
+                    <TabsTrigger value="details">
+                        {{ $t('Details') }}
+                    </TabsTrigger>
+                    <TabsTrigger value="configuration">
+                        {{ $t('Configuration') }}
+                    </TabsTrigger>
+                    <TabsTrigger value="targets">
+                        {{ $t('Targets') }}
+                    </TabsTrigger>
+                </TabsList>
 
-            <PlanStrategyZip
-                v-if="plan?.strategy === 'zip'"
-                :plan="plan"
-            />
+                <TabsContent 
+                    value="details"
+                    class="mt-6"
+                >
+                    <PlanDetails
+                        :plan="plan"
+                        :plan-id="planId"
+                    />
+                </TabsContent>
 
-            <TargetTable :plan-id="planId" />
+                <TabsContent 
+                    value="configuration"
+                    class="mt-6"
+                >
+                    <PlanStrategyZip
+                        v-if="plan?.strategy === 'zip'"
+                        :plan="plan"
+                    />
+                </TabsContent>
+
+                <TabsContent 
+                    value="targets"
+                    class="mt-6"
+                >
+                    <TargetTable :plan-id="planId" />
+                </TabsContent>
+            </Tabs>
         </div>
     </AppLayout>
 </template>
