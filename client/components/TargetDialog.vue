@@ -18,6 +18,7 @@ import { tryCatch } from '#shared/tryCatch.ts'
 import { $t } from '#shared/lang.ts'
 import Target from '#zenith-backup/shared/entities/target.entity.ts'
 import targetValidator from '#zenith-backup/shared/validators/target.validator.ts'
+import DriveEntryPicker from '#client/components/DriveEntryPicker.vue'
 
 interface Props {
     planId: string
@@ -96,12 +97,23 @@ onMounted(() => {
 
             <form @submit.prevent="onSubmit">
                 <div class="space-y-4">
-                    <FormTextField
-                        name="path"
-                        :label="$t('Path')"
-                        :placeholder="$t('Enter path to backup')"
-                        :hint="$t('Full path to the file or directory to backup')"
-                    />
+                    <div class="flex items-end gap-2 w-full">
+                        <div class="flex-1">
+                            <FormTextField
+                                name="path"
+                                :label="$t('Path')"
+                                :placeholder="$t('Enter path to backup')"
+                            />
+                        </div>
+
+                        <DriveEntryPicker
+                            drive-id="root"
+                            class="h-10"
+                            @update:model-value="setValues({
+                                path: $event[0]?.path || ''
+                            })"
+                        />
+                    </div>
                 </div>
 
                 <DialogFooter class="mt-6">

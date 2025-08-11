@@ -29,7 +29,7 @@ import { tryCatch } from '#shared/tryCatch.ts'
 import { $t } from '#shared/lang.ts'
 import FormTextarea from '#client/components/FormTextarea.vue'
 import Icon from '#client/components/Icon.vue'
-import PlanTargetTable from '#zenith-backup/client/components/PlanTargetTable.vue'
+import TargetTable from '#zenith-backup/client/components/TargetTable.vue'
 import planValidator from '#zenith-backup/shared/validators/plan.validator.ts'
 import Plan from '#zenith-backup/shared/entities/plan.entity.ts'
 import ClientOnly from '#client/components/ClientOnly.vue'
@@ -251,7 +251,7 @@ onMounted(loadPlan)
                 :plan="plan"
             />
 
-            <PlanTargetTable :plan-id="planId" />
+            <TargetTable :plan-id="planId" />
         </div>
     </AppLayout>
 </template>

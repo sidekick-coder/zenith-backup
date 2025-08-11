@@ -17,6 +17,9 @@ import {
     CardTitle,
 } from '#client/components/ui/card'
 import type Target from '#zenith-backup/shared/entities/target.entity.ts'
+import DriveEntryPicker from '#client/components/DriveEntryPicker.vue'
+import Dialog from '#client/components/ui/dialog/Dialog.vue'
+import DialogTrigger from '#client/components/ui/dialog/DialogTrigger.vue'
 
 interface Props {
     planId: string
