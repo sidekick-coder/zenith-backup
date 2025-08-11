@@ -56,53 +56,47 @@ onMounted(loadPlan)
             </div>
         </div>
 
-        <div
+        
+        <Tabs
             v-if="!loading && plan"
-            class="flex flex-col gap-y-5"
+            default-value="details"
+            class="w-full"
         >
-            <Tabs
-                default-value="details"
-                class="w-full"
+            <TabsList class="grid w-full grid-cols-3">
+                <TabsTrigger value="details">
+                    {{ $t('Details') }}
+                </TabsTrigger>
+                <TabsTrigger value="configuration">
+                    {{ $t('Configuration') }}
+                </TabsTrigger>
+                <TabsTrigger value="targets">
+                    {{ $t('Targets') }}
+                </TabsTrigger>
+            </TabsList>
+
+            <TabsContent 
+                value="details"
             >
-                <TabsList class="grid w-full grid-cols-3">
-                    <TabsTrigger value="details">
-                        {{ $t('Details') }}
-                    </TabsTrigger>
-                    <TabsTrigger value="configuration">
-                        {{ $t('Configuration') }}
-                    </TabsTrigger>
-                    <TabsTrigger value="targets">
-                        {{ $t('Targets') }}
-                    </TabsTrigger>
-                </TabsList>
+                <PlanDetails
+                    :plan="plan"
+                    :plan-id="planId"
+                />
+            </TabsContent>
 
-                <TabsContent 
-                    value="details"
-                    class="mt-6"
-                >
-                    <PlanDetails
-                        :plan="plan"
-                        :plan-id="planId"
-                    />
-                </TabsContent>
+            <TabsContent 
+                value="configuration"
+            >
+                <PlanStrategyZip
+                    v-if="plan?.strategy === 'zip'"
+                    :plan="plan"
+                />
+            </TabsContent>
 
-                <TabsContent 
-                    value="configuration"
-                    class="mt-6"
-                >
-                    <PlanStrategyZip
-                        v-if="plan?.strategy === 'zip'"
-                        :plan="plan"
-                    />
-                </TabsContent>
-
-                <TabsContent 
-                    value="targets"
-                    class="mt-6"
-                >
-                    <TargetTable :plan-id="planId" />
-                </TabsContent>
-            </Tabs>
-        </div>
+            <TabsContent 
+                value="targets"
+            >
+                <TargetTable :plan-id="planId" />
+            </TabsContent>
+        </Tabs>
     </AppLayout>
 </template>

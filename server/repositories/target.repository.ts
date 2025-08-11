@@ -9,6 +9,7 @@ import BaseException from '#server/exceptions/base.ts'
 
 export class TargetRepository {
     public toEntity(row: Selectable<TargetTable>): Target {
+        console.log(row)
         return new Target({
             id: row.id,
             plan_id: row.backup_plan_id,
@@ -33,7 +34,7 @@ export class TargetRepository {
     }
 
     public async list(planId?: number) {
-        let query = db.selectFrom('backup_plans_targets')
+        let query = db.selectFrom('backup_targets')
             .where('deleted_at', 'is', null)
         
         if (planId) {
@@ -45,7 +46,7 @@ export class TargetRepository {
     }
 
     public async find(id: number) {
-        const row = await db.selectFrom('backup_plans_targets')
+        const row = await db.selectFrom('backup_targets')
             .selectAll()
             .where('deleted_at', 'is', null)
             .where('id', '=', id)
@@ -64,14 +65,14 @@ export class TargetRepository {
 
     public async create(data: Partial<Target>) {
         const parsed = this.toRow<Insertable<TargetTable>>(data)
-        const [row] = await db.insertInto('backup_plans_targets').values(parsed).returningAll().execute()
+        const [row] = await db.insertInto('backup_targets').values(parsed).returningAll().execute()
         return this.toEntity(row)
     }
 
     public async update(id: number, data: Partial<Target>) {
         const parsed = this.toRow<Updateable<TargetTable>>(data)
         parsed.updated_at = now()
-        const [row] = await db.updateTable('backup_plans_targets').set(parsed).where('id', '=', id).returningAll().execute()
+        const [row] = await db.updateTable('backup_targets').set(parsed).where('id', '=', id).returningAll().execute()
         if (!row) {
             throw new BaseException('Target not found')
         }
@@ -79,7 +80,7 @@ export class TargetRepository {
     }
 
     public async delete(id: number) {
-        const [row] = await db.updateTable('backup_plans_targets')
+        const [row] = await db.updateTable('backup_targets')
             .set('deleted_at', now())
             .where('id', '=', id)
             .returningAll()

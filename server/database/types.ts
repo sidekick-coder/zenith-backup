@@ -28,7 +28,7 @@ export interface SnapshotTable extends WithTimestamp, WithSoftDelete {
 declare module '#server/database/types.ts' {
     export interface Database  {
       backup_plans: PlanTable
-      backup_plans_targets: TargetTable
+      backup_targets: TargetTable
       backup_snapshots: SnapshotTable
     }
 }
