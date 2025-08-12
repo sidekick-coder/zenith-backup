@@ -205,27 +205,26 @@ onMounted(() => {
                 <Tabs 
                     v-model="tab"
                     default-value="general" 
-                    class="w-full"
                 >
-                    <TabsList class="grid w-full grid-cols-4">
+                    <TabsList>
                         <TabsTrigger 
-                            v-for="tab in tabs"
-                            :key="tab.value"
-                            :value="tab.value"
+                            v-for="t in tabs"
+                            :key="t.value"
+                            :value="t.value"
+                            class="min-w-60"
                         >
-                            {{ tab.label }}
+                            {{ t.label }}
                         </TabsTrigger>
                     </TabsList>
                                 
                     <TabsContent 
-                        v-for="tab in tabs"
-                        :key="tab.value"
-                        :value="tab.value" 
-                        class="mt-6"
+                        v-for="t in tabs"
+                        :key="t.value"
+                        :value="t.value"
                     >
                         <component
-                            :is="tab.component"
-                            v-if="tab.component"
+                            :is="t.component"
+                            v-if="t.component"
                             v-model:target="target"
                             v-model:plan="plan"
                         />
