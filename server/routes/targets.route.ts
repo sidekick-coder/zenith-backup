@@ -75,3 +75,11 @@ group.get('/:id/snapshots', async ({ params }) => {
 
     return { data: snapshots }
 })
+
+group.get('/:id/snapshots/:snapshotId/restore', async ({ params }) => {
+    const target = await targetRepository.findOrFail(Number(params.id))
+
+    await backupService.restore(target.id, params.snapshotId)
+
+    return { success: true }
+})

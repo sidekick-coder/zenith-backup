@@ -11,7 +11,7 @@ export interface BackupPayload {
 export interface RestorePayload {
     plan: Plan
     target: Target
-    snapshot: Snapshot
+    snapshotId: string
 }
 
 export interface ListPayload {

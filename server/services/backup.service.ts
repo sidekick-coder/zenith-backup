@@ -2,7 +2,6 @@ import { planRepository } from '../repositories/plan.repository.ts'
 import type BackupStrategy from '../contracts/strategy.contract.ts'
 import TarStrategy from '../strategies/TarStrategy.ts'
 import { targetRepository } from '../repositories/target.repository.ts'
-import { snapshotRepository } from '../repositories/snapshot.repository.ts'
 import type Plan from '#zenith-backup/shared/entities/plan.entity.ts'
 import BaseException from '#server/exceptions/base.ts'
 import { tryCatch } from '#shared/tryCatch.ts'
@@ -63,17 +62,16 @@ export class BackupService {
         logger.info('Backup completed successfully', { planId })
     }
 
-    public async restore(snapshotId: number) {
-        const snapshot = await snapshotRepository.findOrFail(snapshotId)
-        const plan = await planRepository.findOrFail(snapshot.plan_id)
-        const target = await targetRepository.findOrFail(snapshot.target_id)
+    public async restore(targetId: Target['plan_id'], snapshotId: string) {
+        const target = await targetRepository.findOrFail(targetId)
+        const plan = await planRepository.findOrFail(target.plan_id)
 
         const strategy = this.findStrategy(plan)
         
         const [error] = await tryCatch(() => strategy.restore({
             plan,
             target,
-            snapshot
+            snapshotId
         }))
 
         if (error) {
@@ -87,7 +85,7 @@ export class BackupService {
         logger.info('Backup completed successfully', {
             plan,
             target,
-            snapshot 
+            snapshotId 
         })
     }
 }
