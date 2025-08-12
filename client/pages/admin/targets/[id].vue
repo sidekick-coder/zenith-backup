@@ -147,16 +147,6 @@ onMounted(() => {
                                 </p>
                             </div>
     
-                            <!-- Name (derived from path) -->
-                            <div>
-                                <label class="text-sm font-medium text-gray-700 block mb-1">
-                                    {{ $t('Name') }}
-                                </label>
-                                <p class="text-sm text-gray-900 bg-gray-50 p-2 rounded border">
-                                    {{ target.path.split('/').pop() || target.path }}
-                                </p>
-                            </div>
-    
                             <!-- Path -->
                             <div>
                                 <label class="text-sm font-medium text-gray-700 block mb-1">
