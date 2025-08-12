@@ -16,12 +16,10 @@ export interface RestorePayload {
 
 export interface ListPayload {
     plan: Plan 
-    target: Target
 }
 
 export interface DeletePayload {
     plan: Plan
-    target: Target
     snapshotId: string
 }
 

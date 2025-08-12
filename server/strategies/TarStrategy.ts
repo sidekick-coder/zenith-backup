@@ -3,18 +3,24 @@ import path from 'path'
 import * as tar from 'tar'
 import { format, parse } from 'date-fns'
 import type BackupStrategy from '../contracts/strategy.contract.ts'
-import { findTargetMeta } from '../queries/findTargetMeta.ts'
+import {
+    findTargetByMeta, findTargetByPath, findTargetMeta 
+} from '../queries/target.query.ts'
 import { tmpPath } from '#server/utils/paths.ts'
 import driveService from '#server/facades/drive.facade.ts'
 import Snapshot from '#zenith-backup/shared/entities/snapshot.entity.ts'
 import logger from '#server/facades/logger.facade.ts'
+import db from '#server/facades/db.facade.ts'
 
 export default class TarStrategy implements BackupStrategy {
-    public list: BackupStrategy['list'] = async ({ plan, target }) => {
-        const drive = driveService.use(plan.options.drive_id)
-        const slug = await findTargetMeta(target.id, 'slug')
-        const basename = slug?.value || path.basename(target.path)
+    public list: BackupStrategy['list'] = async ({ plan }) => {
+        const targets = await db.selectFrom('backup_targets')
+            .where('backup_plan_id', '=', plan.id)
+            .where('deleted_at', 'is', null)
+            .selectAll()
+            .execute()
 
+        const drive = driveService.use(plan.options.drive_id)
         const files = await drive.list(plan.options.folder || '/')
 
         const filteredFiles = files.filter(f => {
@@ -30,16 +36,20 @@ export default class TarStrategy implements BackupStrategy {
         for (const file of filteredFiles) {
             const [date, fileBaseName] = file.name.split('__')
 
-            if (basename !== path.basename(fileBaseName, '.tar.gz')) {
-                continue
+            let target = await findTargetByMeta(plan.id, 'slug', path.basename(fileBaseName, '.tar.gz'))
+
+            if (!target) {
+                target = targets.find(t => path.basename(t.path) === path.basename(fileBaseName, '.tar.gz'))
             }
+
+            if (!target) continue
 
             snapshots.push(new Snapshot({
                 id: file.name,
                 plan_id: plan.id,
                 target_id: target.id,
                 created_at: parse(date, 'yyyy-MM-dd_HH-mm-ss', new Date()),
-                metadata: { slug }
+                metadata: {  }
             }))
         }
 

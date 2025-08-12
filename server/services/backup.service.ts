@@ -17,20 +17,16 @@ export class BackupService {
         throw new BaseException('Backup strategy not found')
     }
 
-    public async list(planId: Plan['id'], targetId: Target['id']){
+    public async list(planId: Plan['id']){
         const plan = await planRepository.findOrFail(planId)
-        const target = await targetRepository.findOrFail(targetId)
 
         const strategy = this.findStrategy(plan)
 
-        const [error, snapshots] = await tryCatch(() => strategy.list({
-            plan,
-            target
-        }))
+        const [error, snapshots] = await tryCatch(() => strategy.list({ plan }))
 
         if (error) {
             logger.error(error)
-            throw new BaseException('Backup failed')
+            throw BaseException.fromError(error)
         }
 
         return snapshots
@@ -79,7 +75,7 @@ export class BackupService {
 
             console.log(error)
 
-            throw new BaseException('Backup failed')
+            throw new BaseException('Restore failed')
         }
 
         logger.info('Backup completed successfully', {

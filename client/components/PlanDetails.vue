@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { useRouter } from 'vue-router'
 import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/valibot'
 import { toast } from 'vue-sonner'
 import FormTextField from '#client/components/FormTextField.vue'
-import FormSelect from '#client/components/FormSelect.vue'
 import FormTextarea from '#client/components/FormTextarea.vue'
 import Button from '#client/components/Button.vue'
 import Icon from '#client/components/Icon.vue'
@@ -35,24 +33,12 @@ import validator from '#shared/services/validator.service.ts'
 
 interface Props {
     plan: Plan
-    planId: string
+    planId: number
 }
 
 const props = defineProps<Props>()
-const router = useRouter()
 
 const saving = ref(false)
-
-const strategies = [
-    { 
-        label: 'ZIP', 
-        value: 'zip' 
-    },
-    { 
-        label: 'Restic', 
-        value: 'restic' 
-    }
-]
 
 const { handleSubmit, setValues, setFieldValue } = useForm({
     validationSchema: toTypedSchema(validator.create(v => v.omit(planValidator.update, ['options']))),

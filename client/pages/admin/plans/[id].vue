@@ -21,7 +21,7 @@ import {
 
 const route = useRoute()
 const router = useRouter()
-const planId = route.params.id as string
+const planId = computed(() => Number(route.params.id))
 const plan = ref<Plan>()
 const tab = useRouteQuery('tab', 'configuration')
 
@@ -33,6 +33,11 @@ const tabs = computed(() => {
             value: 'targets',
             label: $t('Targets'),
             component: defineAsyncComponent(() => import('#zenith-backup/client/components/TargetTable.vue')),
+        },
+        {
+            value: 'snapshots',
+            label: $t('Snapshots'),
+            component: defineAsyncComponent(() => import('#zenith-backup/client/components/SnapshotTable.vue')),
         },
     ]
 
@@ -51,7 +56,7 @@ async function loadPlan() {
     loading.value = true
 
     const [error, response] = await tryCatch(() => 
-        $fetch<Plan>(`/api/backup/plans/${planId}`, { method: 'GET' })
+        $fetch<Plan>(`/api/backup/plans/${planId.value}`, { method: 'GET' })
     )
 
     if (error) {

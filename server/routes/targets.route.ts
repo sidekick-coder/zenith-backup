@@ -29,14 +29,10 @@ group.get('/:id', async ({ params }) => {
     return target
 })
 
-group.post('/', async ({ body, params }) => {
-    const planId = Number(params.planId)
+group.post('/', async ({ body }) => {
     const payload = validator.validate(body, targetValidator.create)
     
-    const target = await targetRepository.create({
-        ...payload,
-        plan_id: planId
-    })
+    const target = await targetRepository.create(payload)
     
     if (!target) {
         throw new BaseException('Create failed', 500)

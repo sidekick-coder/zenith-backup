@@ -19,7 +19,7 @@ import type Snapshot from '#zenith-backup/shared/entities/snapshot.entity.ts'
 
 interface Props {
     planId: number
-    targetId: number
+    targetId?: number
 }
 
 const props = defineProps<Props>()
@@ -35,12 +35,7 @@ const columns = defineColumns<Snapshot>([
         header: $t('Snapshot ID'),
         accessorKey: 'id'
     },
-    {
-        id: 'target_id',
-        header: $t('Target ID'),
-        accessorKey: 'target_id',
-        size: 30,
-    },
+   
     {
         id: 'created_at',
         header: $t('Created At'),
@@ -50,12 +45,21 @@ const columns = defineColumns<Snapshot>([
     { id: 'actions' }
 ])
 
+if (!props.targetId) {
+    columns.splice(1,0,{
+        id: 'target_id',
+        header: $t('Target ID'),
+        accessorKey: 'target_id',
+        size: 30,
+    })
+}
+
 async function loadSnapshots() {
     loading.value = true
-    
-    const url = `/api/backup/targets/${props.targetId}/snapshots`
-    
-    const [error, response] = await tryCatch(() => $fetch(url, { method: 'GET' }))
+
+    const url = `/api/backup/plans/${props.planId}/snapshots`
+
+    const [error, response] = await tryCatch(() => $fetch<{ data: Snapshot[] }>(url, { method: 'GET' }))
 
     if (error) {
         console.error('Failed to load snapshots:', error)
@@ -63,7 +67,14 @@ async function loadSnapshots() {
         return
     }
 
-    snapshots.value = (response as any).data || []
+    let items = response.data || []
+
+    if (props.targetId) {
+        items = items.filter(item => item.target_id === props.targetId)
+    }
+
+    snapshots.value = items
+
     loading.value = false
 }
 

@@ -38,7 +38,7 @@ const tabs = computed(() => {
         {
             value: 'snapshots',
             label: $t('Snapshots'),
-            component: defineAsyncComponent(() => import('#zenith-backup/client/components/TargetSnapshots.vue')),
+            component: defineAsyncComponent(() => import('#zenith-backup/client/components/SnapshotTable.vue')),
         },
     ]
 

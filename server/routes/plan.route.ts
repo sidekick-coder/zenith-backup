@@ -55,6 +55,12 @@ group.delete('/:id', async ({ params }) => {
     }
 })
 
+group.get('/:id/snapshots', async ({ params }) => {
+    const snapshots = await backupService.list(Number(params.id))
+
+    return { data: snapshots }
+})
+
 group.post('/:id/execute', async ({ params }) => {
     await backupService.backup(Number(params.id))
 

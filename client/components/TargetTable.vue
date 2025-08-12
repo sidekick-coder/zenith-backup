@@ -17,12 +17,9 @@ import {
     CardTitle,
 } from '#client/components/ui/card'
 import type Target from '#zenith-backup/shared/entities/target.entity.ts'
-import DriveEntryPicker from '#client/components/DriveEntryPicker.vue'
-import Dialog from '#client/components/ui/dialog/Dialog.vue'
-import DialogTrigger from '#client/components/ui/dialog/DialogTrigger.vue'
 
 interface Props {
-    planId: string
+    planId: number
 }
 
 const props = defineProps<Props>()
@@ -87,11 +84,6 @@ async function deleteTarget(id: number) {
 
 function openCreateDialog() {
     showCreateDialog.value = true
-}
-
-function openEditDialog(target: Target) {
-    editingTarget.value = target
-    showEditDialog.value = true
 }
 
 function closeCreateDialog() {

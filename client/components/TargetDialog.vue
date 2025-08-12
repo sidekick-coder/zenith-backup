@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/valibot'
 import { toast } from 'vue-sonner'
@@ -16,13 +16,13 @@ import {
 import { $fetch } from '#client/utils/fetcher.ts'
 import { tryCatch } from '#shared/tryCatch.ts'
 import { $t } from '#shared/lang.ts'
-import Target from '#zenith-backup/shared/entities/target.entity.ts'
 import targetValidator from '#zenith-backup/shared/validators/target.validator.ts'
 import DriveEntryPicker from '#client/components/DriveEntryPicker.vue'
+import type Target from '#zenith-backup/shared/entities/target.entity.ts'
+import validator from '#shared/services/validator.service'
 
 interface Props {
-    planId: string
-    target?: Target
+    planId: number
 }
 
 interface Emits {
@@ -34,31 +34,30 @@ const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 
 const saving = ref(false)
-const isEdit = ref(!!props.target)
 
-const { handleSubmit, setValues } = useForm({
-    validationSchema: toTypedSchema(props.target ? targetValidator.update : targetValidator.create),
+const schema = validator.create(v => v.omit(targetValidator.create, ['plan_id']))
+
+const { handleSubmit, values, setValues } = useForm({
+    validationSchema: toTypedSchema(schema),
     initialValues: { path: '' },
 })
 
 const onSubmit = handleSubmit(async (payload) => {
     saving.value = true
 
-    const url = isEdit.value 
-        ? `/api/backup/plans/${props.planId}/targets/${props.target?.id}` 
-        : `/api/backup/plans/${props.planId}/targets`
-        
-    const method = isEdit.value ? 'PATCH' : 'POST'
+    const url = '/api/backup/targets'
 
-    const [error] = await tryCatch(() => $fetch(url, {
-        method,
+    const [error] = await tryCatch(() => $fetch<Target>(url, {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        data: {
+            plan_id: props.planId,
+            path: payload.path
+        }
     }))
 
     if (error) {
         saving.value = false
-        toast.error($t('Failed to save.'))
         return
     }
 
@@ -72,12 +71,6 @@ const onSubmit = handleSubmit(async (payload) => {
 function close() {
     emit('close')
 }
-
-onMounted(() => {
-    if (props.target) {
-        setValues({ path: props.target.path })
-    }
-})
 </script>
 
 <template>
@@ -88,33 +81,31 @@ onMounted(() => {
         <DialogContent>
             <DialogHeader>
                 <DialogTitle>
-                    {{ isEdit ? $t('Edit Target') : $t('Add Target') }}
+                    {{ $t('Add Target') }}
                 </DialogTitle>
                 <DialogDescription>
-                    {{ isEdit ? $t('Edit backup target details.') : $t('Add a new backup target to this plan.') }}
+                    {{ $t('Add a new backup target to this plan.') }}
                 </DialogDescription>
             </DialogHeader>
 
             <form @submit.prevent="onSubmit">
                 <div class="space-y-4">
-                    <div class="flex items-end gap-2 w-full">
-                        <div class="flex-1">
-                            <FormTextField
-                                name="path"
-                                :label="$t('Path')"
-                                :placeholder="$t('Enter path to backup')"
+                    <FormTextField
+                        name="path"
+                        :label="$t('Path')"
+                        :placeholder="$t('Enter path to backup')"
+                    >
+                        <template #append>
+                            <DriveEntryPicker
+                                drive-id="root"
+                                class="h-10"
+                                :initial-path="values.path"
+                                @update:model-value="setValues({
+                                    path: $event[0]?.path || ''
+                                })"
                             />
-                        </div>
-
-                        <DriveEntryPicker
-                            drive-id="root"
-                            class="h-10"
-                            :initial-path="props.target?.path || '/'"
-                            @update:model-value="setValues({
-                                path: $event[0]?.path || ''
-                            })"
-                        />
-                    </div>
+                        </template>
+                    </FormTextField>
                 </div>
 
                 <DialogFooter class="mt-6">
@@ -128,7 +119,7 @@ onMounted(() => {
                         type="submit"
                         :loading="saving"
                     >
-                        {{ isEdit ? $t('Update') : $t('Create') }}
+                        {{ $t('Create') }}
                     </Button>
                 </DialogFooter>
             </form>
