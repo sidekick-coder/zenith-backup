@@ -9,7 +9,6 @@ import BaseException from '#server/exceptions/base.ts'
 
 export class TargetRepository {
     public toEntity(row: Selectable<TargetTable>): Target {
-        console.log(row)
         return new Target({
             id: row.id,
             plan_id: row.backup_plan_id,

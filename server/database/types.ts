@@ -17,6 +17,12 @@ export interface TargetTable extends WithTimestamp, WithSoftDelete {
   metadata: string
 }
 
+export interface TargetMetaTable {
+  id: Generated<number>
+  target_id: number
+  name: string
+  value: string | null
+}
 export interface SnapshotTable extends WithTimestamp, WithSoftDelete {
   id: Generated<number>
   backup_plan_id: number
@@ -25,10 +31,13 @@ export interface SnapshotTable extends WithTimestamp, WithSoftDelete {
   metadata: string
 }
 
+
+
 declare module '#server/database/types.ts' {
     export interface Database  {
       backup_plans: PlanTable
       backup_targets: TargetTable
+      backup_target_metas: TargetMetaTable
       backup_snapshots: SnapshotTable
     }
 }
