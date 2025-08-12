@@ -18,7 +18,7 @@ import {
 import type Snapshot from '#zenith-backup/shared/entities/snapshot.entity.ts'
 
 interface Props {
-    planId: string
+    planId: number
     targetId: number
 }
 

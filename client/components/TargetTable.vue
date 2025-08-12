@@ -117,7 +117,7 @@ watch(() => props.planId, loadTargets, { immediate: true })
 </script>
 
 <template>
-    <Card class="mt-6">
+    <Card>
         <CardHeader>
             <div class="flex items-center justify-between">
                 <div>

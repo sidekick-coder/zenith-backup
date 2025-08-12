@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/valibot'
 import { toast } from 'vue-sonner'
@@ -33,7 +33,7 @@ const schema = validator.create(v => v.object({
     folder: v.optional(v.string())
 }))
 
-const { handleSubmit, values, setValues, resetForm } = useForm({
+const { handleSubmit, values, setValues } = useForm({
     validationSchema: toTypedSchema(schema), 
     initialValues: JSON.parse(JSON.stringify(props.plan?.options || {}))
 })
@@ -64,7 +64,7 @@ const onSubmit = handleSubmit(async (payload) => {
     <form @submit.prevent="onSubmit">
         <Card>
             <CardHeader>
-                <CardTitle>{{ $t('Strategy') }}</CardTitle>
+                <CardTitle>{{ $t('Tar config') }}</CardTitle>
                 <CardDescription>
                     {{ $t('Configure the backup strategy for the plan.') }}
                 </CardDescription>

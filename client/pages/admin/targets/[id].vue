@@ -34,7 +34,7 @@ const plan = ref<Plan>()
 const loading = ref(false)
 
 const tabs = computed(() => {
-    const items = [
+    const items: any[] = [
         {
             value: 'snapshots',
             label: $t('Snapshots'),

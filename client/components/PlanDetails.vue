@@ -153,9 +153,9 @@ async function execute() {
     <form @submit.prevent="onSubmit">
         <Card>
             <CardHeader>
-                <CardTitle>{{ $t('Edit Plan') }}</CardTitle>
+                <CardTitle>{{ $t('Plan details') }}</CardTitle>
                 <CardDescription>
-                    {{ $t('Edit backup plan details and configuration.') }}
+                    {{ $t('Edit details and configuration.') }}
                 </CardDescription>
             </CardHeader>
             <CardContent class="space-y-6">
@@ -200,16 +200,6 @@ async function execute() {
                     </ClientOnly>
                 </div>
 
-                <FormSelect
-                    name="strategy"
-                    :model-value="plan?.strategy"
-                    :label="$t('Strategy')"
-                    :options="strategies"
-                    disabled
-                    label-key="label"
-                    value-key="value"
-                />
-            
                 <FormTextarea
                     name="description"
                     :label="$t('Description')"

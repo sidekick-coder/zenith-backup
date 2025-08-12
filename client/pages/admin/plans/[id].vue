@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import {
+    ref, onMounted, computed, 
+    defineAsyncComponent
+} from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { toast } from 'vue-sonner'
 import { useRouteQuery } from '@vueuse/router'
@@ -7,9 +10,7 @@ import AppLayout from '#client/layouts/AppLayout.vue'
 import { $fetch } from '#client/utils/fetcher.ts'
 import { tryCatch } from '#shared/tryCatch.ts'
 import { $t } from '#shared/lang.ts'
-import TargetTable from '#zenith-backup/client/components/TargetTable.vue'
 import Plan from '#zenith-backup/shared/entities/plan.entity.ts'
-import PlanStrategyZip from '#zenith-backup/client/components/PlanTarForm.vue'
 import PlanDetails from '#zenith-backup/client/components/PlanDetails.vue'
 import {
     Tabs,
@@ -22,9 +23,29 @@ const route = useRoute()
 const router = useRouter()
 const planId = route.params.id as string
 const plan = ref<Plan>()
-const tab = useRouteQuery('tab', 'details')
+const tab = useRouteQuery('tab', 'configuration')
 
 const loading = ref(false)
+
+const tabs = computed(() => {
+    const items: any[] = [
+        {
+            value: 'targets',
+            label: $t('Targets'),
+            component: defineAsyncComponent(() => import('#zenith-backup/client/components/TargetTable.vue')),
+        },
+    ]
+
+    if (plan.value?.strategy === 'tar') {
+        items.splice(0, 0, {
+            value: 'configuration',
+            label: $t('Configuration'),
+            component: defineAsyncComponent(() => import('#zenith-backup/client/components/PlanTarForm.vue')),
+        })
+    }
+
+    return items 
+})
 
 async function loadPlan() {
     loading.value = true
@@ -58,48 +79,49 @@ onMounted(loadPlan)
             </div>
         </div>
 
-        
-        <Tabs
+        <div 
             v-if="!loading && plan"
-            v-model="tab"
-            default-value="details"
-            class="w-full"
+            class="flex gap-6 h-full"
         >
-            <TabsList class="grid w-full grid-cols-4">
-                <TabsTrigger value="details">
-                    {{ $t('Details') }}
-                </TabsTrigger>
-                <TabsTrigger value="configuration">
-                    {{ $t('Configuration') }}
-                </TabsTrigger>
-                <TabsTrigger value="targets">
-                    {{ $t('Targets') }}
-                </TabsTrigger>
-            </TabsList>
-
-            <TabsContent 
-                value="details"
-            >
+            <!-- Left Sidebar -->
+            <div class="w-full lg:w-4/12 xl:w-3/12">
                 <PlanDetails
                     :plan="plan"
                     :plan-id="planId"
                 />
-            </TabsContent>
+            </div>
 
-            <TabsContent 
-                value="configuration"
-            >
-                <PlanStrategyZip
-                    v-if="plan?.strategy === 'tar'"
-                    :plan="plan"
-                />
-            </TabsContent>
-
-            <TabsContent 
-                value="targets"
-            >
-                <TargetTable :plan-id="planId" />
-            </TabsContent>
-        </Tabs>
+            <!-- Right Content Area -->
+            <div class="flex-1">
+                <Tabs 
+                    v-model="tab"
+                    default-value="configuration" 
+                >
+                    <TabsList>
+                        <TabsTrigger 
+                            v-for="t in tabs"
+                            :key="t.value"
+                            :value="t.value"
+                            class="min-w-60"
+                        >
+                            {{ t.label }}
+                        </TabsTrigger>
+                    </TabsList>
+                                
+                    <TabsContent 
+                        v-for="t in tabs"
+                        :key="t.value"
+                        :value="t.value"
+                    >
+                        <component
+                            :is="t.component"
+                            v-if="t.component && plan"
+                            :plan="plan"
+                            :plan-id="planId"
+                        />
+                    </TabsContent>
+                </Tabs>
+            </div>
+        </div>
     </AppLayout>
 </template>
