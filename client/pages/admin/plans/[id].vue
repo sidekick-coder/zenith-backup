@@ -7,7 +7,6 @@ import { $fetch } from '#client/utils/fetcher.ts'
 import { tryCatch } from '#shared/tryCatch.ts'
 import { $t } from '#shared/lang.ts'
 import TargetTable from '#zenith-backup/client/components/TargetTable.vue'
-import SnapshotTable from '#zenith-backup/client/components/SnapshotTable.vue'
 import Plan from '#zenith-backup/shared/entities/plan.entity.ts'
 import PlanStrategyZip from '#zenith-backup/client/components/PlanStrategyZip.vue'
 import PlanDetails from '#zenith-backup/client/components/PlanDetails.vue'
@@ -73,9 +72,6 @@ onMounted(loadPlan)
                 <TabsTrigger value="targets">
                     {{ $t('Targets') }}
                 </TabsTrigger>
-                <TabsTrigger value="snapshots">
-                    {{ $t('Snapshots') }}
-                </TabsTrigger>
             </TabsList>
 
             <TabsContent 
@@ -100,12 +96,6 @@ onMounted(loadPlan)
                 value="targets"
             >
                 <TargetTable :plan-id="planId" />
-            </TabsContent>
-
-            <TabsContent 
-                value="snapshots"
-            >
-                <SnapshotTable :plan-id="planId" />
             </TabsContent>
         </Tabs>
     </AppLayout>
