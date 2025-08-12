@@ -7,7 +7,6 @@ import FormSelect from '#client/components/FormSelect.vue'
 import FormTextField from '#client/components/FormTextField.vue'
 import Button from '#client/components/Button.vue'
 import { $t } from '#shared/lang.ts'
-import planValidator from '#zenith-backup/shared/validators/plan.validator.ts'
 import Card from '#client/components/ui/card/Card.vue'
 import CardHeader from '#client/components/ui/card/CardHeader.vue'
 import CardTitle from '#client/components/ui/card/CardTitle.vue'
@@ -17,6 +16,8 @@ import CardFooter from '#client/components/ui/card/CardFooter.vue'
 import { $fetch } from '#client/utils/fetcher.ts'
 import { tryCatch } from '#shared/tryCatch.ts'
 import type Plan from '#zenith-backup/shared/entities/plan.entity.ts'
+import validator from '#shared/services/validator.service'
+import DriveEntryPicker from '#client/components/DriveEntryPicker.vue'
 
 interface Props {
     plan: Plan
@@ -27,7 +28,15 @@ const props = defineProps<Props>()
 const saving = ref(false)
 const loading = ref(false)
 
-const { handleSubmit, setValues } = useForm({ validationSchema: toTypedSchema(planValidator.zipOptions), })
+const schema = validator.create(v => v.object({
+    drive_id: v.string(),
+    folder: v.optional(v.string())
+}))
+
+const { handleSubmit, values, setValues, resetForm } = useForm({
+    validationSchema: toTypedSchema(schema), 
+    initialValues: JSON.parse(JSON.stringify(props.plan?.options || {}))
+})
 
 const onSubmit = handleSubmit(async (payload) => {
     saving.value = true
@@ -48,12 +57,6 @@ const onSubmit = handleSubmit(async (payload) => {
         toast.success($t('Updated successfully'))
         saving.value = false
     }, 800)
-})
-
-onMounted(() => {
-    if (props.plan?.options) {
-        setValues(props.plan.options)
-    }
 })
 </script>
 
@@ -78,11 +81,22 @@ onMounted(() => {
                     :loading="loading"
                 />
                 <FormTextField
+                    v-if="values?.drive_id"
                     name="folder"
                     :label="$t('Folder')"
                     :placeholder="$t('backups')"
                     :hint="$t('Folder path within the drive where backups will be stored')"
-                />
+                >
+                    <template #append>
+                        <DriveEntryPicker
+                            :drive-id="values?.drive_id"
+                            class="h-10"
+                            @update:model-value="setValues({
+                                folder: $event[0]?.path || ''
+                            })"
+                        />
+                    </template>
+                </FormTextField>
             </CardContent>
             <CardFooter class="flex justify-end gap-4">
                 <Button

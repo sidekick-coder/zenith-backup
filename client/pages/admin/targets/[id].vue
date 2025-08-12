@@ -224,9 +224,11 @@ onMounted(() => {
                     >
                         <component
                             :is="t.component"
-                            v-if="t.component"
+                            v-if="t.component && plan && target"
                             v-model:target="target"
                             v-model:plan="plan"
+                            :plan-id="plan.id"
+                            :target-id="target.id"
                         />
                     </TabsContent>
                 </Tabs>

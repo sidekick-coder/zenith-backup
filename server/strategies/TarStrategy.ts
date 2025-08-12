@@ -1,27 +1,45 @@
 import fs from 'fs'
 import path from 'path'
 import * as tar from 'tar'
-import { format } from 'date-fns'
+import { format, parse } from 'date-fns'
 import type BackupStrategy from '../contracts/strategy.contract.ts'
 import { findTargetMeta } from '../queries/findTargetMeta.ts'
 import { tmpPath } from '#server/utils/paths.ts'
 import driveService from '#server/facades/drive.facade.ts'
 import Snapshot from '#zenith-backup/shared/entities/snapshot.entity.ts'
+import logger from '#server/facades/logger.facade.ts'
 
 export default class TarStrategy implements BackupStrategy {
     public list: BackupStrategy['list'] = async ({ plan, target }) => {
         const drive = driveService.use(plan.options.drive_id)
+        const slug = await findTargetMeta(target.id, 'slug')
+        const basename = slug?.value || path.basename(target.path)
 
         const files = await drive.list(plan.options.folder || '/')
 
+        const filteredFiles = files.filter(f => {
+            if (!f.name.endsWith('.tar.gz')) {
+                return false
+            }
+
+            return true
+        })
+
         const snapshots: Snapshot[] = []
 
-        for (const file of files) {
+        for (const file of filteredFiles) {
+            const [date, fileBaseName] = file.name.split('__')
+
+            if (basename !== path.basename(fileBaseName, '.tar.gz')) {
+                continue
+            }
+
             snapshots.push(new Snapshot({
                 id: file.name,
                 plan_id: plan.id,
                 target_id: target.id,
-                metadata: {}
+                created_at: parse(date, 'yyyy-MM-dd_HH-mm-ss', new Date()),
+                metadata: { slug }
             }))
         }
 
@@ -29,6 +47,10 @@ export default class TarStrategy implements BackupStrategy {
     }
 
     public backup: BackupStrategy['backup'] = async ({ plan, targets }) => {
+        if (!plan.options.drive_id) {
+            logger.warn(`Drive ID not set for plan ${plan.id}. Skipping backup.`)
+            return
+        }
         const planDrive = driveService.use(plan.options.drive_id)
 
         const tmpFolder = tmpPath(`backups/${plan.id}`)
@@ -53,8 +75,8 @@ export default class TarStrategy implements BackupStrategy {
         }
     }
 
-    public restore: BackupStrategy['restore'] = async ({ plan, target, snapshot }) => {
-        const planDrive = drive.use(plan.options.drive_id)
+    public restore: BackupStrategy['restore'] = async ({ plan, target, snapshotId }) => {
+        const planDrive = driveService.use(plan.options.drive_id)
 
         const tmpFolder = tmpPath(`backups/${plan.id}`)
         const destinationFolderInDrive = plan.options.folder || '/'
@@ -63,7 +85,7 @@ export default class TarStrategy implements BackupStrategy {
             await fs.promises.mkdir(tmpFolder, { recursive: true })
         }
 
-        const filenameInDrive = path.join(destinationFolderInDrive, snapshot.snapshot_id)
+        const filenameInDrive = path.join(destinationFolderInDrive, snapshotId)
         const compressedFilename = path.resolve(tmpFolder, path.basename(filenameInDrive))
 
         await planDrive.download(filenameInDrive, compressedFilename)
@@ -74,6 +96,14 @@ export default class TarStrategy implements BackupStrategy {
         })
 
         await this.decompress(compressedFilename, target.path)
+    }
+
+    public delete: BackupStrategy['delete'] = async ({ plan, target: _target, snapshotId }) => {
+        const planDrive = driveService.use(plan.options.drive_id)
+        const destinationFolderInDrive = plan.options.folder || '/'
+        const filenameInDrive = path.join(destinationFolderInDrive, snapshotId)
+
+        await planDrive.delete(filenameInDrive)
     }
 
     /**

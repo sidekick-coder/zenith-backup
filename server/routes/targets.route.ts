@@ -83,3 +83,11 @@ group.get('/:id/snapshots/:snapshotId/restore', async ({ params }) => {
 
     return { success: true }
 })
+
+group.delete('/:id/snapshots/:snapshotId', async ({ params }) => {
+    const target = await targetRepository.findOrFail(Number(params.id))
+
+    await backupService.delete(target.id, params.snapshotId)
+
+    return { success: true }
+})

@@ -19,27 +19,21 @@ import type Snapshot from '#zenith-backup/shared/entities/snapshot.entity.ts'
 
 interface Props {
     planId: string
-    targetId?: number
+    targetId: number
 }
 
 const props = defineProps<Props>()
 
 const snapshots = ref<Snapshot[]>([])
 const loading = ref(false)
-const deletingItems = ref<number[]>([])
-const restoringItems = ref<number[]>([])
+const deletingItems = ref<string[]>([])
+const restoringItems = ref<string[]>([])
 
 const columns = defineColumns<Snapshot>([
     {
         id: 'id',
-        header: 'ID',
-        accessorKey: 'id',
-        size: 20,
-    },
-    {
-        id: 'snapshot_id',
         header: $t('Snapshot ID'),
-        accessorKey: 'snapshot_id'
+        accessorKey: 'id'
     },
     {
         id: 'target_id',
@@ -59,13 +53,7 @@ const columns = defineColumns<Snapshot>([
 async function loadSnapshots() {
     loading.value = true
     
-    const params = new URLSearchParams()
-    if (props.targetId) {
-        params.append('targetId', props.targetId.toString())
-    }
-
-    const queryString = params.toString()
-    const url = `/api/backup/plans/${props.planId}/snapshots${queryString ? '?' + queryString : ''}`
+    const url = `/api/backup/targets/${props.targetId}/snapshots`
     
     const [error, response] = await tryCatch(() => $fetch(url, { method: 'GET' }))
 
@@ -79,10 +67,10 @@ async function loadSnapshots() {
     loading.value = false
 }
 
-async function deleteSnapshot(id: number) {
+async function deleteSnapshot(id: string) {
     deletingItems.value.push(id)
     
-    const [error] = await tryCatch(() => $fetch(`/api/backup/plans/${props.planId}/snapshots/${id}`, { method: 'DELETE' }))
+    const [error] = await tryCatch(() => $fetch(`/api/backup/targets/${props.targetId}/snapshots/${id}`, { method: 'DELETE' }))
 
     if (error) {
         toast.error($t('Failed to delete.'))
@@ -97,13 +85,10 @@ async function deleteSnapshot(id: number) {
     }, 1000)
 }
 
-async function restoreSnapshot(id: number) {
+async function restoreSnapshot(id: string) {
     restoringItems.value.push(id)
     
-    const [error] = await tryCatch(() => $fetch(`/api/backup/plans/${props.planId}/snapshots/${id}/restore`, { 
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
-    }))
+    const [error] = await tryCatch(() => $fetch(`/api/backup/targets/${props.targetId}/snapshots/${id}/restore`, { method: 'GET' }))
 
     if (error) {
         toast.error($t('Failed to restore snapshot.'))
@@ -121,7 +106,7 @@ watch(() => [props.planId, props.targetId], loadSnapshots, { immediate: true })
 </script>
 
 <template>
-    <Card class="mt-6">
+    <Card>
         <CardHeader>
             <div class="flex items-center justify-between">
                 <div>
@@ -150,16 +135,15 @@ watch(() => [props.planId, props.targetId], loadSnapshots, { immediate: true })
                             :loading="restoringItems.includes(row.id)"
                             @confirm="restoreSnapshot(row.id)"
                         >
-                            <Icon name="rotateCcw" />
                             {{ $t('Restore') }}
                         </AlertButton>
                         <AlertButton
-                            variant="ghost"
+                            variant="destructive"
                             size="sm"
                             :loading="deletingItems.includes(row.id)"
                             @confirm="deleteSnapshot(row.id)"
                         >
-                            <Icon name="trash" />
+                            {{ $t('Delete') }}
                         </AlertButton>
                     </div>
                 </template>

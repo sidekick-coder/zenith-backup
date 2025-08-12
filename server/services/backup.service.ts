@@ -88,6 +88,33 @@ export class BackupService {
             snapshotId 
         })
     }
+
+    public async delete(targetId: Target['plan_id'], snapshotId: string) {
+        const target = await targetRepository.findOrFail(targetId)
+        const plan = await planRepository.findOrFail(target.plan_id)
+
+        const strategy = this.findStrategy(plan)
+        
+        const [error] = await tryCatch(() => strategy.delete({
+            plan,
+            target,
+            snapshotId
+        }))
+
+        if (error) {
+            logger.error(error)
+
+            console.log(error)
+
+            throw new BaseException('Delete failed')
+        }
+
+        logger.info('Snapshot deleted successfully', {
+            plan,
+            target,
+            snapshotId 
+        })
+    }
 }
 
 const backupService = new BackupService()

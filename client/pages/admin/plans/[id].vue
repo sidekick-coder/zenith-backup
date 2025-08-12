@@ -2,13 +2,14 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { toast } from 'vue-sonner'
+import { useRouteQuery } from '@vueuse/router'
 import AppLayout from '#client/layouts/AppLayout.vue'
 import { $fetch } from '#client/utils/fetcher.ts'
 import { tryCatch } from '#shared/tryCatch.ts'
 import { $t } from '#shared/lang.ts'
 import TargetTable from '#zenith-backup/client/components/TargetTable.vue'
 import Plan from '#zenith-backup/shared/entities/plan.entity.ts'
-import PlanStrategyZip from '#zenith-backup/client/components/PlanStrategyZip.vue'
+import PlanStrategyZip from '#zenith-backup/client/components/PlanTarForm.vue'
 import PlanDetails from '#zenith-backup/client/components/PlanDetails.vue'
 import {
     Tabs,
@@ -21,6 +22,7 @@ const route = useRoute()
 const router = useRouter()
 const planId = route.params.id as string
 const plan = ref<Plan>()
+const tab = useRouteQuery('tab', 'details')
 
 const loading = ref(false)
 
@@ -59,6 +61,7 @@ onMounted(loadPlan)
         
         <Tabs
             v-if="!loading && plan"
+            v-model="tab"
             default-value="details"
             class="w-full"
         >
@@ -87,7 +90,7 @@ onMounted(loadPlan)
                 value="configuration"
             >
                 <PlanStrategyZip
-                    v-if="plan?.strategy === 'zip'"
+                    v-if="plan?.strategy === 'tar'"
                     :plan="plan"
                 />
             </TabsContent>
