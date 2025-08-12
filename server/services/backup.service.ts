@@ -7,6 +7,7 @@ import type Plan from '#zenith-backup/shared/entities/plan.entity.ts'
 import BaseException from '#server/exceptions/base.ts'
 import { tryCatch } from '#shared/tryCatch.ts'
 import logger from '#server/facades/logger.facade.ts'
+import type Target from '#zenith-backup/shared/entities/target.entity.ts'
 
 export class BackupService {
     public findStrategy(plan: Plan): BackupStrategy {
@@ -15,6 +16,25 @@ export class BackupService {
         }
 
         throw new BaseException('Backup strategy not found')
+    }
+
+    public async list(planId: Plan['id'], targetId: Target['id']){
+        const plan = await planRepository.findOrFail(planId)
+        const target = await targetRepository.findOrFail(targetId)
+
+        const strategy = this.findStrategy(plan)
+
+        const [error, snapshots] = await tryCatch(() => strategy.list({
+            plan,
+            target
+        }))
+
+        if (error) {
+            logger.error(error)
+            throw new BaseException('Backup failed')
+        }
+
+        return snapshots
     }
 
     public async backup(planId: Plan['id']){

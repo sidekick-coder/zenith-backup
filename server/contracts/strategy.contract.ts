@@ -14,7 +14,13 @@ export interface RestorePayload {
     snapshot: Snapshot
 }
 
+export interface ListPayload {
+    plan: Plan 
+    target: Target
+}
+
 export default interface BackupStrategy {
+    list(payload: ListPayload): Promise<Snapshot[]>;
     backup(payload: BackupPayload): Promise<void>;
     restore(payload: RestorePayload): Promise<void>;
 }
