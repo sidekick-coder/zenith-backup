@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import {
+    ref, onMounted, computed, 
+    defineAsyncComponent
+} from 'vue'
 import { useRoute } from 'vue-router'
-import { toast } from 'vue-sonner'
+import { useRouteQuery } from '@vueuse/router'
 import {
     Card,
     CardContent,
@@ -20,52 +23,42 @@ import { $fetch } from '#client/utils/fetcher.ts'
 import { tryCatch } from '#shared/tryCatch.ts'
 import type Target from '#zenith-backup/shared/entities/target.entity.ts'
 import AppLayout from '#client/layouts/AppLayout.vue'
+import Plan from '#zenith-backup/shared/entities/plan.entity.ts'
 
 const route = useRoute()
 const targetId = route.params.id as string
+const tab = useRouteQuery('tab', 'config')
 
-const target = ref<Target | null>(null)
+const target = ref<Target>()
+const plan = ref<Plan>()
 const loading = ref(false)
 
-const tabs = [
-    {
-        value: 'general',
-        label: $t('General'),
-        content: $t('General settings will be available here')
-    },
-    {
-        value: 'settings',
-        label: $t('Settings'),
-        content: $t('Target settings will be available here')
-    },
-    {
-        value: 'history',
-        label: $t('History'),
-        content: $t('Backup history will be available here')
-    },
-    {
-        value: 'advanced',
-        label: $t('Advanced'),
-        content: $t('Advanced options will be available here')
+const tabs = computed(() => {
+    const items = [
+        {
+            value: 'snapshots',
+            label: $t('Snapshots'),
+            component: null as any,
+        },
+    ]
+
+    if (plan.value?.strategy === 'tar') {
+        items.splice(0, 0, {
+            value: 'config',
+            label: $t('Config'),
+            component: defineAsyncComponent(() => import('#zenith-backup/client/components/TargetTarForm.vue')),
+        })
     }
-]
+
+    return items 
+})
 
 async function loadTarget() {
-    if (!targetId) {
-        toast.error($t('Target ID is required'))
-        return
-    }
-
-    loading.value = true
-    
     const [error, response] = await tryCatch(() => 
         $fetch(`/api/backup/targets/${targetId}`, { method: 'GET' })
     )
 
     if (error) {
-        console.error('Failed to load target:', error)
-        toast.error($t('Failed to load target'))
-        loading.value = false
         return
     }
 
@@ -73,13 +66,46 @@ async function loadTarget() {
     loading.value = false
 }
 
+async function loadPlan(){
+    if (!target.value?.plan_id) {
+        return
+    }
+
+    const [error, response] = await tryCatch(() => $fetch(`/api/backup/plans/${target.value?.plan_id}`))
+
+    if (error) {
+        return
+    }
+
+    plan.value = response as Plan
+}
+
+async function load(){
+    loading.value = true
+
+    await loadTarget()
+    await loadPlan()
+
+    setTimeout(() => {
+        loading.value = false
+    }, 800)
+}
+
 onMounted(() => {
-    loadTarget()
+    load()
 })
 </script>
 
 <template>
-    <AppLayout>
+    <AppLayout
+        :breadcrumbs="[
+            { label: $t('Backup'), to: '/admin/backup' },
+            { label: $t('Plans'), to: '/admin/backup/plans' },
+            { label: plan?.name || $t('Plan'), to: `/admin/backup/plans/${plan?.id}` },
+            { label: $t('Targets'), to: `/admin/backup/plans/${plan?.id}?tab=targets` },
+            { label: target?.name || $t('Target Details') }
+        ]"
+    >
         <div class="flex gap-6 h-full">
             <!-- Left Sidebar -->
             <div class="w-full lg:w-4/12 xl:w-3/12">
@@ -177,6 +203,7 @@ onMounted(() => {
             <!-- Right Content Area -->
             <div class="flex-1">
                 <Tabs 
+                    v-model="tab"
                     default-value="general" 
                     class="w-full"
                 >
@@ -196,10 +223,12 @@ onMounted(() => {
                         :value="tab.value" 
                         class="mt-6"
                     >
-                        <Card class="h-fit text-center">
-                            {{ tab.content }}
-                            <CardContent />
-                        </Card>
+                        <component
+                            :is="tab.component"
+                            v-if="tab.component"
+                            v-model:target="target"
+                            v-model:plan="plan"
+                        />
                     </TabsContent>
                 </Tabs>
             </div>

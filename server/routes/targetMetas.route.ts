@@ -29,9 +29,8 @@ group.get('/', async ({ params }) => {
     return { data }
 })
 
-group.put('/:name', async ({ params, body }) => {
-    const { name } = params
-    const { value } = body
+group.put('/', async ({ params, body }) => {
+    const { value, name } = body
 
     const existing = await db.selectFrom('backup_target_metas')
         .selectAll()
@@ -40,7 +39,15 @@ group.put('/:name', async ({ params, body }) => {
         .executeTakeFirst()
 
     if (!existing) {
-        throw new BaseException('Meta not found', 404)
+        await db.insertInto('backup_target_metas')
+            .values({
+                target_id: params.targetId,
+                name,
+                value: await metaValue.toDb(value)
+            })
+            .execute()
+
+        return { success: true }
     }
 
     await db.updateTable('backup_target_metas')
