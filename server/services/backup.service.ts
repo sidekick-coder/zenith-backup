@@ -7,6 +7,7 @@ import BaseException from '#server/exceptions/base.ts'
 import { tryCatch } from '#shared/tryCatch.ts'
 import logger from '#server/facades/logger.facade.ts'
 import type Target from '#zenith-backup/shared/entities/target.entity.ts'
+import type Snapshot from '#zenith-backup/shared/entities/snapshot.entity.ts'
 
 export class BackupService {
     public findStrategy(plan: Plan): BackupStrategy {
@@ -28,6 +29,8 @@ export class BackupService {
             logger.error(error)
             throw BaseException.fromError(error)
         }
+
+        snapshots.sort((a,b) => b.created_at.getTime() - a.created_at.getTime())
 
         return snapshots
     }
@@ -58,16 +61,19 @@ export class BackupService {
         logger.info('Backup completed successfully', { planId })
     }
 
-    public async restore(targetId: Target['plan_id'], snapshotId: string) {
-        const target = await targetRepository.findOrFail(targetId)
-        const plan = await planRepository.findOrFail(target.plan_id)
-
+    public async restore(planId: Target['plan_id'], snapshotId: string) {
+        const snapshots = await this.list(planId)
+        const snapshot = snapshots.find(s => s.id === snapshotId)
+        const plan = await planRepository.findOrFail(planId)
         const strategy = this.findStrategy(plan)
+
+        if (!snapshot) {
+            throw new BaseException('Snapshot not found', 404)
+        }
         
         const [error] = await tryCatch(() => strategy.restore({
             plan,
-            target,
-            snapshotId
+            snapshot
         }))
 
         if (error) {
@@ -80,8 +86,7 @@ export class BackupService {
 
         logger.info('Backup completed successfully', {
             plan,
-            target,
-            snapshotId 
+            snapshot
         })
     }
 

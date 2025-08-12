@@ -98,8 +98,8 @@ async function deleteSnapshot(id: string) {
 
 async function restoreSnapshot(id: string) {
     restoringItems.value.push(id)
-    
-    const [error] = await tryCatch(() => $fetch(`/api/backup/targets/${props.targetId}/snapshots/${id}/restore`, { method: 'GET' }))
+
+    const [error] = await tryCatch(() => $fetch(`/api/backup/plans/${props.planId}/snapshots/${id}/restore`, { method: 'POST' }))
 
     if (error) {
         toast.error($t('Failed to restore snapshot.'))
@@ -143,6 +143,7 @@ watch(() => [props.planId, props.targetId], loadSnapshots, { immediate: true })
                         <AlertButton
                             variant="default"
                             size="sm"
+                            :description="$t('This action can not be stopped once started.')"
                             :loading="restoringItems.includes(row.id)"
                             @confirm="restoreSnapshot(row.id)"
                         >
@@ -151,6 +152,7 @@ watch(() => [props.planId, props.targetId], loadSnapshots, { immediate: true })
                         <AlertButton
                             variant="destructive"
                             size="sm"
+                            
                             :loading="deletingItems.includes(row.id)"
                             @confirm="deleteSnapshot(row.id)"
                         >

@@ -102,7 +102,6 @@ onMounted(() => {
             { label: $t('Backup'), to: '/admin/backup' },
             { label: $t('Plans'), to: '/admin/backup/plans' },
             { label: plan?.name || $t('Plan'), to: `/admin/backup/plans/${plan?.id}` },
-            { label: $t('Targets'), to: `/admin/backup/plans/${plan?.id}?tab=targets` },
             { label: target?.name || $t('Target Details') }
         ]"
     >

@@ -61,6 +61,12 @@ group.get('/:id/snapshots', async ({ params }) => {
     return { data: snapshots }
 })
 
+group.post('/:planId/snapshots/:snapshotId/restore', async ({ params }) => {
+    await backupService.restore(Number(params.planId), params.snapshotId)
+
+    return { success: true, }
+})
+
 group.post('/:id/execute', async ({ params }) => {
     await backupService.backup(Number(params.id))
 
