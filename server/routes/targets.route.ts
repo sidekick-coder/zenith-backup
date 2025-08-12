@@ -6,7 +6,7 @@ import router from '#server/facades/router.facade.ts'
 import authMiddleware from '#server/middlewares/auth.middleware.ts'
 import validator from '#shared/services/validator.service.ts'
 
-const group = router.prefix('/api/backup/plans/:planId/targets')
+const group = router.prefix('/api/backup/targets')
     .use(authMiddleware)
     .group()
 

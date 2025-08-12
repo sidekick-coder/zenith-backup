@@ -1,6 +1,6 @@
 import { planRepository } from '../repositories/plan.repository.ts'
 import type BackupStrategy from '../contracts/strategy.contract.ts'
-import ZipStrategy from '../strategies/ZipStrategy.ts'
+import TarStrategy from '../strategies/TarStrategy.ts'
 import { targetRepository } from '../repositories/target.repository.ts'
 import { snapshotRepository } from '../repositories/snapshot.repository.ts'
 import type Plan from '#zenith-backup/shared/entities/plan.entity.ts'
@@ -10,8 +10,8 @@ import logger from '#server/facades/logger.facade.ts'
 
 export class BackupService {
     public findStrategy(plan: Plan): BackupStrategy {
-        if (plan.strategy === 'zip') {
-            return new ZipStrategy()
+        if (plan.strategy === 'tar') {
+            return new TarStrategy()
         }
 
         throw new BaseException('Backup strategy not found')

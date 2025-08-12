@@ -2,12 +2,12 @@ import fs from 'fs'
 import path from 'path'
 import * as tar from 'tar'
 import { format } from 'date-fns'
-import type BackupStrategy from '../contracts/strategy.contract'
+import type BackupStrategy from '../contracts/strategy.contract.ts'
 import { snapshotRepository } from '../repositories/snapshot.repository.ts'
 import { tmpPath } from '#server/utils/paths.ts'
 import drive from '#server/facades/drive.facade.ts'
 
-export default class ZipStrategy implements BackupStrategy {
+export default class TarStrategy implements BackupStrategy {
     public backup: BackupStrategy['backup'] = async ({ plan, targets }) => {
         const planDrive = drive.use(plan.options.drive_id)
 

@@ -52,7 +52,10 @@ const columns = defineColumns<Target>([
 async function loadTargets() {
     loading.value = true
     
-    const [error, response] = await tryCatch(() => $fetch(`/api/backup/plans/${props.planId}/targets`, { method: 'GET', }))
+    const [error, response] = await tryCatch(() => $fetch('/api/backup/targets', { 
+        method: 'GET', 
+        query: { plan_id: props.planId }
+    }))
 
     if (error) {
         console.error('Failed to load targets:', error)
@@ -67,7 +70,7 @@ async function loadTargets() {
 async function deleteTarget(id: number) {
     deletingItems.value.push(id)
     
-    const [error] = await tryCatch(() => $fetch(`/api/backup/plans/${props.planId}/targets/${id}`, { method: 'DELETE' }))
+    const [error] = await tryCatch(() => $fetch(`/api/backup/targets/${id}`, { method: 'DELETE' }))
 
     if (error) {
         toast.error($t('Failed to delete.'))
@@ -139,7 +142,7 @@ watch(() => props.planId, loadTargets, { immediate: true })
                         <Button
                             variant="ghost"
                             size="sm"
-                            @click="openEditDialog(row)"
+                            :to="`/admin/backup/targets/${row.id}`"
                         >
                             <Icon name="pen" />
                         </Button>

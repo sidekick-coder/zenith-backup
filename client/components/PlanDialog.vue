@@ -26,8 +26,6 @@ const emit = defineEmits(['submit'])
 const loading = ref(false)
 const open = ref(false)
 
-const strategies = ref(['zip', 'restic'])
-
 const { handleSubmit, resetForm } = useForm({
     validationSchema: toTypedSchema(planValidator.create),
     initialValues: { name: '', },
@@ -85,7 +83,7 @@ const onSubmit = handleSubmit(async (form) => {
                 <FormSelect
                     name="strategy"
                     :label="$t('Strategy')"
-                    :options="strategies"
+                    :options="planValidator.strategies"
                 />
 
                 <DialogFooter>
