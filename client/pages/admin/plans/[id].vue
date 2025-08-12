@@ -69,7 +69,13 @@ onMounted(loadPlan)
 </script>
 
 <template>
-    <AppLayout>
+    <AppLayout
+        :breadcrumbs="[
+            { label: $t('Backup'), to: '/admin/backup' },
+            { label: $t('Plans'), to: '/admin/backup/plans' },
+            { label: plan?.name || $t('Plan'), to: `/admin/backup/plans/${plan?.id}` },
+        ]"
+    >
         <div 
             v-if="loading" 
             class="flex justify-center items-center h-64"
