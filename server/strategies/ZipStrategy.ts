@@ -1,9 +1,8 @@
 import fs from 'fs'
 import path from 'path'
-import archiver from 'archiver'
+import * as tar from 'tar'
 import { format } from 'date-fns'
 import type BackupStrategy from '../contracts/strategy.contract'
-import type { BackupPayload } from '../contracts/strategy.contract'
 import { snapshotRepository } from '../repositories/snapshot.repository.ts'
 import { tmpPath } from '#server/utils/paths.ts'
 import drive from '#server/facades/drive.facade.ts'
@@ -21,48 +20,83 @@ export default class ZipStrategy implements BackupStrategy {
 
         for await (const target of targets) {
             const basename = path.basename(target.path)
-            const filename = format(new Date(), 'yyyy-MM-dd_HH-mm-ss') + `__${basename}.zip`
+            const filename = format(new Date(), 'yyyy-MM-dd_HH-mm-ss') + `__${basename}.tar.gz`
             const tmpCompresedFilename = path.resolve(tmpFolder, filename)
             const filenameInDrive = path.join(destinationFolderInDrive, filename)
 
             await this.compress(target.path, tmpCompresedFilename)
 
-            await planDrive.writeFromLocalFile(tmpCompresedFilename, filenameInDrive)
+            await planDrive.upload(tmpCompresedFilename, filenameInDrive)
 
             await snapshotRepository.create({
                 plan_id: plan.id,
                 target_id: target.id,
-                snapshot_id: filenameInDrive
+                snapshot_id: filename
             })
         }
     }
 
-    public restore: BackupStrategy['restore'] = async (payload: BackupPayload) => {
-        throw new Error('Method not implemented.')
+    public restore: BackupStrategy['restore'] = async ({ plan, target, snapshot }) => {
+        const planDrive = drive.use(plan.options.drive_id)
+
+        const tmpFolder = tmpPath(`backups/${plan.id}`)
+        const destinationFolderInDrive = plan.options.folder || '/'
+
+        if (!fs.existsSync(tmpFolder)) {
+            await fs.promises.mkdir(tmpFolder, { recursive: true })
+        }
+
+        const filenameInDrive = path.join(destinationFolderInDrive, snapshot.snapshot_id)
+        const compressedFilename = path.resolve(tmpFolder, path.basename(filenameInDrive))
+
+        await planDrive.download(filenameInDrive, compressedFilename)
+
+        await fs.promises.rm(target.path, {
+            recursive: true,
+            force: true 
+        })
+
+        await this.decompress(compressedFilename, target.path)
     }
 
     /**
-     * Compresses the target file/folder into a zip at the destination filepath using archiver.
+     * Compresses the target file/folder into a tar.gz at the destination filepath using tar.
      */
     public async compress(targetFilePath: string, destFilePath: string): Promise<void> {
-        const output = fs.createWriteStream(destFilePath)
-        const archive = archiver('zip', { zlib: { level: 9 } })
+        const stat = fs.statSync(targetFilePath)
+        
+        if (stat.isDirectory()) {
+            await tar.create(
+                {
+                    gzip: true,
+                    file: destFilePath,
+                    cwd: path.dirname(targetFilePath)
+                },
+                [path.basename(targetFilePath)]
+            )
+        }
+        
+        if (stat.isFile()) {
+            await tar.create(
+                {
+                    gzip: true,
+                    file: destFilePath,
+                    cwd: path.dirname(targetFilePath)
+                },
+                [path.basename(targetFilePath)]
+            )
+        }
+    }
 
-        return new Promise((resolve, reject) => {
-            output.on('close', resolve)
-            archive.on('error', reject)
-            archive.pipe(output)
-
-            // Add file or directory
-            const stat = fs.statSync(targetFilePath)
-            if (stat.isDirectory()) {
-                archive.directory(targetFilePath, false)
-            }
-            if (stat.isFile()) {
-                archive.file(targetFilePath, { name: path.basename(targetFilePath) })
-            }
-
-            archive.finalize()
+    public async decompress(source: string, destination: string): Promise<void> {
+        // Ensure destination directory exists
+        if (!fs.existsSync(destination)) {
+            await fs.promises.mkdir(destination, { recursive: true })
+        }
+        
+        await tar.extract({
+            file: source,
+            cwd: destination
         })
     }
 }

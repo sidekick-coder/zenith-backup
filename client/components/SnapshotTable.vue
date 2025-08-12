@@ -100,9 +100,8 @@ async function deleteSnapshot(id: number) {
 async function restoreSnapshot(id: number) {
     restoringItems.value.push(id)
     
-    const [error] = await tryCatch(() => $fetch(`/api/backup/plans/${props.planId}/snapshots/restore`, { 
+    const [error] = await tryCatch(() => $fetch(`/api/backup/plans/${props.planId}/snapshots/${id}/restore`, { 
         method: 'POST',
-        body: JSON.stringify({ snapshotId: id }),
         headers: { 'Content-Type': 'application/json' }
     }))
 

@@ -16,5 +16,5 @@ export interface RestorePayload {
 
 export default interface BackupStrategy {
     backup(payload: BackupPayload): Promise<void>;
-    restore(payload: BackupPayload): Promise<void>;
+    restore(payload: RestorePayload): Promise<void>;
 }

@@ -56,7 +56,7 @@ group.delete('/:id', async ({ params }) => {
 })
 
 group.post('/:id/execute', async ({ params }) => {
-    await backupService.execute(Number(params.id))
+    await backupService.backup(Number(params.id))
 
     return { success: true, }
 })

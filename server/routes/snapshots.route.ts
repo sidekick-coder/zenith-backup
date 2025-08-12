@@ -1,4 +1,5 @@
 import { snapshotRepository } from '../repositories/snapshot.repository.ts'
+import backupService from '../services/backup.service.ts'
 import BaseException from '#server/exceptions/base.ts'
 import router from '#server/facades/router.facade.ts'
 import authMiddleware from '#server/middlewares/auth.middleware.ts'
@@ -32,7 +33,8 @@ group.delete('/:id', async ({ params }) => {
     return { success: true }
 })
 
-group.post('/restore', async ({ params, body }) => {
-    throw new BaseException('Not implemented yet', 500)
+group.post('/:id/restore', async ({ params, body }) => {
+    await backupService.restore(Number(params.id))
+    
     return { success: true }
 })
