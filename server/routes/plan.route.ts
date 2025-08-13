@@ -5,6 +5,8 @@ import BaseException from '#server/exceptions/base.ts'
 import router from '#server/facades/router.facade.ts'
 import authMiddleware from '#server/middlewares/auth.middleware.ts'
 import validator from '#shared/services/validator.service.ts'
+import db from '#server/facades/db.facade.ts'
+import { whereNotDeleted } from '#server/queries/softDelete.ts'
 
 const group = router.prefix('/api/backup/plans')
     .use(authMiddleware)
@@ -12,9 +14,12 @@ const group = router.prefix('/api/backup/plans')
 
 
 group.get('/', async () => {
-    const plans = await planRepository.list()
+    const data = await db.selectFrom('backup_plans')
+        .$call(whereNotDeleted)
+        .selectAll()
+        .execute()
 
-    return { data: plans }
+    return { data }
 })
 
 group.post('/', async ({ body }) => {
@@ -69,6 +74,22 @@ group.post('/:planId/snapshots/:snapshotId/restore', async ({ params }) => {
 
 group.post('/:id/execute', async ({ params }) => {
     await backupService.backup(Number(params.id))
+
+    return { success: true, }
+})
+
+group.post('/:id/toggle', async ({ params }) => {
+    const plan = await db.selectFrom('backup_plans')
+        .$call(whereNotDeleted)
+        .where('id', '=', Number(params.id))
+        .selectAll()
+        .executeTakeFirst()
+
+    if (!plan) {
+        throw new BaseException('Not found', 404)
+    }
+
+    await db.updateTable('backup_plans').set({ active: !plan.active }).execute()
 
     return { success: true, }
 })

@@ -12,6 +12,8 @@ import Icon from '#client/components/Icon.vue'
 import PlanDialog from '#zenith-backup/client/components/PlanDialog.vue'
 import AlertButton from '#client/components/AlertButton.vue'
 import type Plan from '#zenith-backup/shared/entities/plan.entity.ts'
+import Switch from '#client/components/ui/switch/Switch.vue'
+import Alert from '#client/components/Alert.vue'
 
 const items = ref<Plan[]>([])
 const page = ref(1)
@@ -28,6 +30,11 @@ const columns = defineColumns<Plan>([
         id: 'name',
         header: $t('Name'),
         accessorKey: 'name'
+    },
+    {
+        id: 'active',
+        header: $t('Active'),
+        accessorKey: 'active'
     },
     {
         id: 'cron',
@@ -102,6 +109,26 @@ async function execute(id: number) {
 
 }
 
+// toggle 
+const togglingId = ref<number[]>([])
+
+async function toggle(row: Plan) {
+    togglingId.value.push(row.id)
+
+    const [error] = await tryCatch(() => $fetch(`/api/backup/plans/${row.id}/toggle`, { method: 'POST', }))
+
+    if (error) {
+        togglingId.value = togglingId.value.filter(i => i !== row.id)
+        return
+    }
+
+    setTimeout(() => {
+        toast.success($t('Toggled successfully.'))
+        togglingId.value = togglingId.value.filter(i => i !== row.id)
+        load()
+    }, 800)
+}
+
 </script>
 <template>
     <AppLayout>
@@ -121,6 +148,26 @@ async function execute(id: number) {
             :page="page"
             :columns="columns"
         >
+            <template #row-active="{ row }">
+                <Alert
+                    :title="$t('Toggle active status')"
+                    :description="$t('This will toggle the active status of the plan.')"
+                    @confirm="toggle(row)"
+                >
+                    <Icon
+                        v-if="togglingId.includes(row.id)"
+                        name="Loader2"
+                        class="animate-spin"
+                    />
+                    <Switch
+                        v-else
+                        :model-value="row.active"
+                        class="pointer-events-none"
+                        loading
+                    />
+                </Alert>
+            </template>
+
             <template #row-actions="{ row }">
                 <div class="flex items-center gap-2 justify-end">
                     <AlertButton
@@ -138,7 +185,7 @@ async function execute(id: number) {
                         :to="`/admin/backup/plans/${row.id}`"
                         size="sm"
                     >
-                        <Icon name="pen" />
+                        <Icon name="eye" />
                     </Button>
                     <AlertButton
                         variant="ghost"

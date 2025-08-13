@@ -8,6 +8,7 @@ export async function up(db: Kysely<any>): Promise<void> {
         .addColumn('id', 'integer', col => col.primaryKey())
         .addColumn('name', 'text', col => col.notNull())
         .addColumn('description', 'text')
+        .addColumn('active', 'boolean', col => col.notNull().defaultTo(false))
         .addColumn('strategy', 'text', (col) => col.notNull())
         .addColumn('cron', 'text')
         .addColumn('options', 'text', col => col.notNull().defaultTo('{}'))
