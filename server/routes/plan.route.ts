@@ -89,8 +89,12 @@ group.post('/:id/toggle', async ({ params }) => {
         throw new BaseException('Not found', 404)
     }
 
-    if (!plan.cron) {
-        throw new BaseException('Cannot activate a plan without a cron expression', 400)
+    if (plan.active) {
+        await backupService.stop(plan.id)
+    }
+
+    if (!plan.active) {
+        await backupService.start(plan.id)
     }
 
     await db.updateTable('backup_plans').set({ active: !plan.active }).execute()

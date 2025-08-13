@@ -7,7 +7,7 @@ import BaseException from '#server/exceptions/base.ts'
 import { tryCatch } from '#shared/tryCatch.ts'
 import logger from '#server/facades/logger.facade.ts'
 import type Target from '#zenith-backup/shared/entities/target.entity.ts'
-import type Snapshot from '#zenith-backup/shared/entities/snapshot.entity.ts'
+import scheduler from '#server/facades/scheduler.facade.ts'
 
 export class BackupService {
     public findStrategy(plan: Plan): BackupStrategy {
@@ -33,6 +33,32 @@ export class BackupService {
         snapshots.sort((a,b) => b.created_at.getTime() - a.created_at.getTime())
 
         return snapshots
+    }
+
+    public async schedule(planId: Plan['id']){
+        const plan = await planRepository.findOrFail(planId)
+
+        if (!plan.cron) {
+            throw new BaseException('Cannot schedule a plan without a cron expression', 400)
+        }
+
+        scheduler.add(`backup:plans:${plan.id}`, plan.cron!, () => this.backup(plan.id))
+    }
+
+    public async start(planId: Plan['id']){
+        const plan = await planRepository.findOrFail(planId)
+
+        if (!scheduler.has(`backup:plans:${plan.id}`)) {
+            scheduler.add(`backup:plans:${plan.id}`, plan.cron!, () => this.backup(plan.id))
+        }
+
+        await scheduler.start(`backup:plans:${plan.id}`)
+    }
+
+    public async stop(planId: Plan['id']){
+        const plan = await planRepository.findOrFail(planId)
+
+        await scheduler.stop(`backup:plans:${plan.id}`)
     }
 
     public async backup(planId: Plan['id']){
@@ -99,7 +125,6 @@ export class BackupService {
         
         const [error] = await tryCatch(() => strategy.delete({
             plan,
-            target,
             snapshotId
         }))
 
