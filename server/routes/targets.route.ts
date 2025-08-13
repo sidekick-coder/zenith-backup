@@ -1,7 +1,6 @@
 // import { now } from '#server/database/common.ts' // removed unused import
 import targetValidator from '../../shared/validators/target.validator.ts'
 import { targetRepository } from '../repositories/target.repository.ts'
-import backupService from '../services/backup.service.ts'
 import BaseException from '#server/exceptions/base.ts'
 import router from '#server/facades/router.facade.ts'
 import authMiddleware from '#server/middlewares/auth.middleware.ts'
@@ -59,31 +58,6 @@ group.delete('/:id', async ({ params }) => {
     if (!deleted) {
         throw new BaseException('Delete failed', 500)
     }
-
-    return { success: true }
-})
-
-
-group.get('/:id/snapshots', async ({ params }) => {
-    const target = await targetRepository.findOrFail(Number(params.id))
-
-    const snapshots = await backupService.list(target.plan_id, target.id)
-
-    return { data: snapshots }
-})
-
-group.get('/:id/snapshots/:snapshotId/restore', async ({ params }) => {
-    const target = await targetRepository.findOrFail(Number(params.id))
-
-    await backupService.restore(target.id, params.snapshotId)
-
-    return { success: true }
-})
-
-group.delete('/:id/snapshots/:snapshotId', async ({ params }) => {
-    const target = await targetRepository.findOrFail(Number(params.id))
-
-    await backupService.delete(target.id, params.snapshotId)
 
     return { success: true }
 })

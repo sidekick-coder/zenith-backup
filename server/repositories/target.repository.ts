@@ -11,7 +11,7 @@ export class TargetRepository {
     public toEntity(row: Selectable<TargetTable>): Target {
         return new Target({
             id: row.id,
-            plan_id: row.backup_plan_id,
+            plan_id: row.plan_id,
             path: row.path,
             metadata: JSON.parse(row.metadata),
             created_at: row.created_at,
@@ -23,7 +23,7 @@ export class TargetRepository {
     public toRow<T>(target: Partial<Target>): T {
         return {
             id: target.id,
-            backup_plan_id: target.plan_id,
+            plan_id: target.plan_id,
             path: target.path,
             metadata: JSON.stringify(target.metadata),
             created_at: target.created_at,
@@ -37,7 +37,7 @@ export class TargetRepository {
             .where('deleted_at', 'is', null)
         
         if (planId) {
-            query = query.where('backup_plan_id', '=', planId)
+            query = query.where('plan_id', '=', planId)
         }
         
         const rows = await query.selectAll().execute()
