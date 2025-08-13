@@ -97,6 +97,7 @@ export class BackupService {
         const snapshots = await this.list(planId)
         const snapshot = snapshots.find(s => s.id === snapshotId)
         const plan = await planRepository.findOrFail(planId)
+        const target = await targetRepository.findOrFail(snapshot!.target_id ?? '')
         const strategy = this.findStrategy(plan)
 
         if (!snapshot) {
@@ -105,6 +106,7 @@ export class BackupService {
         
         const [error] = await tryCatch(() => strategy.restore({
             plan,
+            target,
             snapshot
         }))
 
@@ -122,15 +124,22 @@ export class BackupService {
         })
     }
 
-    public async delete(targetId: Target['plan_id'], snapshotId: string) {
-        const target = await targetRepository.findOrFail(targetId)
-        const plan = await planRepository.findOrFail(target.plan_id)
+    public async delete(planId: Target['plan_id'], snapshotId: string) {
+        const snapshots = await this.list(planId)
+        const snapshot = snapshots.find(s => s.id === snapshotId)
+        const plan = await planRepository.findOrFail(planId)
+        const target = await targetRepository.findOrFail(snapshot!.target_id ?? '')
+
+        if (!snapshot){
+            throw new BaseException('Snapshot not found', 404)
+        }
 
         const strategy = this.findStrategy(plan)
         
         const [error] = await tryCatch(() => strategy.delete({
             plan,
-            snapshotId
+            snapshot,
+            target
         }))
 
         if (error) {

@@ -66,8 +66,18 @@ group.get('/:id/snapshots', async ({ params }) => {
     return { data: snapshots }
 })
 
-group.post('/:planId/snapshots/:snapshotId/restore', async ({ params }) => {
-    await backupService.restore(Number(params.planId), params.snapshotId)
+group.delete('/:id/snapshots', async ({ params, body }) => {
+    const payload = validator.validate(body, v => v.object({ snapshotId: v.string() }))
+
+    await backupService.delete(Number(params.id), payload.snapshotId)
+
+    return { success: true, }
+})
+
+group.post('/:planId/restore', async ({ params, body }) => {
+    const payload = validator.validate(body, v => v.object({ snapshotId: v.string() }))
+
+    await backupService.restore(Number(params.planId), payload.snapshotId)
 
     return { success: true, }
 })

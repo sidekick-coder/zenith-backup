@@ -24,7 +24,7 @@ export default class TarStrategy implements BackupStrategy {
         }
 
         const targetByPath = await db.selectFrom('backup_targets')
-            .where('backup_plan_id', '=', planId)
+            .where('plan_id', '=', planId)
             .where('deleted_at', 'is', null)
             .where('path', 'like', `%${basename}`)
             .selectAll()
@@ -135,10 +135,10 @@ export default class TarStrategy implements BackupStrategy {
         })
     }
 
-    public delete: BackupStrategy['delete'] = async ({ plan, snapshotId }) => {
+    public delete: BackupStrategy['delete'] = async ({ plan, snapshot }) => {
         const planDrive = driveService.use(plan.options.drive_id)
         const destinationFolderInDrive = plan.options.folder || '/'
-        const filenameInDrive = path.join(destinationFolderInDrive, snapshotId)
+        const filenameInDrive = path.join(destinationFolderInDrive, snapshot.id)
 
         await planDrive.delete(filenameInDrive)
     }

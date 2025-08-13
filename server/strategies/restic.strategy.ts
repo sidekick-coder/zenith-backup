@@ -109,11 +109,53 @@ export default class ResticStrategy implements BackupStrategy {
         cp.execSync(command, { env: enviroment })
     }
 
-    public restore: BackupStrategy['restore'] = async ({ plan: _plan, snapshot: _snapshot }) => {
-        throw new Error('Not implemented')
+    public restore: BackupStrategy['restore'] = async ({ plan, snapshot, target }) => {
+        const enviroment = await this.createEnviroment(plan.id)
+        
+        const resticId = snapshot.metadata.restic_short_id
+        const path = snapshot.metadata.path
+        
+        if (!resticId) {
+            throw new BaseException('Restic ID not found in snapshot metadata')
+        }
+        
+        if (!path) {
+            throw new BaseException('Path not found in snapshot metadata')
+        }
+
+        const command = `restic restore ${resticId}:${path} --target ${target.path}`
+        
+        logger
+            .child({
+                planId: plan.id,
+                snapshotId: snapshot.id,
+                targetId: target.id,
+                command 
+            })
+            .debug(`running restic restore: ${command}`)
+
+        cp.execSync(command, { env: enviroment })
     }
 
-    public delete: BackupStrategy['delete'] = async ({ plan: _plan, snapshotId: _snapshotId }) => {
-        throw new Error('Not implemented')
+    public delete: BackupStrategy['delete'] = async ({ plan, snapshot }) => {
+        const enviroment = await this.createEnviroment(plan.id)
+        
+        const resticId = snapshot.metadata.restic_id
+        
+        if (!resticId) {
+            throw new BaseException('Restic ID not found in snapshot metadata')
+        }
+
+        const command = `restic forget ${resticId} --prune`
+        
+        logger
+            .child({
+                planId: plan.id,
+                snapshotId: snapshot.id,
+                command 
+            })
+            .debug(`running restic delete: ${command}`)
+
+        cp.execSync(command, { env: enviroment })
     }
 }

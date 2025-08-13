@@ -54,7 +54,7 @@ if (!props.targetId) {
     })
 }
 
-async function loadSnapshots() {
+async function load() {
     loading.value = true
 
     const url = `/api/backup/plans/${props.planId}/snapshots`
@@ -81,10 +81,12 @@ async function loadSnapshots() {
 async function deleteSnapshot(id: string) {
     deletingItems.value.push(id)
     
-    const [error] = await tryCatch(() => $fetch(`/api/backup/targets/${props.targetId}/snapshots/${id}`, { method: 'DELETE' }))
+    const [error] = await tryCatch(() => $fetch(`/api/backup/plans/${props.planId}/snapshots`, {
+        method: 'DELETE',
+        data: { snapshotId: id } 
+    }))
 
     if (error) {
-        toast.error($t('Failed to delete.'))
         deletingItems.value = deletingItems.value.filter(item => item !== id)
         return
     }
@@ -92,17 +94,19 @@ async function deleteSnapshot(id: string) {
     setTimeout(() => {
         toast.success($t('Deleted successfully.'))
         deletingItems.value = deletingItems.value.filter(item => item !== id)
-        loadSnapshots()
+        load()
     }, 1000)
 }
 
-async function restoreSnapshot(id: string) {
+async function restore(id: string) {
     restoringItems.value.push(id)
 
-    const [error] = await tryCatch(() => $fetch(`/api/backup/plans/${props.planId}/snapshots/${id}/restore`, { method: 'POST' }))
+    const [error] = await tryCatch(() => $fetch(`/api/backup/plans/${props.planId}/restore`, {
+        method: 'POST',
+        data: { snapshotId: id } 
+    }))
 
     if (error) {
-        toast.error($t('Failed to restore snapshot.'))
         restoringItems.value = restoringItems.value.filter(item => item !== id)
         return
     }
@@ -113,7 +117,7 @@ async function restoreSnapshot(id: string) {
     }, 1000)
 }
 
-watch(() => [props.planId, props.targetId], loadSnapshots, { immediate: true })
+watch(() => [props.planId, props.targetId], load, { immediate: true })
 </script>
 
 <template>
@@ -126,7 +130,7 @@ watch(() => [props.planId, props.targetId], loadSnapshots, { immediate: true })
                         {{ $t('View and manage snapshots for this plan.') }}
                     </CardDescription>
                 </div>
-                <Button @click="loadSnapshots">
+                <Button @click="load">
                     <Icon name="refreshCw" />
                     {{ $t('Refresh') }}
                 </Button>
@@ -145,7 +149,7 @@ watch(() => [props.planId, props.targetId], loadSnapshots, { immediate: true })
                             size="sm"
                             :description="$t('This action can not be stopped once started.')"
                             :loading="restoringItems.includes(row.id)"
-                            @confirm="restoreSnapshot(row.id)"
+                            @confirm="restore(row.id)"
                         >
                             {{ $t('Restore') }}
                         </AlertButton>
