@@ -1,16 +1,14 @@
 import { Kysely } from 'kysely'
-import { withSoftDelete, withTimestamps } from '#server/database/common.ts'
 
-const table = 'backup_targets'
+const table = 'backup_plan_metas'
 
 export async function up(db: Kysely<any>): Promise<void> {
     await db.schema.createTable(table)
         .addColumn('id', 'integer', col => col.primaryKey())
         .addColumn('plan_id', 'integer', col => col.notNull())
-        .addColumn('path', 'text', col => col.notNull())
-        .addColumn('metadata', 'text', col => col.notNull().defaultTo('{}'))
-        .$call(withTimestamps)
-        .$call(withSoftDelete)
+        .addColumn('name', 'varchar', col => col.notNull())
+        .addColumn('value', 'text')
+        .addUniqueConstraint('backup_plan_metas_plan_id_name_unique', ['plan_id', 'name'])
         .execute()
 }
 
