@@ -4,6 +4,7 @@ import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/valibot'
 import { toast } from 'vue-sonner'
 import * as v from 'valibot'
+import { Eye, EyeOff } from 'lucide-vue-next'
 import FormTextField from '#client/components/FormTextField.vue'
 import FormSelect from '#client/components/FormSelect.vue'
 import Button from '#client/components/Button.vue'
@@ -28,6 +29,7 @@ const props = defineProps<Props>()
 
 const saving = ref(false)
 const loading = ref(false)
+const showPassword = ref(false)
 
 const schema = toTypedSchema(
     v.object({
@@ -160,12 +162,29 @@ onMounted(() => {
 
                 <FormTextField
                     name="password"
-                    type="password"
+                    :type="showPassword ? 'text' : 'password'"
                     :label="$t('Password')"
                     :placeholder="$t('Enter repository password')"
                     :hint="$t('Password to encrypt/decrypt the repository')"
                     :loading="loading"
-                />
+                >
+                    <template #append>
+                        <Button
+                            variant="outline"
+                            class="h-10"
+                            @click="showPassword = !showPassword"
+                        >
+                            <Eye 
+                                v-if="!showPassword" 
+                                class="h-4 w-4" 
+                            />
+                            <EyeOff 
+                                v-else 
+                                class="h-4 w-4" 
+                            />
+                        </Button>
+                    </template>
+                </FormTextField>
             </CardContent>
             <CardFooter class="flex justify-end gap-4">
                 <Button
