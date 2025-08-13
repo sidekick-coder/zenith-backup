@@ -23,7 +23,7 @@ const route = useRoute()
 const router = useRouter()
 const planId = computed(() => Number(route.params.id))
 const plan = ref<Plan>()
-const tab = useRouteQuery('tab', 'configuration')
+const tab = useRouteQuery('tab', 'targets')
 
 const loading = ref(false)
 
@@ -42,10 +42,18 @@ const tabs = computed(() => {
     ]
 
     if (plan.value?.strategy === 'tar') {
-        items.splice(0, 0, {
+        items.push({
             value: 'configuration',
             label: $t('Configuration'),
             component: defineAsyncComponent(() => import('#zenith-backup/client/components/PlanTarForm.vue')),
+        })
+    }
+    
+    if (plan.value?.strategy === 'restic') {
+        items.push({
+            value: 'configuration',
+            label: $t('Configuration'),
+            component: defineAsyncComponent(() => import('#zenith-backup/client/components/PlanResticForm.vue')),
         })
     }
 
