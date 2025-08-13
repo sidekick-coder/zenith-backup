@@ -22,6 +22,8 @@ interface Props {
     planId: number
 }
 
+defineOptions({ inheritAttrs: false })
+
 const props = defineProps<Props>()
 
 const targets = ref<Target[]>([])

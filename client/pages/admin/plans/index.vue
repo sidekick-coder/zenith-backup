@@ -161,7 +161,7 @@ async function toggle(row: Plan) {
                     />
                     <Switch
                         v-else
-                        :model-value="row.active"
+                        :model-value="!!row.active"
                         class="pointer-events-none"
                         loading
                     />
