@@ -40,7 +40,8 @@ export class BackupService {
         const targets = await targetRepository.list(planId)
 
         if (targets.length === 0) {
-            throw new BaseException('No targets found for the backup plan')
+            logger.warn('No targets found for plan', { planId })
+            return
         }
 
         const strategy = this.findStrategy(plan)
