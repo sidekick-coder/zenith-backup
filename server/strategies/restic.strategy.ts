@@ -109,7 +109,7 @@ export default class ResticStrategy implements BackupStrategy {
         cp.execSync(command, { env: enviroment })
     }
 
-    public restore: BackupStrategy['restore'] = async ({ plan, snapshot, target }) => {
+    public restore: BackupStrategy['restore'] = async ({ plan, snapshot, target, restore_folder }) => {
         const enviroment = await this.createEnviroment(plan.id)
         
         const resticId = snapshot.metadata.restic_short_id
@@ -123,13 +123,17 @@ export default class ResticStrategy implements BackupStrategy {
             throw new BaseException('Path not found in snapshot metadata')
         }
 
-        const command = `restic restore ${resticId}:${path} --target ${target.path}`
+        // Use restore_folder if provided, otherwise use target.path
+        const restorePath = restore_folder || target.path
+
+        const command = `restic restore ${resticId}:${path} --target ${restorePath}`
         
         logger
             .child({
                 planId: plan.id,
                 snapshotId: snapshot.id,
                 targetId: target.id,
+                restorePath,
                 command 
             })
             .debug(`running restic restore: ${command}`)

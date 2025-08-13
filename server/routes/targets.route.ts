@@ -5,15 +5,21 @@ import BaseException from '#server/exceptions/base.ts'
 import router from '#server/facades/router.facade.ts'
 import authMiddleware from '#server/middlewares/auth.middleware.ts'
 import validator from '#shared/services/validator.service.ts'
+import db from '#server/facades/db.facade.ts'
+import { whereNotDeleted } from '#server/queries/softDelete.ts'
 
 const group = router.prefix('/api/backup/targets')
     .use(authMiddleware)
     .group()
 
 group.get('/', async ({ query }) => {
-    const planId = Number(query.planId)
+    const planId = Number(query.plan_id)
 
-    const data = await targetRepository.list(planId)
+    const data = await db.selectFrom('backup_targets')
+        .selectAll()
+        .where('plan_id', '=', planId)
+        .$call(whereNotDeleted)
+        .execute()
 
     return { data }
 })

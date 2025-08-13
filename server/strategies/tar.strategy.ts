@@ -101,14 +101,8 @@ export default class TarStrategy implements BackupStrategy {
         }
     }
 
-    public restore: BackupStrategy['restore'] = async ({ plan, snapshot }) => {
+    public restore: BackupStrategy['restore'] = async ({ plan, snapshot, target, restore_folder }) => {
         const drive = driveService.use(plan.options.drive_id)
-
-        const target = await db
-            .selectFrom('backup_targets')
-            .where('id', '=', snapshot.target_id)
-            .selectAll()
-            .executeTakeFirst()
 
         if (!target) return
 
@@ -126,8 +120,16 @@ export default class TarStrategy implements BackupStrategy {
         await drive.download(filenameInDrive, compressedFilename)
         await this.decompress(compressedFilename, uncompressedFilename)
 
+        // Use restore_folder if provided, otherwise use target.path
+        const restorePath = restore_folder || target.path
+
+        // Ensure restore directory exists
+        if (!fs.existsSync(restorePath)) {
+            await fs.promises.mkdir(restorePath, { recursive: true })
+        }
+
         // use rsync to sync files
-        cp.execSync(`rsync -av --delete ${uncompressedFilename}/ ${target.path}/`, { stdio: 'inherit' })
+        cp.execSync(`rsync -av --delete ${uncompressedFilename}/ ${restorePath}/`, { stdio: 'inherit' })
 
         await fs.promises.rm(tmpFolder, {
             recursive: true,

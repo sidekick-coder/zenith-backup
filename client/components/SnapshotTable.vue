@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { toast } from 'vue-sonner'
+import SnapshotRestoreDialog from './SnapshotRestoreDialog.vue'
 import DataTable, { defineColumns } from '#client/components/DataTable.vue'
 import { $t } from '#shared/lang.ts'
 import { $fetch } from '#client/utils/fetcher.ts'
@@ -27,7 +28,7 @@ const props = defineProps<Props>()
 const snapshots = ref<Snapshot[]>([])
 const loading = ref(false)
 const deletingItems = ref<string[]>([])
-const restoringItems = ref<string[]>([])
+const restoreDialogSnapshot = ref<Snapshot | null>(null)
 
 const columns = defineColumns<Snapshot>([
     {
@@ -99,22 +100,19 @@ async function deleteSnapshot(id: string) {
 }
 
 async function restore(id: string) {
-    restoringItems.value.push(id)
+    const snapshot = snapshots.value.find(s => s.id === id)
+    if (!snapshot) return
+    
+    restoreDialogSnapshot.value = snapshot
+}
 
-    const [error] = await tryCatch(() => $fetch(`/api/backup/plans/${props.planId}/restore`, {
-        method: 'POST',
-        data: { snapshotId: id } 
-    }))
+function onRestoreDialogSubmit() {
+    restoreDialogSnapshot.value = null
+    load()
+}
 
-    if (error) {
-        restoringItems.value = restoringItems.value.filter(item => item !== id)
-        return
-    }
-
-    setTimeout(() => {
-        toast.success($t('Snapshot restored successfully.'))
-        restoringItems.value = restoringItems.value.filter(item => item !== id)
-    }, 1000)
+function onRestoreDialogClose() {
+    restoreDialogSnapshot.value = null
 }
 
 watch(() => [props.planId, props.targetId], load, { immediate: true })
@@ -144,15 +142,13 @@ watch(() => [props.planId, props.targetId], load, { immediate: true })
             >
                 <template #row-actions="{ row }">
                     <div class="flex items-center gap-2 justify-end">
-                        <AlertButton
+                        <Button
                             variant="default"
                             size="sm"
-                            :description="$t('This action can not be stopped once started.')"
-                            :loading="restoringItems.includes(row.id)"
-                            @confirm="restore(row.id)"
+                            @click="restore(row.id)"
                         >
                             {{ $t('Restore') }}
-                        </AlertButton>
+                        </Button>
                         <AlertButton
                             variant="destructive"
                             size="sm"
@@ -167,4 +163,13 @@ watch(() => [props.planId, props.targetId], load, { immediate: true })
             </DataTable>
         </CardContent>
     </Card>
+
+    <!-- Restore Dialog -->
+    <SnapshotRestoreDialog
+        v-if="restoreDialogSnapshot"
+        :snapshot="restoreDialogSnapshot"
+        :plan-id="planId"
+        @submit="onRestoreDialogSubmit"
+        @close="onRestoreDialogClose"
+    />
 </template>

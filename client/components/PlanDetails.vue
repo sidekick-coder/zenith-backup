@@ -128,7 +128,7 @@ async function execute() {
     }
 
     setTimeout(() => {
-        toast.success($t('Execution started.'))
+        toast.success($t('Executed'))
         executing.value = false
     }, 800)
 

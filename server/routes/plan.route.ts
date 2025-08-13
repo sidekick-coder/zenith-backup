@@ -75,9 +75,12 @@ group.delete('/:id/snapshots', async ({ params, body }) => {
 })
 
 group.post('/:planId/restore', async ({ params, body }) => {
-    const payload = validator.validate(body, v => v.object({ snapshotId: v.string() }))
+    const payload = validator.validate(body, v => v.object({ 
+        snapshotId: v.string(),
+        restore_folder: v.optional(v.string())
+    }))
 
-    await backupService.restore(Number(params.planId), payload.snapshotId)
+    await backupService.restore(Number(params.planId), payload.snapshotId, payload.restore_folder)
 
     return { success: true, }
 })

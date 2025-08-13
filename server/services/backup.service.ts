@@ -93,7 +93,7 @@ export class BackupService {
         logger.info('Backup completed successfully', { planId })
     }
 
-    public async restore(planId: Target['plan_id'], snapshotId: string) {
+    public async restore(planId: Target['plan_id'], snapshotId: string, restore_folder?: string) {
         const snapshots = await this.list(planId)
         const snapshot = snapshots.find(s => s.id === snapshotId)
         const plan = await planRepository.findOrFail(planId)
@@ -107,7 +107,8 @@ export class BackupService {
         const [error] = await tryCatch(() => strategy.restore({
             plan,
             target,
-            snapshot
+            snapshot,
+            restore_folder
         }))
 
         if (error) {

@@ -15,6 +15,7 @@ export interface RestorePayload {
     plan: Plan
     snapshot: Snapshot
     target: Target
+    restore_folder?: string
 }
 
 export interface DeletePayload {
