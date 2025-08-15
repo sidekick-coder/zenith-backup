@@ -4,31 +4,25 @@ import path from 'path'
 import * as tar from 'tar'
 import { format, parse } from 'date-fns'
 import type BackupStrategy from '../contracts/strategy.contract.ts'
-import { findTargetByMeta, findTargetMeta } from '../queries/target.query.ts'
 import { tmpPath } from '#server/utils/paths.ts'
 import driveService from '#server/facades/drive.facade.ts'
 import Snapshot from '#zenith-backup/shared/entities/snapshot.entity.ts'
 import logger from '#server/facades/logger.facade.ts'
-import db from '#server/facades/db.facade.ts'
+import type Target from '#zenith-backup/shared/entities/target.entity.ts'
 
 export default class TarStrategy implements BackupStrategy {
-    public async findSnapshotTarget(planId: number, snapshotId: string){
+    public findSnapshotTarget(targets: Target[], snapshotId: string){
         const [_date, filename] = snapshotId.split('__')
 
         const basename = path.basename(filename, '.tar.gz')
 
-        const targetBySlug = await findTargetByMeta(planId, 'slug', basename)
+        const targetBySlug = targets.find(t => t.metas.slug === basename)
 
         if (targetBySlug) {
             return targetBySlug
         }
 
-        const targetByPath = await db.selectFrom('backup_targets')
-            .where('plan_id', '=', planId)
-            .where('deleted_at', 'is', null)
-            .where('path', 'like', `%${basename}`)
-            .selectAll()
-            .executeTakeFirst()
+        const targetByPath = targets.find(t => t.path.endsWith(basename))
 
         if (targetByPath) {
             return targetByPath
@@ -38,7 +32,7 @@ export default class TarStrategy implements BackupStrategy {
 
     }
 
-    public list: BackupStrategy['list'] = async ({ plan }) => {
+    public list: BackupStrategy['list'] = async ({ plan, targets }) => {
 
         const drive = driveService.use(plan.options.drive_id)
         const files = await drive.list(plan.options.folder || '/')
@@ -56,7 +50,7 @@ export default class TarStrategy implements BackupStrategy {
         for (const file of filteredFiles) {
             const [date] = file.name.split('__')
 
-            const target = await this.findSnapshotTarget(plan.id, file.name)
+            const target = this.findSnapshotTarget(targets, file.name)
 
             if (!target) continue
 
@@ -87,9 +81,7 @@ export default class TarStrategy implements BackupStrategy {
         }
 
         for await (const target of targets) {
-            const slug = await findTargetMeta(target.id, 'slug')
-
-            const basename = slug?.value || path.basename(target.path)
+            const basename = target.metas.slug || path.basename(target.path)
 
             const filename = format(new Date(), 'yyyy-MM-dd_HH-mm-ss') + `__${basename}.tar.gz`
             const tmpCompresedFilename = path.resolve(tmpFolder, filename)
