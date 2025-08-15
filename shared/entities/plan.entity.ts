@@ -5,6 +5,7 @@ export default class Plan {
     public strategy: string
     public cron: string | null
     public options: Record<string, any>
+    public metas: Record<string, any> = {}
     public created_at: Date
     public updated_at: Date
     public deleted_at: Date | null

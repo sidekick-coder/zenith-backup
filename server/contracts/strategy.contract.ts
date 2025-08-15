@@ -8,18 +8,21 @@ export interface BackupPayload {
 }
 
 export interface ListPayload {
-    plan: Plan 
+    plan: Plan
+    targets: Target[]
 }
 
 export interface RestorePayload {
     plan: Plan
-    snapshot: Snapshot
+    targets: Target[]
     target: Target
+    snapshot: Snapshot
     restore_folder?: string
 }
 
 export interface DeletePayload {
     plan: Plan
+    targets: Target[]
     snapshot: Snapshot
     target: Target
 }

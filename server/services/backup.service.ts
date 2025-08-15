@@ -1,8 +1,8 @@
-import { planRepository } from '../repositories/plan.repository.ts'
 import type BackupStrategy from '../contracts/strategy.contract.ts'
 import TarStrategy from '../strategies/tar.strategy.ts'
-import { targetRepository } from '../repositories/target.repository.ts'
 import ResticStrategy from '../strategies/restic.strategy.ts'
+import { findPlan } from '../queries/plan.query.ts'
+import { findPlanTargets, findTarget } from '../queries/target.query.ts'
 import type Plan from '#zenith-backup/shared/entities/plan.entity.ts'
 import BaseException from '#server/exceptions/base.ts'
 import { tryCatch } from '#shared/tryCatch.ts'
@@ -24,11 +24,14 @@ export class BackupService {
     }
 
     public async list(planId: Plan['id']){
-        const plan = await planRepository.findOrFail(planId)
-
+        const plan = await findPlan(planId)
+        const targets = await findPlanTargets(planId)
         const strategy = this.findStrategy(plan)
 
-        const [error, snapshots] = await tryCatch(() => strategy.list({ plan }))
+        const [error, snapshots] = await tryCatch(() => strategy.list({
+            plan,
+            targets 
+        }))
 
         if (error) {
             logger.error(error)
@@ -41,7 +44,7 @@ export class BackupService {
     }
 
     public async schedule(planId: Plan['id']){
-        const plan = await planRepository.findOrFail(planId)
+        const plan = await findPlan(planId)
 
         if (!plan.cron) {
             throw new BaseException('Cannot schedule a plan without a cron expression', 400)
@@ -51,7 +54,7 @@ export class BackupService {
     }
 
     public async start(planId: Plan['id']){
-        const plan = await planRepository.findOrFail(planId)
+        const plan = await findPlan(planId)
 
         if (!scheduler.has(`backup:plans:${plan.id}`)) {
             scheduler.add(`backup:plans:${plan.id}`, plan.cron!, () => this.backup(plan.id))
@@ -61,14 +64,14 @@ export class BackupService {
     }
 
     public async stop(planId: Plan['id']){
-        const plan = await planRepository.findOrFail(planId)
+        const plan = await findPlan(planId)
 
         await scheduler.stop(`backup:plans:${plan.id}`)
     }
 
     public async backup(planId: Plan['id']){
-        const plan = await planRepository.findOrFail(planId)
-        const targets = await targetRepository.list(planId)
+        const plan = await findPlan(planId)
+        const targets = await findPlanTargets(planId)
 
         if (targets.length === 0) {
             logger.warn('No targets found for plan', { planId })
@@ -96,8 +99,9 @@ export class BackupService {
     public async restore(planId: Target['plan_id'], snapshotId: string, restore_folder?: string) {
         const snapshots = await this.list(planId)
         const snapshot = snapshots.find(s => s.id === snapshotId)
-        const plan = await planRepository.findOrFail(planId)
-        const target = await targetRepository.findOrFail(snapshot!.target_id ?? '')
+        const plan = await findPlan(planId)
+        const targets = await findPlanTargets(planId)
+        const target = await findTarget(snapshot!.target_id ?? '')
         const strategy = this.findStrategy(plan)
 
         if (!snapshot) {
@@ -106,6 +110,7 @@ export class BackupService {
         
         const [error] = await tryCatch(() => strategy.restore({
             plan,
+            targets,
             target,
             snapshot,
             restore_folder
@@ -128,8 +133,9 @@ export class BackupService {
     public async delete(planId: Target['plan_id'], snapshotId: string) {
         const snapshots = await this.list(planId)
         const snapshot = snapshots.find(s => s.id === snapshotId)
-        const plan = await planRepository.findOrFail(planId)
-        const target = await targetRepository.findOrFail(snapshot!.target_id ?? '')
+        const plan = await findPlan(planId)
+        const targets = await findPlanTargets(planId)
+        const target = await findTarget(snapshot!.target_id ?? '')
 
         if (!snapshot){
             throw new BaseException('Snapshot not found', 404)
@@ -139,6 +145,7 @@ export class BackupService {
         
         const [error] = await tryCatch(() => strategy.delete({
             plan,
+            targets,
             snapshot,
             target
         }))

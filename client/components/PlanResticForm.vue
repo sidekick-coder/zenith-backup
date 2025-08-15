@@ -6,6 +6,7 @@ import { toast } from 'vue-sonner'
 import * as v from 'valibot'
 import { Eye, EyeOff } from 'lucide-vue-next'
 import FormTextField from '#client/components/FormTextField.vue'
+import FormTextarea from '#client/components/FormTextarea.vue'
 import FormSelect from '#client/components/FormSelect.vue'
 import Button from '#client/components/Button.vue'
 import { $t } from '#shared/lang.ts'
@@ -37,7 +38,8 @@ const schema = toTypedSchema(
         repository: v.optional(v.string()),
         drive_id: v.optional(v.string()),
         folder: v.optional(v.string()),
-        password: v.pipe(v.string())
+        password: v.pipe(v.string()),
+        backup_flags: v.optional(v.string())
     })
 )
 
@@ -84,7 +86,8 @@ const onSubmit = handleSubmit(async (payload) => {
         updateMeta('repository', payload.repository || ''),
         updateMeta('drive_id', payload.drive_id || ''),
         updateMeta('folder', payload.folder || ''),
-        updateMeta('password', payload.password)
+        updateMeta('password', payload.password),
+        updateMeta('backup_flags', payload.backup_flags || '')
     ])
 
     setTimeout(() => {
@@ -185,6 +188,12 @@ onMounted(() => {
                         </Button>
                     </template>
                 </FormTextField>
+
+                <FormTextarea
+                    name="backup_flags"
+                    :label="$t('Backup Flags')"
+                    :placeholder="$t('Enter additional restic backup flags here...')"
+                />
             </CardContent>
             <CardFooter class="flex justify-end gap-4">
                 <Button

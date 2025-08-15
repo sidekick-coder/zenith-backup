@@ -1,28 +1,16 @@
 import cp from 'node:child_process'
 import type BackupStrategy from '../contracts/strategy.contract.ts'
 import driveService from '#server/facades/drive.facade.ts'
-import db from '#server/facades/db.facade.ts'
-import Meta from '#shared/entities/meta.entity.ts'
 import type DriveContract from '#server/contracts/drive.contract.ts'
 import FsDrive from '#server/gateways/FsDrive.ts'
 import BaseException from '#server/exceptions/base.ts'
 import logger from '#server/facades/logger.facade.ts'
 import Snapshot from '#zenith-backup/shared/entities/snapshot.entity.ts'
-import { whereNotDeleted } from '#server/queries/softDelete.ts'
+import type Plan from '#zenith-backup/shared/entities/plan.entity.ts'
 
 export default class ResticStrategy implements BackupStrategy {
-    public async createEnviroment(planId: number) {
-        const metaRows = await db
-            .selectFrom('backup_plan_metas')
-            .selectAll()
-            .where('plan_id', '=', planId)
-            .execute()
-
-        if (metaRows.length === 0) {
-            throw new BaseException('No metadata found')
-        }
-
-        const metas = Meta.metasToObjects(metaRows.map(m => new Meta(m)))
+    public async createEnviroment(plan: Plan) {
+        const metas = plan.metas 
 
         if (metas.repository_type === 'raw') {
             return {
@@ -49,13 +37,8 @@ export default class ResticStrategy implements BackupStrategy {
         throw new BaseException('Error mounting restic variables')
     }
 
-    public list: BackupStrategy['list'] = async ({ plan }) => {
-        const enviroment = await this.createEnviroment(plan.id)
-        const targets = await db.selectFrom('backup_targets')
-            .$call(whereNotDeleted)
-            .where('plan_id', '=', plan.id)
-            .selectAll()
-            .execute()
+    public list: BackupStrategy['list'] = async ({ plan, targets }) => {
+        const enviroment = await this.createEnviroment(plan)
 
         const output = cp.execSync('restic snapshots --json', { env: enviroment })
         const resticSnapshots = JSON.parse(output.toString())
@@ -94,10 +77,17 @@ export default class ResticStrategy implements BackupStrategy {
     }
 
     public backup: BackupStrategy['backup'] = async ({ plan, targets }) => {
-        const enviroment = await this.createEnviroment(plan.id)
+        const enviroment = await this.createEnviroment(plan)
 
         const paths = targets.map(t => t.path).join(' ')
-        const command = `restic backup ${paths}`
+        
+        let command = 'restic backup'
+
+        if (plan.metas.backup_flags) {
+            command += ` ${plan.metas.backup_flags}`
+        }
+
+        command += ` ${paths}`
         
         logger
             .child({
@@ -110,7 +100,7 @@ export default class ResticStrategy implements BackupStrategy {
     }
 
     public restore: BackupStrategy['restore'] = async ({ plan, snapshot, target, restore_folder }) => {
-        const enviroment = await this.createEnviroment(plan.id)
+        const enviroment = await this.createEnviroment(plan)
         
         const resticId = snapshot.metadata.restic_short_id
         const path = snapshot.metadata.path
@@ -142,8 +132,7 @@ export default class ResticStrategy implements BackupStrategy {
     }
 
     public delete: BackupStrategy['delete'] = async ({ plan, snapshot }) => {
-        const enviroment = await this.createEnviroment(plan.id)
-        
+        const enviroment = await this.createEnviroment(plan)        
         const resticId = snapshot.metadata.restic_id
         
         if (!resticId) {
