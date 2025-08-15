@@ -1,0 +1,21 @@
+services:
+  app:
+    image: sidekick-coder/zenith:latest
+    environment:
+      CONFIG: |
+        backup.plans=sqlite
+        database.default=sqlite
+        database.connections.sqlite.driver=sqlite
+        database.connections.sqlite.database=/app/storage/db.sqlite
+        setup.database=1
+        setup.user=1
+      # Theses commadns run only on container creation
+      COMMANDS: |
+        apt install restic -y
+        node arte migration:latest
+        node arte user:create -s -u $ADMIN_USERNAME -e $ADMIN_EMAIL -p $ADMIN_PASSWORD
+        node arte module:install sidekick-coder/zenith-backup --migrate --enable
+    ports:
+      - 3001:3000
+    volumes:
+      - .volumes/app/storage:/app/storage
