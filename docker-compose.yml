@@ -14,7 +14,7 @@ services:
         apt install restic -y
         node arte migration:latest
         node arte user:create -s -u $ADMIN_USERNAME -e $ADMIN_EMAIL -p $ADMIN_PASSWORD
-        node arte module:install sidekick-coder/zenith-backup --migrate --enable
+        node arte module:install sidekick-coder/zenith-backup --npm --migrate --enable
     ports:
       - 3001:3000
     volumes:

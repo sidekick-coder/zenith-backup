@@ -56,6 +56,10 @@ export class BackupService {
     public async start(planId: Plan['id']){
         const plan = await findPlan(planId)
 
+        if (!plan.cron) {
+            throw new BaseException('Cannot start a plan without a cron expression', 400)
+        }
+
         if (!scheduler.has(`backup:plans:${plan.id}`)) {
             scheduler.add(`backup:plans:${plan.id}`, plan.cron!, () => this.backup(plan.id))
         }
