@@ -110,7 +110,10 @@ group.post('/:id/toggle', async ({ params }) => {
         await backupService.start(plan.id)
     }
 
-    await db.updateTable('backup_plans').set({ active: !plan.active }).execute()
+    await db.updateTable('backup_plans')
+        .where('id', '=', plan.id)
+        .set({ active: !plan.active })
+        .execute()
 
     return { success: true, }
 })
