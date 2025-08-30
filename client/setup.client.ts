@@ -15,14 +15,10 @@ export default defineClientSetup(({ router, menu }) => {
     })
 
     menu.add({
-        label: $t('Backups'),
-        group: true,
-        items: [
-            {
-                label: $t('Plans'),
-                to: '/admin/backup/plans',
-                icon: 'FolderIcon'
-            }
-        ]
+        id: 'backups',
+        label: $t('Plans'),
+        icon: 'FolderIcon',
+        group: $t('Backups'),
+        to: '/admin/backup/plans',
     })
 })
