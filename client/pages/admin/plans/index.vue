@@ -32,6 +32,11 @@ const columns = defineColumns<Plan>([
         accessorKey: 'name'
     },
     {
+        id: 'strategy',
+        header: $t('Strategy'),
+        accessorKey: 'strategy'
+    },
+    {
         id: 'active',
         header: $t('Active'),
         accessorKey: 'active'

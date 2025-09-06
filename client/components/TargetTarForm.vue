@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import {
-    ref, onMounted, watch 
-} from 'vue'
+import { ref, watch } from 'vue'
 import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/valibot'
 import * as v from 'valibot'
@@ -29,22 +27,21 @@ const props = defineProps<Props>()
 
 const loading = ref(false)
 const saving = ref(false)
-const slugMeta = ref<TargetMeta>()
 
 const schema = toTypedSchema(v.object({
-    slug: v.pipe(
+    slug: v.optional(v.pipe(
         v.string(),
-        v.minLength(1, $t('Slug is required')),
         v.regex(/^[a-zA-Z0-9-_]+$/, $t('Slug can only contain lowercase letters, numbers, hyphens and underscores'))
-    )
+    )),
+    max_snapshots: v.optional(v.pipe(
+        v.number($t('Max snapshots must be a number')),
+        v.minValue(0, $t('Max snapshots must be 0 or greater'))
+    ))
 }))
 
-const { handleSubmit, setValues, values } = useForm({
-    validationSchema: schema,
-    initialValues: { slug: '' }
-})
+const { handleSubmit, setValues } = useForm({ validationSchema: schema })
 
-async function loadSlugMeta() {
+async function loadTargetMetas() {
     if (!props.target?.id) {
         return
     }
@@ -61,11 +58,13 @@ async function loadSlugMeta() {
     }
 
     const metas = (response as { data: TargetMeta[] }).data
-    slugMeta.value = metas.find(meta => meta.name === 'slug')
+    const slugMeta = metas.find(meta => meta.name === 'slug')
+    const maxSnapshotsMeta = metas.find(meta => meta.name === 'max_snapshots')
 
-    if (slugMeta.value?.value) {
-        setValues({ slug: slugMeta.value.value })
-    }
+    setValues({
+        slug: slugMeta?.value || undefined,
+        max_snapshots: maxSnapshotsMeta?.value ? Number(maxSnapshotsMeta.value) : undefined
+    })
 
     loading.value = false
 }
@@ -74,7 +73,7 @@ async function loadSlugMeta() {
 const onSubmit = handleSubmit(async (payload) => {
     saving.value = true
 
-    const [error] = await tryCatch(() => 
+    const promises = [
         $fetch(`/api/backup/targets/${props.target?.id}/metas`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
@@ -82,8 +81,18 @@ const onSubmit = handleSubmit(async (payload) => {
                 name: 'slug',
                 value: payload.slug
             }
+        }),
+        $fetch(`/api/backup/targets/${props.target?.id}/metas`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            data: {
+                name: 'max_snapshots',
+                value: payload.max_snapshots
+            }
         })
-    )
+    ]
+
+    const [error] = await tryCatch(() => Promise.all(promises))
 
     if (error) {
         saving.value = false
@@ -97,15 +106,9 @@ const onSubmit = handleSubmit(async (payload) => {
 
 watch(() => props.target?.id, () => {
     if (props.target?.id) {
-        loadSlugMeta()
+        loadTargetMetas()
     }
 }, { immediate: true })
-
-onMounted(() => {
-    if (props.target?.id) {
-        loadSlugMeta()
-    }
-})
 </script>
 
 <template>
@@ -133,15 +136,22 @@ onMounted(() => {
                 <FormTextField
                     name="slug"
                     :label="$t('Slug')"
-                    :placeholder="$t('Enter slug for this target')"
+                    :placeholder="$t('my-app')"
                     :hint="$t('A unique identifier for this target. This is used to create files and map snapshots to the target')"
+                />
+
+                <FormTextField
+                    name="max_snapshots"
+                    :label="$t('Max Snapshots')"
+                    :placeholder="$t('10')"
+                    :hint="$t('Maximum number of backup snapshots to keep. Older snapshots will be automatically deleted when this limit is exceeded. Leave empty for unlimited snapshots.')"
+                    type="number"
                 />
 
                 <div class="flex justify-end">
                     <Button
                         type="submit"
                         :loading="saving"
-                        :disabled="!values.slug || values.slug === slugMeta?.value"
                     >
                         {{ $t('Save') }}
                     </Button>
