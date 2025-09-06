@@ -39,7 +39,8 @@ const schema = toTypedSchema(
         drive_id: v.optional(v.string()),
         folder: v.optional(v.string()),
         password: v.pipe(v.string()),
-        backup_flags: v.optional(v.string())
+        backup_flags: v.optional(v.string()),
+        forget_flags: v.optional(v.string())
     })
 )
 
@@ -87,7 +88,8 @@ const onSubmit = handleSubmit(async (payload) => {
         updateMeta('drive_id', payload.drive_id || ''),
         updateMeta('folder', payload.folder || ''),
         updateMeta('password', payload.password),
-        updateMeta('backup_flags', payload.backup_flags || '')
+        updateMeta('backup_flags', payload.backup_flags || ''),
+        updateMeta('forget_flags', payload.forget_flags || '')
     ])
 
     setTimeout(() => {
@@ -188,11 +190,31 @@ onMounted(() => {
                         </Button>
                     </template>
                 </FormTextField>
-
+            </CardContent>
+            <CardHeader>
+                <CardTitle>{{ $t('Backup Config') }}</CardTitle>
+                <CardDescription>
+                    {{ $t('Configure backup.') }}
+                </CardDescription>
+            </CardHeader>
+            <CardContent class="space-y-6">
                 <FormTextarea
                     name="backup_flags"
                     :label="$t('Backup Flags')"
                     :placeholder="$t('Enter additional restic backup flags here...')"
+                />
+            </CardContent>
+            <CardHeader>
+                <CardTitle>{{ $t('Forget Config') }}</CardTitle>
+                <CardDescription>
+                    {{ $t('Configure forgetting policies.') }}
+                </CardDescription>
+            </CardHeader>
+            <CardContent class="space-y-6">
+                <FormTextarea
+                    name="forget_flags"
+                    :label="$t('Forget Flags')"
+                    :placeholder="$t('Enter restic forget flags here (e.g., --keep-daily 7 --keep-weekly 4)...')"
                 />
             </CardContent>
             <CardFooter class="flex justify-end gap-4">

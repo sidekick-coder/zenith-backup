@@ -97,6 +97,24 @@ export default class ResticStrategy implements BackupStrategy {
             .debug(`running restic backup: ${command}`)
 
         cp.execSync(command, { env: enviroment })
+
+        // Run forget command after backup if forget_flags is configured
+        if (plan.metas.forget_flags) {
+            let forgetCommand = 'restic forget'
+
+            if (plan.metas.forget_flags) {
+                forgetCommand += ` ${plan.metas.forget_flags}`
+            }
+
+            logger
+                .child({
+                    planId: plan.id,
+                    command: forgetCommand 
+                })
+                .debug(`running restic forget: ${forgetCommand}`)
+
+            cp.execSync(forgetCommand, { env: enviroment })
+        }
     }
 
     public restore: BackupStrategy['restore'] = async ({ plan, snapshot, target, restore_folder }) => {
