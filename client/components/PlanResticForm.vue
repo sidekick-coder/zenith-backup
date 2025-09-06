@@ -8,6 +8,7 @@ import { Eye, EyeOff } from 'lucide-vue-next'
 import FormTextField from '#client/components/FormTextField.vue'
 import FormTextarea from '#client/components/FormTextarea.vue'
 import FormSelect from '#client/components/FormSelect.vue'
+import FormSwitch from '#client/components/FormSwitch.vue'
 import Button from '#client/components/Button.vue'
 import { $t } from '#shared/lang.ts'
 import Card from '#client/components/ui/card/Card.vue'
@@ -40,6 +41,7 @@ const schema = toTypedSchema(
         folder: v.optional(v.string()),
         password: v.pipe(v.string()),
         backup_flags: v.optional(v.string()),
+        forget_enabled: v.optional(v.boolean()),
         forget_flags: v.optional(v.string())
     })
 )
@@ -61,7 +63,11 @@ const loadMetas = async () => {
     const metas: Record<string, any> = {}
 
     response.data.forEach((meta: Meta) => {
-        metas[meta.name] = meta.value
+        if (meta.name === 'forget_enabled') {
+            metas[meta.name] = meta.value === 'true'
+        } else {
+            metas[meta.name] = meta.value
+        }
     })
 
     setValues(metas)
@@ -89,6 +95,7 @@ const onSubmit = handleSubmit(async (payload) => {
         updateMeta('folder', payload.folder || ''),
         updateMeta('password', payload.password),
         updateMeta('backup_flags', payload.backup_flags || ''),
+        updateMeta('forget_enabled', payload.forget_enabled ? 'true' : 'false'),
         updateMeta('forget_flags', payload.forget_flags || '')
     ])
 
@@ -211,6 +218,11 @@ onMounted(() => {
                 </CardDescription>
             </CardHeader>
             <CardContent class="space-y-6">
+                <FormSwitch
+                    name="forget_enabled"
+                    :label="$t('Enable Forget Command')"
+                    :hint="$t('Automatically run forget command after backup to clean up old snapshots')"
+                />
                 <FormTextarea
                     name="forget_flags"
                     :label="$t('Forget Flags')"

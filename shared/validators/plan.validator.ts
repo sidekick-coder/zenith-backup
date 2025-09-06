@@ -22,6 +22,7 @@ const resticOptions = validator.create(v => v.object({
     folder: v.optional(v.string()),
     password: v.optional(v.string()),
     backup_flags: v.optional(v.string()),
+    forget_enabled: v.optional(v.boolean()),
     forget_flags: v.optional(v.string())
 }))
 

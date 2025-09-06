@@ -98,8 +98,8 @@ export default class ResticStrategy implements BackupStrategy {
 
         cp.execSync(command, { env: enviroment })
 
-        // Run forget command after backup if forget_flags is configured
-        if (plan.metas.forget_flags) {
+        // Run forget command after backup if forget is enabled and forget_flags is configured
+        if (plan.metas.forget_enabled === 'true' && plan.metas.forget_flags) {
             let forgetCommand = 'restic forget'
 
             if (plan.metas.forget_flags) {
