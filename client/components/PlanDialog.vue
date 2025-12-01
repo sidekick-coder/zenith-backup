@@ -16,7 +16,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '#client/components/ui/dialog'
-import { tryCatch } from '#shared/tryCatch.ts'
+import { tryCatch } from '#shared/utils/tryCatch.ts'
 import DialogClose from '#client/components/ui/dialog/DialogClose.vue'
 import FormSelect from '#client/components/FormSelect.vue'
 import planValidator from '#zenith-backup/shared/validators/plan.validator.ts'

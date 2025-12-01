@@ -1,10 +1,10 @@
 import type {
     Insertable, Selectable, Updateable 
 } from 'kysely'
-import type { TargetTable } from '../database/types'
+import type { TargetTable } from '../contracts/database.contract.ts'
 import Target from '#zenith-backup/shared/entities/target.entity.ts'
 import db from '#server/facades/db.facade.ts'
-import { now } from '#server/database/common.ts'
+import { now } from '#server/queries/index.ts'
 import BaseException from '#server/exceptions/base.ts'
 
 export class TargetRepository {
@@ -64,14 +64,19 @@ export class TargetRepository {
 
     public async create(data: Partial<Target>) {
         const parsed = this.toRow<Insertable<TargetTable>>(data)
-        const [row] = await db.insertInto('backup_targets').values(parsed).returningAll().execute()
+        const [row] = await db.insertInto('backup_targets').values(parsed)
+            .returningAll()
+            .execute()
         return this.toEntity(row)
     }
 
     public async update(id: number, data: Partial<Target>) {
         const parsed = this.toRow<Updateable<TargetTable>>(data)
         parsed.updated_at = now()
-        const [row] = await db.updateTable('backup_targets').set(parsed).where('id', '=', id).returningAll().execute()
+        const [row] = await db.updateTable('backup_targets').set(parsed)
+            .where('id', '=', id)
+            .returningAll()
+            .execute()
         if (!row) {
             throw new BaseException('Target not found')
         }

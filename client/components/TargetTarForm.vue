@@ -14,7 +14,7 @@ import {
     CardTitle,
 } from '#client/components/ui/card'
 import { $fetch } from '#client/utils/fetcher.ts'
-import { tryCatch } from '#shared/tryCatch.ts'
+import { tryCatch } from '#shared/utils/tryCatch.ts'
 import { $t } from '#shared/lang.ts'
 import type TargetMeta from '#zenith-backup/shared/entities/targetMeta.entity.ts'
 import type Target from '#zenith-backup/shared/entities/target.entity.ts'

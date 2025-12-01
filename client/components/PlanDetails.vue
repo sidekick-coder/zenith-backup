@@ -25,7 +25,7 @@ import {
     DropdownMenuTrigger,
 } from '#client/components/ui/dropdown-menu'
 import { $fetch } from '#client/utils/fetcher.ts'
-import { tryCatch } from '#shared/tryCatch.ts'
+import { tryCatch } from '#shared/utils/tryCatch.ts'
 import { $t } from '#shared/lang.ts'
 import planValidator from '#zenith-backup/shared/validators/plan.validator.ts'
 import Plan from '#zenith-backup/shared/entities/plan.entity.ts'

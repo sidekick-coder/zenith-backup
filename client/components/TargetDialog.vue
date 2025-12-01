@@ -14,7 +14,7 @@ import {
     DialogTitle,
 } from '#client/components/ui/dialog'
 import { $fetch } from '#client/utils/fetcher.ts'
-import { tryCatch } from '#shared/tryCatch.ts'
+import { tryCatch } from '#shared/utils/tryCatch.ts'
 import { $t } from '#shared/lang.ts'
 import targetValidator from '#zenith-backup/shared/validators/target.validator.ts'
 import DriveEntryPicker from '#client/components/DriveEntryPicker.vue'

@@ -1,10 +1,10 @@
 import type {
     Insertable, Selectable, Updateable 
 } from 'kysely'
-import type { PlanTable } from '../database/types'
+import type { PlanTable } from '../contracts/database.contract.ts'
 import Plan from '#zenith-backup/shared/entities/plan.entity.ts'
 import db from '#server/facades/db.facade.ts'
-import { now } from '#server/database/common.ts'
+import { now } from '#server/queries/index.ts'
 import BaseException from '#server/exceptions/base.ts'
 
 export class PlanRepository {
@@ -39,7 +39,8 @@ export class PlanRepository {
     public async list(){
         const rows = await db.selectFrom('backup_plans')
             .where('deleted_at', 'is', null)
-            .selectAll().execute()
+            .selectAll()
+            .execute()
 
         return rows.map(row => this.toEntity(row))
     }
@@ -69,7 +70,9 @@ export class PlanRepository {
     public async create(data: Partial<Plan>) {
         const parsed = this.toRow<Insertable<PlanTable>>(data)
 
-        const [row] = await db.insertInto('backup_plans').values(parsed).returningAll().execute()
+        const [row] = await db.insertInto('backup_plans').values(parsed)
+            .returningAll()
+            .execute()
 
         return this.toEntity(row)
     }
@@ -79,7 +82,10 @@ export class PlanRepository {
 
         parsed.updated_at = now()
 
-        const [row] = await db.updateTable('backup_plans').set(parsed).where('id', '=', id).returningAll().execute()
+        const [row] = await db.updateTable('backup_plans').set(parsed)
+            .where('id', '=', id)
+            .returningAll()
+            .execute()
 
         if (!row) {
             throw new BaseException('Plan not found')

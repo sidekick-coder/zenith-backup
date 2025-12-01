@@ -20,7 +20,7 @@ import {
 } from '#client/components/ui/tabs'
 import { $t } from '#shared/lang.ts'
 import { $fetch } from '#client/utils/fetcher.ts'
-import { tryCatch } from '#shared/tryCatch.ts'
+import { tryCatch } from '#shared/utils/tryCatch.ts'
 import type Target from '#zenith-backup/shared/entities/target.entity.ts'
 import AppLayout from '#client/layouts/AppLayout.vue'
 import Plan from '#zenith-backup/shared/entities/plan.entity.ts'

@@ -5,20 +5,28 @@ import { $t } from '#shared/lang.ts'
 export default defineClientSetup(({ router, menu }) => {
     router.auto(import.meta.glob<any>('./pages/admin/**/*.vue'), {
         strip: ['pages', 'admin'],
-        prefix: '/admin/backup',
+        prefix: '/admin/zbackup',
         guards: [authGuard],
     })
 
     router.addRoute({
-        path: '/admin/backup',
-        redirect: '/admin/backup/plans',
+        path: '/admin/zbackup',
+        redirect: '/admin/zbackup/plans',
     })
 
     menu.add({
-        id: 'backups',
-        label: $t('Plans'),
-        icon: 'FolderIcon',
+        id: 'zbackups-dump-plans',
+        label: $t('Dump Plans'),
+        icon: 'Folder',
         group: $t('Backups'),
-        to: '/admin/backup/plans',
+        to: '/admin/zbackup/dump-plans',
+    })
+
+    menu.add({
+        id: 'zbackups-plans',
+        label: $t('Plans'),
+        icon: 'Folder',
+        group: $t('Backups'),
+        to: '/admin/zbackup/plans',
     })
 })
