@@ -18,6 +18,24 @@ const fields = defineFormFields({
     cron: {
         component: 'text-field',
         label: 'Cron',
+        presets: [
+            {
+                label: $t('Every hour'),
+                value: '0 * * * *'
+            },
+            {
+                label: $t('Every day at midnight'),
+                value: '0 0 * * *'
+            },
+            {
+                label: $t('Every week on Sunday at midnight'),
+                value: '0 0 * * 0'
+            },
+            {
+                label: $t('Every month on the 1st at midnight'),
+                value: '0 0 1 * *'
+            }
+        ]
     },
 })
 
@@ -35,7 +53,8 @@ const columns = defineColumns<DumpPlan>([
     {
         id: 'cron',
         label: 'Cron',
-        field: 'cron'
+        field: 'cron',
+        
     },
     { id: 'actions' }
 ])  
