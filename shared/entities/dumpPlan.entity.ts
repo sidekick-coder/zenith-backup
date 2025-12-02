@@ -1,11 +1,15 @@
 import { $t } from '#shared/lang.ts'
+import validator from '#shared/services/validator.service.ts'
 
 export const TYPE_OPTIONS = [
     {
         id: 'connection',
         label: $t('Connection'),
         description: $t('Generate dumps from a zenith connection config.'),
-        config_fields: {
+        schema: validator.create(v => v.object({
+            name: v.string(),
+        })),
+        fields: {
             name: { 
                 component: 'autocomplete',
                 fetch: '/api/database-connections',
@@ -20,13 +24,21 @@ export const TYPE_OPTIONS = [
         id: 'postgres',
         label: 'PostgreSQL',
         description: $t('Generate dumps directly from a PostgreSQL database.'),
-        config_fields: {
+        schema: validator.create(v => v.object({
+            host: v.string(),
+            port: v.number(),
+            database: v.string(),
+            username: v.string(),
+            password: v.string(),
+        })),
+        fields: {
             host: { 
                 component: 'text-field',
                 label: $t('Host'),
             },
             port: { 
-                component: 'number-field',
+                component: 'text-field',
+                type: 'number',
                 label: $t('Port'),
             },
             database: { 
@@ -48,12 +60,15 @@ export const TYPE_OPTIONS = [
 
 export default class DumpPlan {
     public static TYPE_OPTIONS = TYPE_OPTIONS
+    public static ROUTINE_PREFIX = 'zbackups:dumps'
+
     public id: string
     public name: string
     public type: string
     public description: string | null
     public cron: string | null
     public config: Record<string, any>
+    public active: boolean
     public created_at: Date
     public updated_at: Date
 
@@ -61,15 +76,33 @@ export default class DumpPlan {
         Object.assign(this, data)
     }
 
-    public get configFields() {
+    public get routineId(){
+        return `${DumpPlan.ROUTINE_PREFIX}:${this.id}`
+    }
+
+    public get fields() {
         const option = TYPE_OPTIONS.find(o => o.id === this.type)
         
-        return option ? option.config_fields : {}
+        return option ? option.fields : {}
+    }
+
+    public get schema() {
+        const option = TYPE_OPTIONS.find(o => o.id === this.type)
+        
+        return option ? option.schema : undefined
     }
 
     public get typeLabel() {
         const option = TYPE_OPTIONS.find(o => o.id === this.type)
         
         return option ? option.label : this.type
+    }
+
+    public get valid() {
+        if (!this.schema) {
+            return true
+        }
+
+        return validator.isValid(this.config, this.schema)
     }
 }

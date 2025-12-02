@@ -12,24 +12,25 @@ export default class DumpService {
     public logger = logger.child({ label: 'dumps' })
 
     public async load(){
-        const plans = await DumpPlan.list()
+        let plans = await DumpPlan.list()
+        
+        plans = plans.filter(plan => plan.active && plan.valid && plan.cron)
 
-        for (const plan of plans) {
-            if (!plan.cron) {
-                this.logger.warn('Plan without cron expression found', { planId: plan.id })
-                continue
-            }
+        for (const plan of plans) {            
+            scheduler.add(plan.routineId, plan.cron!, () => this.execute(plan))
 
-            scheduler.add(`zbackup:dumps:${plan.id}`, plan.cron!, () => this.execute(plan))
-            scheduler.start(`zbackup:dumps:${plan.id}`)
+            scheduler.start(plan.routineId)
         }
     }
 
     public async unload(){
         const routines = await scheduler.list()
-        const backupRoutineIdList = routines.filter(routine => routine.id.startsWith('zbackup:dumps:')).map(routine => routine.id)
 
-        await scheduler.remove(backupRoutineIdList)
+        const ids = routines
+            .filter(routine => routine.id.startsWith(DumpPlan.ROUTINE_PREFIX))
+            .map(routine => routine.id)
+
+        await scheduler.remove(ids)
     }
 
     public async reload(){

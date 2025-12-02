@@ -11,8 +11,10 @@ import Button from '#client/components/Button.vue'
 import Icon from '#client/components/Icon.vue'
 import DialogForm from '#client/components/DialogForm.vue'
 import { $fetch } from '#client/utils'
+import Switch from '#client/components/ui/switch/Switch.vue'
 
 const crudRef = ref<ComponentExposed<typeof PageCrud>>()
+const toggling = ref<string[]>([])
 
 const fields = defineFormFields({
     id: {
@@ -57,6 +59,11 @@ const fields = defineFormFields({
 
 const columns = defineColumns<DumpPlan>([
     {
+        id: 'active',
+        label: $t('Active'),
+        field: 'active'
+    },
+    {
         id: 'id',
         label: 'ID',
         field: 'id',
@@ -75,13 +82,33 @@ const columns = defineColumns<DumpPlan>([
         id: 'cron',
         label: 'Cron',
         field: 'cron',
-        
+    },
+    {
+        id: 'valid',
+        label: $t('Valid'),
+        field: 'valid'
     },
     { id: 'actions' }
 ])
 
 async function load(){
     crudRef.value?.load()
+}
+
+async function toggle(row: DumpPlan) {
+    toggling.value.push(row.id)
+
+    await $fetch(`/api/zbackup/dump-plans/${row.id}`, {
+        method: 'PUT',
+        data: {
+            active: !row.active
+        }
+    })
+
+    setTimeout(() => {
+        load()
+        toggling.value = toggling.value.filter(id => id !== row.id)
+    }, 500)
 }
 
 </script>
@@ -101,9 +128,27 @@ async function load(){
             :description="$t('Manage how app database dumps are created and stored.')"
             :serialize="row => new DumpPlan(row)"
         >
+            <template #row-active="{ row }">
+                <Icon
+                    v-if="toggling.includes(row.id)"
+                    name="Loader2"
+                    class="animate-spin"
+                />
+
+                <Switch
+                    v-else
+                    :model-value="!!row.active"
+                    @click="toggle(row)"
+                />
+            </template>
+            
+            <template #row-valid="{ row }">
+                <Switch :model-value="row.valid" />
+            </template>
+
             <template #prepend-actions="{ row }">
                 <DialogForm 
-                    v-if="row.configFields"
+                    v-if="row.fields"
                     :fetch="data => $fetch(`/api/zbackup/dump-plans/${row.id}`, {
                         method: 'PUT',
                         data: {
@@ -112,8 +157,9 @@ async function load(){
                     })"
                     :title="$t('Edit')"
                     :description="$t('Fill in the details below to edit')"
-                    :fields="row.configFields"
+                    :fields="row.fields"
                     :values="row.config"
+                    :schema="row.schema"
                     @submit="load"
                 >
                     <Button
