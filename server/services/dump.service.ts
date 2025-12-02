@@ -21,19 +21,20 @@ export default class DumpService {
             }
 
             scheduler.add(`zbackup:dumps:${plan.id}`, plan.cron!, () => this.execute(plan))
+            scheduler.start(`zbackup:dumps:${plan.id}`)
         }
     }
 
     public async unload(){
         const routines = await scheduler.list()
+        const backupRoutineIdList = routines.filter(routine => routine.id.startsWith('zbackup:dumps:')).map(routine => routine.id)
 
-        for (const routine of routines) {
-            if (!routine.id.startsWith('zbackup:dumps:')) {
-                continue
-            }
+        await scheduler.remove(backupRoutineIdList)
+    }
 
-            await scheduler.remove(routine.id)
-        }
+    public async reload(){
+        await this.unload()
+        await this.load()
     }
 
     public async execute(plan: DumpPlan, options?: ExecuteOptions){

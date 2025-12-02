@@ -10,9 +10,7 @@ const router = root.prefix('/api/zbackup/dump-plans')
 
 const resource = new RouterResourceConfigService(DumpPlan)
 
-resource.on('afterSave', async () => {
-    await dumpService.unload()
-    await dumpService.load()
-})
+resource.on('afterSave', async () => dumpService.reload())
+resource.on('afterDestroy', async () => dumpService.reload())
 
 resource.register(router)
