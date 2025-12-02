@@ -14,7 +14,9 @@ import { storagePath } from '#server/utils/paths.ts'
 import { cuid } from '#server/utils/cuid.util.ts'
 
 export interface ExecuteOptions {
-    immediate?: boolean
+    origin?: string
+    label?: string
+    description?: string
 }
 
 export default class DumpService {
@@ -26,11 +28,17 @@ export default class DumpService {
     }
 
     public async listDumps(){
+        if (!fs.existsSync(storagePath('dumps'))) {
+            return []
+        }
+
         const folders = await fs.promises.readdir(storagePath('dumps'))
+        const plans = await DumpPlan.list()
         const dumps = [] as Dump[]
 
         for (const folder of folders) {
-            const id = path.join(storagePath('dumps'), folder)
+            const id = folder
+            const filepath = path.join(storagePath('dumps'), folder)
             const metadataPath = path.join(storagePath('dumps', folder), 'metadata.json')
 
             if (!fs.existsSync(metadataPath)) {
@@ -41,13 +49,34 @@ export default class DumpService {
             const metadataContent = await fs.promises.readFile(metadataPath, 'utf-8')
             const metadata = JSON.parse(metadataContent)
 
+            const plan = plans.find(p => p.id === metadata.plan_id) || null
+
             dumps.push(new Dump({
                 ...metadata,
+                filepath,
                 id: id,
+                plan,
             }))
         }
 
         return dumps
+    }
+
+    public async destroyDump(dump: Dump){
+        if (fs.existsSync(dump.filepath)) {
+            fs.rmSync(dump.filepath, { 
+                recursive: true, 
+                force: true 
+            })
+
+            this.logger.info('Dump deleted successfully', {
+                dump_id: dump.id,
+            })
+        }
+        
+        this.logger.warn('Dump folder not found, cannot delete', {
+            dump_id: dump.id,
+        })
     }
 
     public async load(){
@@ -56,7 +85,11 @@ export default class DumpService {
         plans = plans.filter(plan => plan.active && plan.valid && plan.cron)
 
         for (const plan of plans) {            
-            scheduler.add(plan.routineId, plan.cron!, () => this.execute(plan))
+            scheduler.add(plan.routineId, plan.cron!, () => this.execute(plan, {
+                label: `Automated dump from plan '${plan.name}'`,
+                description: `Automated dump executed from dump plan '${plan.name}'`,
+                origin: 'automated',
+            }))
 
             scheduler.start(plan.routineId)
         }
@@ -109,9 +142,15 @@ export default class DumpService {
             throw new Error('Dump file was not created')
         }
 
+        const stats = fs.statSync(filename)
+
         const metadata = {
             plan_id: plan.id,
-            created_at: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
+            origin: options?.origin || 'unknown',
+            size: stats.size,
+            label: options?.label || null,
+            description: options?.description || null,
+            created_at: format(new Date(), 'yyyy-MM-dd HH:mm'),
         }
 
         await fs.promises.writeFile(path.join(folder, 'metadata.json'), JSON.stringify(metadata, null, 4), 'utf-8')
@@ -130,20 +169,23 @@ export default class DumpService {
             return
         }
 
-        const dumps = await this.listDumps()
-        const planDumps = dumps.filter(dump => dump.plan_id === plan.id)
+        let dumps = await this.listDumps()
 
-        planDumps.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
+        dumps = dumps
+            .filter(dump => dump.plan_id === plan.id)
+            .filter(dump => dump.origin === 'automated')
 
-        const toDelete = planDumps.length - plan.max
+        dumps.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
+
+        const toDelete = dumps.length - plan.max
 
         if (toDelete <= 0) {
             return
         }
 
         for (let i = 0; i < toDelete; i++) {
-            const dump = planDumps[i]
-            const dumpPath = dump.id
+            const dump = dumps[i]
+            const dumpPath = dump.filepath
 
             fs.rmSync(dumpPath, { 
                 recursive: true, 

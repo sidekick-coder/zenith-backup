@@ -15,6 +15,14 @@ export default defineClientSetup(({ router, menu }) => {
     })
 
     menu.add({
+        id: 'zbackups-dumps',
+        label: $t('Dumps'),
+        icon: 'DatabaseBackup',
+        group: $t('Backups'),
+        to: '/admin/zbackup/dumps',
+    })
+
+    menu.add({
         id: 'zbackups-dump-plans',
         label: $t('Dump Plans'),
         icon: 'Folder',
