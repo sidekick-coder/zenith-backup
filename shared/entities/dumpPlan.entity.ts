@@ -84,6 +84,7 @@ export default class DumpPlan {
     public cron: string | null
     public config: Record<string, any>
     public active: boolean
+    public max: number | null
     public created_at: Date
     public updated_at: Date
 

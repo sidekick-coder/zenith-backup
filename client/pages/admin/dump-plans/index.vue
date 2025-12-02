@@ -55,6 +55,14 @@ const fields = defineFormFields({
             }
         ]
     },
+    max: {
+        component: 'text-field',
+        type: 'number',
+        label: $t('Max Dumps to Keep'),
+        hint: $t('The maximum number of dumps to keep (Excluding manual dumps). leave empty for unlimited.'),
+        min: 0,
+        clearable: true,
+    }
 })
 
 const columns = defineColumns<DumpPlan>([
@@ -122,6 +130,7 @@ async function toggle(row: DumpPlan) {
             :fields-edit="{
                 name: fields.name,
                 cron: fields.cron,
+                max: fields.max,
             }"
             :columns="columns"
             :title="$t('Dump Plans')"

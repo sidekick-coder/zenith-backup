@@ -7,6 +7,7 @@ import PgDumpStrategy from '../strategies/pgDump.strategy.ts'
 import type DumpGateway from '../gateways/dump.gateway.ts'
 import ConnectionDumpStrategy from '../strategies/connectionDump.strategy.ts'
 import SQLiteDumpStrategy from '../strategies/sqliteDump.strategy.ts'
+import Dump from '#zenith-backup/shared/entities/dump.entity.ts'
 import logger from '#server/facades/logger.facade.ts'
 import scheduler from '#server/facades/scheduler.facade.ts'
 import { storagePath } from '#server/utils/paths.ts'
@@ -22,6 +23,31 @@ export default class DumpService {
         'postgres': PgDumpStrategy,
         'connection': ConnectionDumpStrategy,
         'sqlite': SQLiteDumpStrategy,
+    }
+
+    public async listDumps(){
+        const folders = await fs.promises.readdir(storagePath('dumps'))
+        const dumps = [] as Dump[]
+
+        for (const folder of folders) {
+            const id = path.join(storagePath('dumps'), folder)
+            const metadataPath = path.join(storagePath('dumps', folder), 'metadata.json')
+
+            if (!fs.existsSync(metadataPath)) {
+                this.logger.warn('Dump folder without metadata found, skipping', { folder })
+                continue
+            }
+
+            const metadataContent = await fs.promises.readFile(metadataPath, 'utf-8')
+            const metadata = JSON.parse(metadataContent)
+
+            dumps.push(new Dump({
+                ...metadata,
+                id: id,
+            }))
+        }
+
+        return dumps
     }
 
     public async load(){
@@ -95,5 +121,40 @@ export default class DumpService {
             folder,
             filename
         })
+
+        await this.cleanup(plan)
+    }
+
+    public async cleanup(plan: DumpPlan){
+        if (plan.max == null) {
+            return
+        }
+
+        const dumps = await this.listDumps()
+        const planDumps = dumps.filter(dump => dump.plan_id === plan.id)
+
+        planDumps.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
+
+        const toDelete = planDumps.length - plan.max
+
+        if (toDelete <= 0) {
+            return
+        }
+
+        for (let i = 0; i < toDelete; i++) {
+            const dump = planDumps[i]
+            const dumpPath = dump.id
+
+            fs.rmSync(dumpPath, { 
+                recursive: true, 
+                force: true 
+            })
+
+            this.logger.info('Deleted old dump', {
+                dump_id: dump.id,
+                plan_id: plan.id,
+            })
+        }
+
     }
 }
