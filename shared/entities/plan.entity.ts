@@ -1,4 +1,6 @@
-export default class Plan {    
+export default class Plan {
+    public static ROUTINE_PREFIX = 'zbackups:plans'
+
     public id: string
     public name: string
     public description: string | null
@@ -16,5 +18,9 @@ export default class Plan {
 
     constructor(data: Plan){
         Object.assign(this, data)
+    }
+
+    public get routineId(){
+        return `${Plan.ROUTINE_PREFIX}:${this.id}`
     }
 }

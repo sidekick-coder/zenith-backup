@@ -1,5 +1,5 @@
 import path from 'path'
-import dumpService from './facades/dumpService.facade.ts'
+import backup from './facades/backup.facade.ts'
 import { defineServerSetup } from '#server/utils/defineServerSetup.ts'
 
 export default defineServerSetup(async ({ router, scheduler, queue }) => {
@@ -8,4 +8,6 @@ export default defineServerSetup(async ({ router, scheduler, queue }) => {
     await queue.addDirectory(path.resolve(import.meta.dirname, 'jobs'))
 
     // await dumpService.load()
+
+    await backup.load()
 })

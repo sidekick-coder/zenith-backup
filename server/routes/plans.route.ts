@@ -56,8 +56,8 @@ const resource = new RouterResourceConfig(Plan, {
     }
 })
 
-// resource.on('afterSave', async () => dumpService.reload())
-// resource.on('afterDestroy', async () => dumpService.reload())
+resource.on('afterSave', () => backup.reload())
+resource.on('afterDestroy', () => backup.reload())
 
 resource.register(router)
 

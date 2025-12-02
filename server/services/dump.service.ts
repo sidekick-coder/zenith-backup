@@ -80,7 +80,7 @@ export default class DumpService {
     }
 
     public async load(){
-        let plans = await DumpPlan.list()
+        let plans = await Plan.list()
         
         plans = plans.filter(plan => plan.active && plan.valid && plan.cron)
 

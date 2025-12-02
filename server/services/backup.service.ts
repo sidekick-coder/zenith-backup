@@ -4,7 +4,7 @@ import ResticStrategy from '../strategies/restic.strategy.ts'
 import { findPlan } from '../queries/plan.query.ts'
 import { findPlanTargets, findTarget } from '../queries/target.query.ts'
 import StrategyService from './strategy.service.ts'
-import type Plan from '#zenith-backup/shared/entities/plan.entity.ts'
+import Plan from '#zenith-backup/server/entities/plan.entity.ts'
 import BaseException from '#server/exceptions/base.ts'
 import { tryCatch } from '#shared/utils/tryCatch.ts'
 import logger from '#server/facades/logger.facade.ts'
@@ -19,74 +19,42 @@ export default class BackupService {
         this.strategies = new StrategyService()
     }
 
-    public findStrategy(plan: Plan): BackupStrategy {
-        if (plan.strategy === 'tar') {
-            return new TarStrategy()
+    public async load(){
+        let plans = await Plan.list()
+            
+        plans = plans.filter(plan => plan.active && plan.valid && plan.cron)
+    
+        for (const plan of plans) {            
+            scheduler.add(plan.routineId, plan.cron!, () => this.backup(plan, {
+                description: `Automated dump executed from dump plan '${plan.name}'`,
+                origin: 'automated',
+            }))
+    
+            scheduler.start(plan.routineId)
         }
-
-        if (plan.strategy === 'restic') {
-            return new ResticStrategy()
-        }
-
-        throw new BaseException('Backup strategy not found')
     }
 
-    public async list(planId: Plan['id']){
-        const plan = await findPlan(planId)
-        const targets = await findPlanTargets(planId)
-        const strategy = this.findStrategy(plan)
-
-        const [error, snapshots] = await tryCatch(() => strategy.list({
-            plan,
-            targets 
-        }))
-
-        if (error) {
-            this.logger.error(error)
-            throw BaseException.fromError(error)
-        }
-
-        snapshots.sort((a,b) => b.created_at.getTime() - a.created_at.getTime())
-
-        return snapshots
+    public async unload(){
+        const routines = await scheduler.list()
+    
+        const ids = routines
+            .filter(routine => routine.id.startsWith(Plan.ROUTINE_PREFIX))
+            .map(routine => routine.id)
+    
+        await scheduler.remove(ids)
+    }
+    
+    public async reload(){
+        await this.unload()
+        await this.load()
     }
 
-    public async schedule(planId: Plan['id']){
-        const plan = await findPlan(planId)
-
-        if (!plan.cron) {
-            throw new BaseException('Cannot schedule a plan without a cron expression', 400)
-        }
-
-        scheduler.add(`backup:plans:${plan.id}`, plan.cron!, () => this.backup(plan.id))
-    }
-
-    public async start(planId: Plan['id']){
-        const plan = await findPlan(planId)
-
-        if (!plan.cron) {
-            throw new BaseException('Cannot start a plan without a cron expression', 400)
-        }
-
-        if (!scheduler.has(`backup:plans:${plan.id}`)) {
-            scheduler.add(`backup:plans:${plan.id}`, plan.cron!, () => this.backup(plan.id))
-        }
-
-        await scheduler.start(`backup:plans:${plan.id}`)
-    }
-
-    public async stop(planId: Plan['id']){
-        const plan = await findPlan(planId)
-
-        await scheduler.stop(`backup:plans:${plan.id}`)
-    }
-
-    public async backup(plan: Plan){
+    public async backup(plan: Plan, metadata?: Record<string, unknown>) {
         const Strategy = await this.strategies.find(plan.strategy)
 
         const instance = new Strategy(plan.config, plan)
 
-        const [error] = await tryCatch(() => instance.backup())
+        const [error] = await tryCatch(() => instance.backup(metadata || {}))
 
         if (error) {
             this.logger.error(error)
@@ -96,76 +64,77 @@ export default class BackupService {
 
         this.logger.info('backup completed successfully', {
             plan_id: plan.id,
-            plan_name: plan.name
+            plan_name: plan.name,
+            metadata
         })
     }
 
     public async restore(planId: Target['plan_id'], snapshotId: string, restore_folder?: string) {
-        const snapshots = await this.list(planId)
-        const snapshot = snapshots.find(s => s.id === snapshotId)
-        const plan = await findPlan(planId)
-        const targets = await findPlanTargets(planId)
-        const target = await findTarget(snapshot!.target_id ?? '')
-        const strategy = this.findStrategy(plan)
+        // const snapshots = await this.list(planId)
+        // const snapshot = snapshots.find(s => s.id === snapshotId)
+        // const plan = await findPlan(planId)
+        // const targets = await findPlanTargets(planId)
+        // const target = await findTarget(snapshot!.target_id ?? '')
+        // const strategy = this.findStrategy(plan)
 
-        if (!snapshot) {
-            throw new BaseException('Snapshot not found', 404)
-        }
+        // if (!snapshot) {
+        //     throw new BaseException('Snapshot not found', 404)
+        // }
         
-        const [error] = await tryCatch(() => strategy.restore({
-            plan,
-            targets,
-            target,
-            snapshot,
-            restore_folder
-        }))
+        // const [error] = await tryCatch(() => strategy.restore({
+        //     plan,
+        //     targets,
+        //     target,
+        //     snapshot,
+        //     restore_folder
+        // }))
 
-        if (error) {
-            logger.error(error)
+        // if (error) {
+        //     logger.error(error)
 
-            console.log(error)
+        //     console.log(error)
 
-            throw new BaseException('Restore failed')
-        }
+        //     throw new BaseException('Restore failed')
+        // }
 
-        logger.info('Backup completed successfully', {
-            plan,
-            snapshot
-        })
+        // logger.info('Backup completed successfully', {
+        //     plan,
+        //     snapshot
+        // })
     }
 
     public async delete(planId: Target['plan_id'], snapshotId: string) {
-        const snapshots = await this.list(planId)
-        const snapshot = snapshots.find(s => s.id === snapshotId)
-        const plan = await findPlan(planId)
-        const targets = await findPlanTargets(planId)
-        const target = await findTarget(snapshot!.target_id ?? '')
+        // const snapshots = await this.list(planId)
+        // const snapshot = snapshots.find(s => s.id === snapshotId)
+        // const plan = await findPlan(planId)
+        // const targets = await findPlanTargets(planId)
+        // const target = await findTarget(snapshot!.target_id ?? '')
 
-        if (!snapshot){
-            throw new BaseException('Snapshot not found', 404)
-        }
+        // if (!snapshot){
+        //     throw new BaseException('Snapshot not found', 404)
+        // }
 
-        const strategy = this.findStrategy(plan)
+        // const strategy = this.findStrategy(plan)
         
-        const [error] = await tryCatch(() => strategy.delete({
-            plan,
-            targets,
-            snapshot,
-            target
-        }))
+        // const [error] = await tryCatch(() => strategy.delete({
+        //     plan,
+        //     targets,
+        //     snapshot,
+        //     target
+        // }))
 
-        if (error) {
-            logger.error(error)
+        // if (error) {
+        //     logger.error(error)
 
-            console.log(error)
+        //     console.log(error)
 
-            throw new BaseException('Delete failed')
-        }
+        //     throw new BaseException('Delete failed')
+        // }
 
-        logger.info('Snapshot deleted successfully', {
-            plan,
-            target,
-            snapshotId 
-        })
+        // logger.info('Snapshot deleted successfully', {
+        //     plan,
+        //     target,
+        //     snapshotId 
+        // })
     }
 }

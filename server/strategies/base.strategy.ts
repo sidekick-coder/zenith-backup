@@ -19,7 +19,7 @@ export default class BaseStrategy {
         this.config = config
     }
 
-    public async backup(){
+    public async backup(metadata: Record<string, unknown>){
         throw new Error('Not implemented')
     }
 

@@ -63,7 +63,7 @@ export default class PostgresDumpStrategy extends BaseStrategy {
         }
     }
 
-    public async backup(): Promise<void> {
+    public async backup(metadata: Record<string, unknown>): Promise<void> {
         const host = this.config.host as string | undefined
         const port = this.config.port as number | undefined
         const username = this.config.username as string
@@ -129,6 +129,7 @@ export default class PostgresDumpStrategy extends BaseStrategy {
 
         // metadata
         await driveInstance.write(path.join(folder, 'metadata.json'), {
+            ...metadata,
             plan_id: this.plan.id,
             strategy: PostgresDumpStrategy.id,
             created_at: format(new Date(), 'yyyy-MM-dd HH:mm'),
