@@ -83,7 +83,7 @@ export default class PostgresDumpStrategy extends BaseStrategy {
         }
 
         const tmpFilename = tmpPath(`backup_${Date.now()}.sql`)
-        const driveInstance = drive.use(this.config.drive_id as string)
+        const driveInstance = drive.use(driveId)
 
         const args = [
             `--host=${host || 'localhost'}`,
