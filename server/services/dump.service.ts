@@ -1,7 +1,12 @@
 
 import DumpPlan from '../entities/dumpPlan.entity.ts'
+import DumpJob from '../jobs/dump.job.ts'
 import logger from '#server/facades/logger.facade.ts'
 import scheduler from '#server/facades/scheduler.facade.ts'
+
+export interface ExecuteOptions {
+    immediate?: boolean
+}
 
 export default class DumpService {
     public logger = logger.child({ label: 'dumps' })
@@ -31,8 +36,14 @@ export default class DumpService {
         }
     }
 
-    public async execute(plan: DumpPlan){
+    public async execute(plan: DumpPlan, options?: ExecuteOptions){
         this.logger.info('Executing dump plan', { planId: plan.id })
-        // Dump logic goes here
+
+        if (options?.immediate) {
+            await DumpJob.dump(plan.id)
+            return
+        }
+        
+        await DumpJob.dispatch({ dump_plan_id: plan.id })
     }
 }
