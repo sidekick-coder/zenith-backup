@@ -6,6 +6,7 @@ import DumpPlan from '../entities/dumpPlan.entity.ts'
 import PgDumpStrategy from '../strategies/pgDump.strategy.ts'
 import type DumpGateway from '../gateways/dump.gateway.ts'
 import ConnectionDumpStrategy from '../strategies/connectionDump.strategy.ts'
+import SQLiteDumpStrategy from '../strategies/sqliteDump.strategy.ts'
 import logger from '#server/facades/logger.facade.ts'
 import scheduler from '#server/facades/scheduler.facade.ts'
 import { storagePath } from '#server/utils/paths.ts'
@@ -20,6 +21,7 @@ export default class DumpService {
     public strategies: Record<string, typeof DumpGateway> = {
         'postgres': PgDumpStrategy,
         'connection': ConnectionDumpStrategy,
+        'sqlite': SQLiteDumpStrategy,
     }
 
     public async load(){

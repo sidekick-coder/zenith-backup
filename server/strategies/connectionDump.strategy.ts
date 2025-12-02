@@ -1,6 +1,7 @@
 import path from 'path'
 import DumpGateway from '../gateways/dump.gateway.ts'
 import PgDumpStrategy from './pgDump.strategy.ts'
+import SQLiteDumpStrategy from './sqliteDump.strategy.ts'
 import shell from '#server/facades/shell.facade.ts'
 import config from '#server/facades/config.facade.ts'
 
@@ -29,6 +30,12 @@ export default class ConnectionDumpStrategy extends DumpGateway {
                 password: connection.password,
                 database: connection.database,
                 docker: docker,
+            })
+        }
+
+        if (connection.driver === 'sqlite') {
+            strategy = new SQLiteDumpStrategy({
+                filename: connection.database,
             })
         }
 

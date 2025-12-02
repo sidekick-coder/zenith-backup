@@ -21,6 +21,21 @@ export const TYPE_OPTIONS = [
         }
     },
     {
+        id: 'sqlite',
+        label: $t('SQLite'),
+        description: $t('Generate dumps from a local SQLite database file.'),
+        schema: validator.create(v => v.object({
+            filename: v.string(),
+        })),
+        fields: {
+            filename: { 
+                component: 'text-field',
+                label: $t('Filename'),
+                hint: $t('Path to the SQLite database file. relative to the project root.'),
+            }
+        }
+    },
+    {
         id: 'postgres',
         label: 'PostgreSQL',
         description: $t('Generate dumps directly from a PostgreSQL database.'),
