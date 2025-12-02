@@ -27,6 +27,16 @@ router.get('/strategies', async ({ acl }) => {
     }
 })
 
+router.post('/:id/backup', async ({ acl, params }) => {
+    acl.authorize('manage', 'ZBackupPlan')
+
+    const planId = params.id!
+
+    const plan = await Plan.findOrFail(planId)
+
+    await backup.backup(plan)
+})
+
 const read = AuthorizationMiddleware.create({
     action: 'read',
     resource: 'ZBackupPlan',
@@ -46,8 +56,8 @@ const resource = new RouterResourceConfig(Plan, {
     }
 })
 
-resource.on('afterSave', async () => dumpService.reload())
-resource.on('afterDestroy', async () => dumpService.reload())
+// resource.on('afterSave', async () => dumpService.reload())
+// resource.on('afterDestroy', async () => dumpService.reload())
 
 resource.register(router)
 

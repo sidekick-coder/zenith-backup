@@ -19,9 +19,19 @@ export default class StrategyService {
 
             strategies.push(value.default || value)
         }
-
-        console.log(strategies)
         
         return strategies
+    }
+
+    public async find(id: string){
+        const strategies = await this.list()
+
+        const strategy = strategies.find(s => s.id === id)
+
+        if (!strategy) {
+            throw new Error('Strategy not found')
+        }
+
+        return strategy
     }
 }

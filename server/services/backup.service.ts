@@ -13,6 +13,7 @@ import scheduler from '#server/facades/scheduler.facade.ts'
 
 export default class BackupService {
     public strategies: StrategyService
+    public logger = logger.child({ label: 'backup' })
 
     constructor() {
         this.strategies = new StrategyService()
@@ -41,7 +42,7 @@ export default class BackupService {
         }))
 
         if (error) {
-            logger.error(error)
+            this.logger.error(error)
             throw BaseException.fromError(error)
         }
 
@@ -80,31 +81,23 @@ export default class BackupService {
         await scheduler.stop(`backup:plans:${plan.id}`)
     }
 
-    public async backup(planId: Plan['id']){
-        const plan = await findPlan(planId)
-        const targets = await findPlanTargets(planId)
+    public async backup(plan: Plan){
+        const Strategy = await this.strategies.find(plan.strategy)
 
-        if (targets.length === 0) {
-            logger.warn('No targets found for plan', { planId })
-            return
-        }
+        const instance = new Strategy(plan.config, plan)
 
-        const strategy = this.findStrategy(plan)
-
-        const [error] = await tryCatch(() => strategy.backup({
-            plan,
-            targets 
-        }))
+        const [error] = await tryCatch(() => instance.backup())
 
         if (error) {
-            logger.error(error)
+            this.logger.error(error)
 
-            console.log(error)
-
-            throw new BaseException('Backup failed')
+            throw new BaseException('backup failed')
         }
 
-        logger.info('Backup completed successfully', { planId })
+        this.logger.info('backup completed successfully', {
+            plan_id: plan.id,
+            plan_name: plan.name
+        })
     }
 
     public async restore(planId: Target['plan_id'], snapshotId: string, restore_folder?: string) {

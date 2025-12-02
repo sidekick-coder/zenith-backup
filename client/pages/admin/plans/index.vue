@@ -169,7 +169,7 @@ async function toggle(row: Plan) {
                 <Button
                     size="icon"
                     variant="ghost"
-                    :to="`/admin/zbackups/plans/${row.id}`"
+                    :to="`/admin/zbackup/plans/${row.id}`"
                 >
                     <Icon name="Edit" />
                 </Button>

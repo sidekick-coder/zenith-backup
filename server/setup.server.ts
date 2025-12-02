@@ -7,5 +7,5 @@ export default defineServerSetup(async ({ router, scheduler, queue }) => {
     await scheduler.loadDirectory(path.resolve(import.meta.dirname, 'routines'))
     await queue.addDirectory(path.resolve(import.meta.dirname, 'jobs'))
 
-    await dumpService.load()
+    // await dumpService.load()
 })

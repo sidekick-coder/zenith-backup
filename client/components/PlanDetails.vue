@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { useForm } from 'vee-validate'
-import { toTypedSchema } from '@vee-validate/valibot'
 import { toast } from 'vue-sonner'
 import FormTextField from '#client/components/FormTextField.vue'
 import FormTextarea from '#client/components/FormTextarea.vue'
@@ -27,13 +26,11 @@ import {
 import { $fetch } from '#client/utils/fetcher.ts'
 import { tryCatch } from '#shared/utils/tryCatch.ts'
 import { $t } from '#shared/lang.ts'
-import planValidator from '#zenith-backup/shared/validators/plan.validator.ts'
 import Plan from '#zenith-backup/shared/entities/plan.entity.ts'
-import validator from '#shared/services/validator.service.ts'
 
 interface Props {
     plan: Plan
-    planId: number
+    planId: string
 }
 
 const props = defineProps<Props>()
@@ -41,12 +38,7 @@ const props = defineProps<Props>()
 const saving = ref(false)
 
 const { handleSubmit, setValues, setFieldValue } = useForm({
-    validationSchema: toTypedSchema(validator.create(v => v.omit(planValidator.update, ['options']))),
-    initialValues: {
-        name: props.plan.name,
-        cron: props.plan.cron || '',
-        description: props.plan.description || '',
-    },
+    initialValues: props.plan,
 })
 
 const cronShortcuts = [
@@ -83,13 +75,14 @@ function setCronShortcut(cronValue: string) {
 const onSubmit = handleSubmit(async (data) => {
     saving.value = true
 
-    const [error] = await tryCatch(() => 
-        $fetch(`/api/backup/plans/${props.planId}`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            data
-        })
-    )
+    const [error] = await $fetch.try(`/api/zbackup/plans/${props.planId}`, {
+        method: 'PATCH',
+        data: {
+            name: data.name,
+            cron: data.cron,
+            description: data.description,
+        }
+    })
 
     if (error) {
         saving.value = false
@@ -120,7 +113,9 @@ const executing = ref(false)
 async function execute() {
     executing.value = true
 
-    const [error] = await tryCatch(() => $fetch(`/api/backup/plans/${props.planId}/execute`, { method: 'POST', }))
+    const [error] = await $fetch.try(`/api/zbackup/plans/${props.planId}/backup`, { 
+        method: 'POST'
+    })
 
     if (error) {
         executing.value = false
@@ -145,6 +140,19 @@ async function execute() {
                 </CardDescription>
             </CardHeader>
             <CardContent class="space-y-6">
+                <FormTextField
+                    name="id"
+                    :label="$t('ID')"
+                    disabled
+                />
+                
+                <FormTextField
+                    name="strategy_label"
+                    :label="$t('Strategy')"
+                    disabled
+                />
+
+
                 <FormTextField
                     name="name"
                     :label="$t('Name')"

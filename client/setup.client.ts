@@ -15,7 +15,7 @@ export default defineClientSetup(({ router, menu }) => {
     })
 
     menu.add({
-        id: 'zbackups-dumps',
+        id: 'zbackup-dumps',
         label: $t('Dumps'),
         icon: 'DatabaseBackup',
         group: $t('Backups'),
@@ -23,7 +23,7 @@ export default defineClientSetup(({ router, menu }) => {
     })
 
     menu.add({
-        id: 'zbackups-dump-plans',
+        id: 'zbackup-dump-plans',
         label: $t('Dump Plans'),
         icon: 'Folder',
         group: $t('Backups'),
@@ -31,7 +31,7 @@ export default defineClientSetup(({ router, menu }) => {
     })
 
     menu.add({
-        id: 'zbackups-plans',
+        id: 'zbackup-plans',
         label: $t('Plans'),
         icon: 'Folder',
         group: $t('Backups'),

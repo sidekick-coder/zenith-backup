@@ -21,18 +21,23 @@ import {
 
 const route = useRoute()
 const router = useRouter()
-const planId = computed(() => Number(route.params.id))
+const planId = computed(() => String(route.params.id))
 const plan = ref<Plan>()
-const tab = useRouteQuery('tab', 'targets')
+const tab = useRouteQuery('tab', 'config')
 
 const loading = ref(false)
 
 const tabs = computed(() => {
     const items: any[] = [
+        // {
+        //     value: 'targets',
+        //     label: $t('Targets'),
+        //     component: defineAsyncComponent(() => import('#zenith-backup/client/components/TargetTable.vue')),
+        // },
         {
-            value: 'targets',
-            label: $t('Targets'),
-            component: defineAsyncComponent(() => import('#zenith-backup/client/components/TargetTable.vue')),
+            value: 'config',
+            label: $t('Configuration'),
+            component: defineAsyncComponent(() => import('#zenith-backup/client/components/PlanConfig.vue')),
         },
         {
             value: 'snapshots',
@@ -63,14 +68,12 @@ const tabs = computed(() => {
 async function loadPlan() {
     loading.value = true
 
-    const [error, response] = await tryCatch(() => 
-        $fetch<Plan>(`/api/backup/plans/${planId.value}`, { method: 'GET' })
-    )
+    const [error, response] = await $fetch.try<Plan>(`/api/zbackup/plans/${planId.value}`)
 
     if (error) {
         loading.value = false
         toast.error($t('Failed to load plan details.'))
-        router.push('/admin/plans')
+        // router.push('/admin/plans')
         return
     }
 
