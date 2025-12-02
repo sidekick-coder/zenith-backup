@@ -3,6 +3,7 @@ import TarStrategy from '../strategies/tar.strategy.ts'
 import ResticStrategy from '../strategies/restic.strategy.ts'
 import { findPlan } from '../queries/plan.query.ts'
 import { findPlanTargets, findTarget } from '../queries/target.query.ts'
+import StrategyService from './strategy.service.ts'
 import type Plan from '#zenith-backup/shared/entities/plan.entity.ts'
 import BaseException from '#server/exceptions/base.ts'
 import { tryCatch } from '#shared/utils/tryCatch.ts'
@@ -10,7 +11,13 @@ import logger from '#server/facades/logger.facade.ts'
 import type Target from '#zenith-backup/shared/entities/target.entity.ts'
 import scheduler from '#server/facades/scheduler.facade.ts'
 
-export class BackupService {
+export default class BackupService {
+    public strategies: StrategyService
+
+    constructor() {
+        this.strategies = new StrategyService()
+    }
+
     public findStrategy(plan: Plan): BackupStrategy {
         if (plan.strategy === 'tar') {
             return new TarStrategy()
@@ -169,8 +176,3 @@ export class BackupService {
         })
     }
 }
-
-const backupService = new BackupService()
-
-
-export default backupService

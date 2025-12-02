@@ -1,207 +1,179 @@
 <script setup lang="ts">
-import { watch, ref } from 'vue'
-import { toast } from 'vue-sonner'
-import DataTable, { defineColumns } from '#client/components/DataTable.vue'
-import { $t } from '#shared/lang.ts'
+import { ref } from 'vue'
+import type { ComponentExposed } from 'vue-component-type-helpers'
 import AppLayout from '#client/layouts/AppLayout.vue'
-import { $fetch } from '#client/utils/fetcher.ts'
-import { tryCatch } from '#shared/utils/tryCatch.ts'
-import ClientOnly from '#client/components/ClientOnly.vue'
+import PageCrud from '#client/components/PageCrud.vue'
+import { defineFormFields } from '#client/components/FormAutoFieldList.vue'
+import { $t } from '#shared/lang.ts'
+import { defineColumns } from '#client/components/DataTable.vue'
+import Plan from '#zenith-backup/shared/entities/plan.entity.ts'
 import Button from '#client/components/Button.vue'
 import Icon from '#client/components/Icon.vue'
-import PlanDialog from '#zenith-backup/client/components/PlanDialog.vue'
-import AlertButton from '#client/components/AlertButton.vue'
-import type Plan from '#zenith-backup/shared/entities/plan.entity.ts'
+import { $fetch } from '#client/utils'
 import Switch from '#client/components/ui/switch/Switch.vue'
-import Alert from '#client/components/Alert.vue'
 
-const items = ref<Plan[]>([])
-const page = ref(1)
-const deletingItems = ref<string[]>([])
+const crudRef = ref<ComponentExposed<typeof PageCrud>>()
+const toggling = ref<string[]>([])
+
+const fields = defineFormFields({
+    id: {
+        component: 'text-field',
+        label: 'ID',
+    },
+    name: {
+        component: 'text-field',
+        label: $t('Name'),
+    },
+    strategy: {
+        component: 'select',
+        label: $t('Strategy'),
+        labelKey: 'label',
+        valueKey: 'id',
+        descriptionKey: 'description',
+        fetch: '/api/zbackup/plans/strategies'
+    },
+    cron: {
+        component: 'text-field',
+        label: 'Cron',
+        presets: [
+            {
+                label: $t('Every hour'),
+                value: '0 * * * *'
+            },
+            {
+                label: $t('Every day at midnight'),
+                value: '0 0 * * *'
+            },
+            {
+                label: $t('Every week on Sunday at midnight'),
+                value: '0 0 * * 0'
+            },
+            {
+                label: $t('Every month on the 1st at midnight'),
+                value: '0 0 1 * *'
+            }
+        ]
+    },
+    max: {
+        component: 'text-field',
+        type: 'number',
+        label: $t('Max Dumps to Keep'),
+        hint: $t('The maximum number of dumps to keep (Excluding manual dumps). leave empty for unlimited.'),
+        min: 0,
+        clearable: true,
+    }
+})
 
 const columns = defineColumns<Plan>([
     {
+        id: 'active',
+        label: $t('Active'),
+        field: 'active',
+        width: 80
+    },
+    {
         id: 'id',
-        header: 'ID',
-        accessorKey: 'id',
-        size: 50,
+        label: 'ID',
+        field: 'id',
     },
     {
         id: 'name',
-        header: $t('Name'),
-        accessorKey: 'name'
+        label: $t('Name'),
+        field: 'name'
     },
     {
         id: 'strategy',
-        header: $t('Strategy'),
-        accessorKey: 'strategy'
-    },
-    {
-        id: 'active',
-        header: $t('Active'),
-        accessorKey: 'active'
+        label: $t('Strategy'),
+        field: 'strategy_label'
     },
     {
         id: 'cron',
-        header: $t('Cron'),
-        accessorKey: 'cron'
+        label: 'Cron',
+        field: 'cron',
+    },
+    {
+        id: 'valid',
+        label: $t('Valid'),
+        field: 'valid'
     },
     { id: 'actions' }
 ])
 
 async function load(){
-    const [error, response] = await tryCatch(() => $fetch<{ data: Plan[] }>('/api/backup/plans', {
-        method: 'GET',
-        query: {
-            page: page.value,
-            limit: 20,
-        },
-    }))
-
-    if (error) {
-        console.error('Failed to load backup/plans:', error)
-        return
-    }
-
-    items.value = response.data || []
+    crudRef.value?.load()
 }
-
-function reset() {
-    page.value = 1
-    return load()
-}
-
-async function destroy(id: string) {
-    deletingItems.value.push(id)
-    const [error] = await tryCatch(() => $fetch(`/api/backup/plans/${id}`, { method: 'DELETE', }))
-
-    if (error) {
-        toast.error($t('Failed to delete.'))
-        deletingItems.value = []
-        return
-    }
-
-    setTimeout(() => {
-        toast.success($t('Deleted successfully.'))
-        deletingItems.value = []
-        reset()
-    }, 1000)
-
-}
-
-watch(page, load, { immediate: true })
-
-// excute 
-
-const executingId = ref<number[]>([])
-
-async function execute(id: number) {
-    if (executingId.value.includes(id)) return
-
-    executingId.value.push(id)
-
-    const [error] = await tryCatch(() => $fetch(`/api/backup/plans/${id}/execute`, { method: 'POST', }))
-
-    if (error) {
-        executingId.value = executingId.value.filter(i => i !== id)
-        return
-    }
-
-    setTimeout(() => {
-        toast.success($t('Execution started.'))
-        executingId.value = executingId.value.filter(i => i !== id)
-    }, 800)
-
-}
-
-// toggle 
-const togglingId = ref<number[]>([])
 
 async function toggle(row: Plan) {
-    togglingId.value.push(row.id)
+    toggling.value.push(row.id)
 
-    const [error] = await tryCatch(() => $fetch(`/api/backup/plans/${row.id}/toggle`, { method: 'POST', }))
-
-    if (error) {
-        togglingId.value = togglingId.value.filter(i => i !== row.id)
-        return
-    }
+    await $fetch(`/api/zbackup/plans/${row.id}`, {
+        method: 'PUT',
+        data: {
+            active: !row.active
+        }
+    })
 
     setTimeout(() => {
-        toast.success($t('Toggled successfully.'))
-        togglingId.value = togglingId.value.filter(i => i !== row.id)
         load()
-    }, 800)
+        toggling.value = toggling.value.filter(id => id !== row.id)
+    }, 500)
 }
 
 </script>
+
 <template>
     <AppLayout>
-        <div class="flex">
-            <h1 class="text-2xl font-bold mb-4 text-foreground flex-1">
-                {{ $t('Plans') }}
-            </h1>
-            <div>
-                <ClientOnly>
-                    <PlanDialog @submit="reset" />
-                </ClientOnly>
-            </div>
-        </div>
-
-        <DataTable 
-            :rows="items"
-            :page="page"
+        <PageCrud 
+            ref="crudRef"
+            fetch="/api/zbackup/plans"
+            :fields="fields"
+            :fields-edit="{
+                name: fields.name,
+                cron: fields.cron,
+                max: fields.max,
+            }"
             :columns="columns"
+            :title="$t('Plans')"
+            :description="$t('Manage your backup plans')"
+            :serialize="row => new Plan(row)"
+            :actions="['create', 'destroy']"
         >
             <template #row-active="{ row }">
-                <Alert
-                    :title="$t('Toggle active status')"
-                    :description="$t('This will toggle the active status of the plan.')"
-                    @confirm="toggle(row)"
-                >
-                    <Icon
-                        v-if="togglingId.includes(row.id)"
-                        name="Loader2"
-                        class="animate-spin"
-                    />
-                    <Switch
-                        v-else
-                        :model-value="!!row.active"
-                        class="pointer-events-none"
-                        loading
-                    />
-                </Alert>
+                <Icon
+                    v-if="toggling.includes(row.id)"
+                    name="Loader2"
+                    class="animate-spin"
+                />
+
+                <Switch
+                    v-else
+                    :model-value="!!row.active"
+                    @click="toggle(row)"
+                />
+            </template>
+            
+            <template #row-valid="{ row }">
+                <Icon
+                    v-if="row.valid"
+                    name="CheckCircle2"
+                    class="text-green-500 size-5"
+                />
+                <Icon
+                    v-else
+                    name="AlertCircle"
+                    class="text-yellow-500 size-5"
+                />
             </template>
 
-            <template #row-actions="{ row }">
-                <div class="flex items-center gap-2 justify-end">
-                    <AlertButton
-                        variant="ghost"
-                        size="sm"
-                        :title="$t('Execute backup')"
-                        :description="$t('This action can not be stopped once started.')"
-                        :loading="executingId.includes(row.id)"
-                        @confirm="execute(row.id)"
-                    >
-                        <Icon name="play" />
-                    </AlertButton>
-                    <Button
-                        variant="ghost"
-                        :to="`/admin/backup/plans/${row.id}`"
-                        size="sm"
-                    >
-                        <Icon name="eye" />
-                    </Button>
-                    <AlertButton
-                        variant="ghost"
-                        size="sm"
-                        :loading="deletingItems.includes(row.id)"
-                        @confirm="destroy(row.id)"
-                    >
-                        <Icon name="trash" />
-                    </AlertButton>
-                </div>
+            <template #prepend-actions="{ row }">
+                <Button
+                    size="icon"
+                    variant="ghost"
+                    :to="`/admin/zbackups/plans/${row.id}`"
+                >
+                    <Icon name="Edit" />
+                </Button>
             </template>
-        </DataTable>
+        </PageCrud>
     </AppLayout>
 </template>
