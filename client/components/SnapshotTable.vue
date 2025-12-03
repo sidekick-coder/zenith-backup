@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { toast } from 'vue-sonner'
+import { format } from 'date-fns'
 import SnapshotRestoreDialog from './SnapshotRestoreDialog.vue'
 import DataTable, { defineColumns } from '#client/components/DataTable.vue'
 import { $t } from '#shared/lang.ts'
@@ -17,6 +18,7 @@ import {
     CardTitle,
 } from '#client/components/ui/card'
 import Snapshot from '#zenith-backup/shared/entities/snapshot.entity.ts'
+import ObjectInspect from '#client/components/ObjectInspect.vue'
 
 interface Props {
     planId: string
@@ -55,9 +57,13 @@ const columns = defineColumns<Snapshot>([
         field: 'humanSize'
     },
     {
+        id: 'metadata',
+        label: $t('Metadata'),
+    },
+    {
         id: 'created_at',
         label: $t('Created At'),
-        field: 'created_at',
+        field: row => row.created_at ? format(new Date(row.created_at), 'yyyy-MM-dd HH:mm') : '-',
     },
     { id: 'actions' }
 ])
@@ -150,6 +156,12 @@ watch(() => [props.planId], load, { immediate: true })
                 :columns="columns"
                 :loading="loading"
             >
+                <template #row-metadata="{ row }">
+                    <ObjectInspect
+                        :model-value="row.metadata"
+                    />
+                </template>
+
                 <template #row-actions="{ row }">
                     <div class="flex items-center gap-2 justify-end">
                         <!-- <Button

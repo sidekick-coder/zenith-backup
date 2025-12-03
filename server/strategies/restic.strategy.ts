@@ -1,9 +1,10 @@
+import { camelCase, upperFirst, lowerCase  } from 'lodash-es'
 import { DockerStrategy } from '../mixins/dockerStrategy.mixin.ts'
 import BaseStrategy from './base.strategy.ts'
 import shell from '#server/facades/shell.facade.ts'
-import logger from '#server/facades/logger.facade.ts'
 import { $t } from '#shared/lang.ts'
 import { composeWith } from '#shared/utils/compose.ts'
+import Snapshot from '#zenith-backup/shared/entities/snapshot.entity.ts'
 
 export default class ResticStrategy extends composeWith(
     BaseStrategy,
@@ -106,6 +107,12 @@ export default class ResticStrategy extends composeWith(
         // Add metadata as tags
         if (metadata && Object.keys(metadata).length > 0) {
             for (const [key, value] of Object.entries(metadata)) {
+
+                if (key === 'description') {
+                    backupArgs.push('--tag', `description:${camelCase(value)}`)
+                    continue
+                }
+
                 if (value !== null && value !== undefined) {
                     backupArgs.push('--tag', `${key}:${value}`)
                 }
@@ -175,6 +182,127 @@ export default class ResticStrategy extends composeWith(
 
             await shell.command('docker', dockerForgetArgs, { env })
         } 
+
+        await shell.command('restic', forgetArgs, { env })
+    }
+
+    public async list(): Promise<Snapshot[]> {
+        const repository = this.config.repository as string
+        const password = this.config.password as string
+
+        if (!repository) {
+            throw new Error('Repository path is required')
+        }
+
+        if (!password) {
+            throw new Error('Repository password is required')
+        }
+
+        const env = {
+            ...process.env,
+            RESTIC_REPOSITORY: repository,
+            RESTIC_PASSWORD: password,
+        }
+
+        const snapshotsArgs = ['snapshots', '--json']
+        let output: string
+
+        if (this.useDocker && this.dockerImage) {
+            const dockerSnapshotsArgs = [
+                'run',
+                '--rm',
+                '-e',
+                `RESTIC_REPOSITORY=${repository}`,
+                '-e',
+                `RESTIC_PASSWORD=${password}`,
+                '-v',
+                `${repository}:${repository}`,
+                this.dockerImage,
+                'restic',
+                ...snapshotsArgs
+            ]
+
+            output = await shell.executeCommandWithOutput('docker', dockerSnapshotsArgs, { env })
+        }
+
+        if (!this.useDocker || !this.dockerImage) {
+            output = await shell.executeCommandWithOutput('restic', snapshotsArgs, { env })
+        }
+
+        const resticSnapshots = JSON.parse(output!)
+
+        const snapshots: Snapshot[] = []
+
+        for (const resticSnapshot of resticSnapshots) {
+            const tags: Record<string, string> = {}
+            
+            if (resticSnapshot.tags) {
+                for (const tag of resticSnapshot.tags) {
+                    const [key, value] = tag.split(':')
+
+                    if (key === 'description') {
+                        tags.description = upperFirst(lowerCase(value))
+                        continue
+                    }
+                    
+                    if (key && value) {
+                        tags[key] = value
+                    }
+                }
+            }
+
+            snapshots.push(new Snapshot({
+                id: resticSnapshot.short_id,
+                plan_id: this.plan.id,
+                origin: tags.origin,
+                description: tags.description || tags.note,
+                size: resticSnapshot.summary?.total_bytes_processed || 0,
+                metadata: resticSnapshot,
+                created_at: resticSnapshot.time
+            }))
+        }
+
+        return snapshots
+    }
+
+    public async destroy(snapshot: Snapshot): Promise<void> {
+        const repository = this.config.repository as string
+        const password = this.config.password as string
+
+        if (!repository) {
+            throw new Error('Repository path is required')
+        }
+
+        if (!password) {
+            throw new Error('Repository password is required')
+        }
+
+        const env = {
+            ...process.env,
+            RESTIC_REPOSITORY: repository,
+            RESTIC_PASSWORD: password,
+        }
+
+        const forgetArgs = ['forget', snapshot.id, '--prune']
+
+        if (this.useDocker && this.dockerImage) {
+            const dockerForgetArgs = [
+                'run',
+                '--rm',
+                '-e',
+                `RESTIC_REPOSITORY=${repository}`,
+                '-e',
+                `RESTIC_PASSWORD=${password}`,
+                '-v',
+                `${repository}:${repository}`,
+                this.dockerImage,
+                'restic',
+                ...forgetArgs
+            ]
+
+            await shell.command('docker', dockerForgetArgs, { env })
+            return
+        }
 
         await shell.command('restic', forgetArgs, { env })
     }
