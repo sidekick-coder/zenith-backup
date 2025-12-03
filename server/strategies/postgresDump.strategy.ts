@@ -1,11 +1,11 @@
 import path from 'path'
 import fs from 'fs'
 import { format } from 'date-fns'
-import BaseDump from './baseDump.strategy.ts'
+import { DumpStrategy } from '../mixins/dumpStrategy.mixin.ts'
+import BaseStrategy from './base.strategy.ts'
 import shell from '#server/facades/shell.facade.ts'
 import config from '#server/facades/config.facade.ts'
 import { $t } from '#shared/lang.ts'
-import drive from '#server/facades/drive.facade.ts'
 import { tmpPath } from '#server/utils/paths.ts'
 import { cuid } from '#server/utils/cuid.util.ts'
 
@@ -19,48 +19,48 @@ interface DumpOptions {
     docker: boolean
 }
 
-export default class PostgresDumpStrategy extends BaseDump {
+export default class PostgresDumpStrategy extends DumpStrategy()(BaseStrategy) {
     public static id = 'postgres_dump'
     public static label = 'Postgres Dump'
     public static description = $t('This strategy uses pg_dump to backup a Postgres database.')
-            
-    public static fields_sections = BaseDump.sections(items => {
-        items.splice(1, 0, {
+
+    static {
+        this.section('database', {
             title: $t('Database'),
             description: $t('Settings related to the Postgres database connection.'),
-            fields: {
-                host: { 
-                    component: 'text-field',
-                    label: $t('Host'),
-                },
-                port: { 
-                    component: 'text-field',
-                    type: 'number',
-                    label: $t('Port'),
-                },
-                database: { 
-                    component: 'text-field',
-                    label: $t('Database'),
-                },
-                username: { 
-                    component: 'text-field',
-                    label: $t('Username'),
-                },
-                password: { 
-                    component: 'text-field',
-                    label: $t('Password'),
-                    type: 'password',
-                }
-            }
         })
 
-        return items
-    })
+        this.field('host', {
+            component: 'text-field',
+            section_id: 'database',
+            label: $t('Host'),
+        })
 
-    public get drive(){
-        const driveId = this.config.drive_id as string
+        this.field('port', {
+            component: 'text-field',
+            section_id: 'database',
+            type: 'number',
+            label: $t('Port'),
+        })
 
-        return drive.use(driveId)
+        this.field('database', {
+            component: 'text-field',
+            section_id: 'database',
+            label: $t('Database'),
+        })
+
+        this.field('username', {
+            component: 'text-field',
+            section_id: 'database',
+            label: $t('Username'),
+        })
+
+        this.field('password', {
+            component: 'text-field',
+            section_id: 'database',
+            label: $t('Password'),
+            type: 'password',
+        })
     }
 
     public static async dump(options: DumpOptions): Promise<void> {

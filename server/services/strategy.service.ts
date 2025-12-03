@@ -4,11 +4,15 @@ import type Plan from '../entities/plan.entity.ts'
 import { importAll } from '#server/utils/index.ts'
 
 export default class StrategyService {
-    public async list(){
+    public items: typeof BaseStrategy[] = []
+
+    public async load(){
         const folder = path.resolve(import.meta.dirname, '../strategies')        
+        
         const imports = await importAll(folder, {
-            exclude: ['base.strategy.ts', 'baseDump.strategy.ts']
+            exclude: ['base.strategy.ts']
         })
+
         const strategies = [] as typeof BaseStrategy[]
 
         for (const mod of Object.values(imports)) {
@@ -19,7 +23,15 @@ export default class StrategyService {
             strategies.push(mod.default || mod)
         }
         
-        return strategies
+        this.items = strategies
+    }
+
+    public async list(){
+        if (this.items.length === 0) {
+            await this.load()
+        }
+
+        return this.items
     }
 
     public async find(id: string){

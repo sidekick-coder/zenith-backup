@@ -1,34 +1,34 @@
 import path from 'path'
 import fs from 'fs'
 import { format } from 'date-fns'
-import BaseDump from './baseDump.strategy.ts'
+import { DumpStrategy } from '../mixins/dumpStrategy.mixin.ts'
 import PostgresDump from './postgresDump.strategy.ts'
+import BaseStrategy from './base.strategy.ts'
 import config from '#server/facades/config.facade.ts'
 import { $t } from '#shared/lang.ts'
 import { tmpPath } from '#server/utils/paths.ts'
 import { cuid } from '#server/utils/cuid.util.ts'
 
-export default class ConnectionDumpStrategy extends BaseDump {
+export default class ConnectionDumpStrategy extends DumpStrategy()(BaseStrategy) {
     public static id = 'connection_dump'
     public static label = $t('Connection Dump')
     public static description = $t('This strategy uses the appropriate dump strategy based on the connection driver.')
-    public static fields_sections = BaseDump.sections(items => {
-        items.splice(2, 0, {
+
+    static {
+        this.section('database', {
             title: $t('Database'),
             description: $t('Settings related to the Postgres database connection.'),
-            fields: {
-                name: { 
-                    component: 'select',
-                    label: $t('Connection Name'),
-                    fetch: '/api/database-connections',
-                    valueKey: 'id',
-                    labelKey: 'name',
-                },
-            }
         })
 
-        return items
-    })
+        this.field('name', {
+            component: 'select',
+            section_id: 'database',
+            label: $t('Connection Name'),
+            fetch: '/api/database-connections',
+            valueKey: 'id',
+            labelKey: 'name',
+        })
+    }
 
     public async backup(metadata: Record<string, any>): Promise<void> {
         const name = this.config.name as string

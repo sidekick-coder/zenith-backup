@@ -19,8 +19,12 @@ import {
 import Snapshot from '#zenith-backup/shared/entities/snapshot.entity.ts'
 
 interface Props {
-    planId: number
+    planId: string
 }
+
+defineOptions({
+    inheritAttrs: false,
+})
 
 const props = defineProps<Props>()
 
