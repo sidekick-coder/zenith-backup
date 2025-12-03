@@ -47,6 +47,11 @@ const columns = defineColumns<Snapshot>([
         field: 'description'
     },
     {
+        id: 'trigger',
+        label: $t('Trigger'),
+        field: 'trigger_type'
+    },
+    {
         id: 'origin',
         label: $t('Origin'),
         field: 'origin'
@@ -59,6 +64,10 @@ const columns = defineColumns<Snapshot>([
     {
         id: 'metadata',
         label: $t('Metadata'),
+    },
+    {
+        id: 'data',
+        label: $t('Data'),
     },
     {
         id: 'created_at',
@@ -156,10 +165,24 @@ watch(() => [props.planId], load, { immediate: true })
                 :columns="columns"
                 :loading="loading"
             >
+                <template #row-data="{ row }">
+                    <ObjectInspect
+                        v-if="row.data"
+                        :model-value="row.data"
+                    />
+                    <div v-else>
+                        -
+                    </div>
+                </template>
+                
                 <template #row-metadata="{ row }">
                     <ObjectInspect
+                        v-if="row.metadata"
                         :model-value="row.metadata"
                     />
+                    <div v-else>
+                        -
+                    </div>
                 </template>
 
                 <template #row-actions="{ row }">

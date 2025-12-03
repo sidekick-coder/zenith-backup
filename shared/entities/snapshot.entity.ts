@@ -3,17 +3,34 @@ import type Plan from './plan.entity.ts'
 export default class Snapshot {
     public id: string
     public plan_id: string
-    public origin?: string
-    public description?: string
-    public size?: number
+    public data?: Record<string, any>
+    public metadata?: Record<string, any>
     public created_at: string
 
-    public plan?: Plan | null
-
-    [key: string]: any
+    public plan?: Plan | null    
 
     constructor(data: any){
         Object.assign(this, data)
+    }
+
+    public get description(){
+        return this.metadata?.description || ''
+    }
+
+    public get size(){
+        return this.metadata?.size || 0
+    }
+
+    public get origin(){
+        return this.metadata?.origin || 'unknown'
+    }
+
+    public get trigger_type(){
+        return this.metadata?.trigger_type || 'unknown'
+    }
+
+    public get trigger_id(){
+        return this.metadata?.trigger_id || null
     }
 
     public get humanSize() {

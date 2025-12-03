@@ -112,11 +112,9 @@ export function DumpStrategy<T extends string>(options?: DumpStrategyOptions) {
                     snapshots.push(new Snapshot({
                         id: path.basename(entry.path),
                         plan_id: strategy.plan.id,
-                        origin: metadata.origin as string | undefined,
-                        description: metadata.description as string | undefined,
-                        size: metadata.size as number | undefined,
-                        metadata,
                         created_at: metadata.created_at as string,
+                        data: metadata,
+                        metadata,
                     }))
                 }
             

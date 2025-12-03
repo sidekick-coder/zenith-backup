@@ -6,6 +6,8 @@ import { tryCatch } from '#shared/utils/tryCatch.ts'
 import logger from '#server/facades/logger.facade.ts'
 import type Target from '#zenith-backup/shared/entities/target.entity.ts'
 import scheduler from '#server/facades/scheduler.facade.ts'
+import emmitter from '#server/facades/emmitter.facade.ts'
+import { $t } from '#shared/lang.ts'
 
 export default class BackupService {
     public strategies: StrategyService
@@ -20,26 +22,70 @@ export default class BackupService {
     public async load(){
         let plans = await Plan.list()
             
-        plans = plans.filter(plan => plan.active && plan.valid && plan.cron)
-    
-        for (const plan of plans) {            
-            scheduler.add(plan.routineId, plan.cron!, () => this.backup(plan, {
-                description: `Automated dump executed from dump plan '${plan.name}'`,
-                origin: 'automated',
-            }))
-    
-            scheduler.start(plan.routineId)
+        plans = plans.filter(plan => plan.active)
+
+        
+        for (const plan of plans) {
+            if (!plan.triggers) continue            
+
+            for (const trigger of plan.triggers) {
+                
+
+                if (trigger.type === 'cron' && trigger.cron) {
+                    const id = `${Plan.TRIGGER_PREFIX}:${plan.id}:${trigger.id}`
+
+                    const cb = () => this.backup(plan, {
+                        description: `cron:${trigger.cron}`,
+                        origin: 'automated',
+                        trigger_type: 'cron',
+                        trigger_id: trigger.id,
+                    })
+
+                    scheduler.add(trigger.cron, cb, { id })
+                }
+
+                if (trigger.type === 'event' && trigger.events) {
+                    const id = `${Plan.TRIGGER_PREFIX}:${plan.id}:${trigger.id}`
+
+                    
+                    for (const event of trigger.events) {
+                        const cb = (eventPayload: any) => this.backup(plan, {
+                            ...eventPayload,
+                            description: `event:${event}`,
+                            origin: 'automated',
+                            trigger_type: 'event',
+                            trigger_id: trigger.id,
+                        })
+
+                        emmitter.on(event, cb, {  id: `${id}:${event}` })
+                    }
+                }
+            }
         }
     }
 
     public async unload(){
         const routines = await scheduler.list()
     
-        const ids = routines
-            .filter(routine => routine.id.startsWith(Plan.ROUTINE_PREFIX))
+        const routineIds = routines
+            .filter(routine => routine.id.startsWith(Plan.TRIGGER_PREFIX))
             .map(routine => routine.id)
+
+        if (routineIds.length) {
+            await scheduler.remove(routineIds)
+        }
     
-        await scheduler.remove(ids)
+
+        const handlers = await emmitter.list()
+
+        const handlerIds = handlers
+            .filter(handler => handler.id.startsWith(Plan.TRIGGER_PREFIX))
+            .map(handler => handler.id)
+
+        if (handlerIds.length){
+            await emmitter.remove(handlerIds)
+        }
+
     }
     
     public async reload(){
