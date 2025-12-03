@@ -1,3 +1,4 @@
+import { format } from 'date-fns'
 import StrategyService from './strategy.service.ts'
 import SnapshotService from './snapshots.service.ts'
 import Plan from '#zenith-backup/server/entities/plan.entity.ts'
@@ -35,13 +36,14 @@ export default class BackupService {
                     const id = `${Plan.TRIGGER_PREFIX}:${plan.id}:${trigger.id}`
 
                     const cb = () => this.backup(plan, {
-                        description: `cron:${trigger.cron}`,
+                        description: format(new Date(), 'yyyy-MM-dd HH:mm'),
                         origin: 'automated',
                         trigger_type: 'cron',
                         trigger_id: trigger.id,
                     })
 
                     scheduler.add(trigger.cron, cb, { id })
+                    scheduler.start(id)
                 }
 
                 if (trigger.type === 'event' && trigger.events) {
