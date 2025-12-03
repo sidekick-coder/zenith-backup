@@ -1,3 +1,5 @@
+import type Trigger from './trigger.entity.ts'
+
 export default class Plan {
     public static ROUTINE_PREFIX = 'zbackups:plans'
 
@@ -13,6 +15,8 @@ export default class Plan {
     public strategy_label?: string
     public strategy_fields?: Record<string, any>
     public strategy_fields_sections?: Record<string, any>[]
+
+    public triggers?: Trigger[]
     
     public created_at: string
     public updated_at: string

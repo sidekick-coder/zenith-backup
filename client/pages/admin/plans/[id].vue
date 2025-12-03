@@ -24,48 +24,27 @@ const router = useRouter()
 const planId = computed(() => String(route.params.id))
 const plan = ref<Plan>()
 const tab = useRouteQuery('tab', 'config')
-
 const loading = ref(false)
 
-const tabs = computed(() => {
-    const items: any[] = [
-        // {
-        //     value: 'targets',
-        //     label: $t('Targets'),
-        //     component: defineAsyncComponent(() => import('#zenith-backup/client/components/TargetTable.vue')),
-        // },
-        {
-            value: 'config',
-            label: $t('Configuration'),
-            component: defineAsyncComponent(() => import('#zenith-backup/client/components/PlanConfig.vue')),
-        },
-        {
-            value: 'snapshots',
-            label: $t('Snapshots'),
-            component: defineAsyncComponent(() => import('#zenith-backup/client/components/SnapshotTable.vue')),
-        },
-    ]
+const tabs = [
+    {
+        value: 'config',
+        label: $t('Configuration'),
+        component: defineAsyncComponent(() => import('#zenith-backup/client/components/PlanConfig.vue')),
+    },
+    {
+        value: 'triggers',
+        label: $t('Triggers'),
+        component: defineAsyncComponent(() => import('#zenith-backup/client/components/PlanTriggers.vue')),
+    },
+    {
+        value: 'snapshots',
+        label: $t('Snapshots'),
+        component: defineAsyncComponent(() => import('#zenith-backup/client/components/SnapshotTable.vue')),
+    },
+]
 
-    if (plan.value?.strategy === 'tar') {
-        items.push({
-            value: 'configuration',
-            label: $t('Configuration'),
-            component: defineAsyncComponent(() => import('#zenith-backup/client/components/PlanTarForm.vue')),
-        })
-    }
-    
-    if (plan.value?.strategy === 'restic') {
-        items.push({
-            value: 'configuration',
-            label: $t('Configuration'),
-            component: defineAsyncComponent(() => import('#zenith-backup/client/components/PlanResticForm.vue')),
-        })
-    }
-
-    return items 
-})
-
-async function loadPlan() {
+async function load() {
     loading.value = true
 
     const [error, response] = await $fetch.try<Plan>(`/api/zbackup/plans/${planId.value}`)
@@ -73,7 +52,7 @@ async function loadPlan() {
     if (error) {
         loading.value = false
         toast.error($t('Failed to load plan details.'))
-        // router.push('/admin/plans')
+        router.push('/admin/zbackup/plans')
         return
     }
 
@@ -81,7 +60,7 @@ async function loadPlan() {
     loading.value = false
 }
 
-onMounted(loadPlan)
+onMounted(load)
 </script>
 
 <template>
