@@ -61,12 +61,14 @@ export default class SQLiteDumpStrategy extends composeWith(
             dockerArgs.push('run', '--rm')
             dockerArgs.push('-v', `${path.dirname(database)}:/database`)
             dockerArgs.push('-v', `${path.dirname(filename)}:/dumps`)
-            dockerArgs.push('nouchka/sqlite3', 'sqlite3')
+            dockerArgs.push('nouchka/sqlite3')
                 
-            dockerArgs.push('/database/' + path.basename(database))
-            dockerArgs.push(`".backup '/dumps/${path.basename(filename)}'"`)
+            dockerArgs.push(`/database/${path.basename(database)}`)
+            dockerArgs.push(`.backup '/dumps/${path.basename(filename)}'`)
         
-            return shell.command('docker', dockerArgs)
+            return shell.command('docker', dockerArgs, {
+                shell: false
+            })
         }
         
         return shell.command('sqlite3', args)
