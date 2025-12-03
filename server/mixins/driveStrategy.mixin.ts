@@ -3,7 +3,7 @@ import type { Constructor } from '#shared/utils/compose.ts'
 import { $t } from '#shared/lang.ts'
 import drive from '#server/facades/drive.facade.ts'
 
-export function DriveStrategy<T extends string>(key: T = 'drive' as T) {
+export function DriveStrategy() {
     return function DriveStrategyExtend<TBase extends Constructor>(Base: TBase) {
         return class extends Base {
             static {

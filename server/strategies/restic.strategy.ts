@@ -13,6 +13,26 @@ export default class ResticStrategy extends composeWith(
     public static description = $t('Backup folders and files to a Restic repository.')
 
     static {
+        this.section('repository', {
+            title: $t('Repository Configuration'),
+            description: $t('Settings related to the Restic repository where backups will be stored.'),
+        })
+
+        this.field('repository', {
+            component: 'text-field',
+            section_id: 'repository',
+            label: $t('Repository'),
+            description: $t('File path or URL to the Restic repository.'),
+        })
+
+        this.field('password', {
+            component: 'text-field',
+            type: 'password',
+            section_id: 'repository',
+            label: $t('Repository Password'),
+            description: $t('Password for encrypting/decrypting the Restic repository.'),
+        })
+
         this.section('targets', {
             title:  $t('Backup Targets'),
             description: $t('Settings related to the files and directories to be backed up.'),

@@ -2,14 +2,20 @@ import path from 'path'
 import fs from 'fs'
 import { format } from 'date-fns'
 import { DumpStrategy } from '../mixins/dumpStrategy.mixin.ts'
+import { DockerStrategy } from '../mixins/dockerStrategy.mixin.ts'
 import PostgresDump from './postgresDump.strategy.ts'
 import BaseStrategy from './base.strategy.ts'
 import config from '#server/facades/config.facade.ts'
 import { $t } from '#shared/lang.ts'
 import { tmpPath } from '#server/utils/paths.ts'
 import { cuid } from '#server/utils/cuid.util.ts'
+import { composeWith } from '#shared/utils/compose.ts'
 
-export default class ConnectionDumpStrategy extends DumpStrategy()(BaseStrategy) {
+export default class ConnectionDumpStrategy extends composeWith(
+    BaseStrategy,
+    DockerStrategy(),
+    DumpStrategy()
+) {
     public static id = 'connection_dump'
     public static label = $t('Connection Dump')
     public static description = $t('This strategy uses the appropriate dump strategy based on the connection driver.')
@@ -34,16 +40,6 @@ export default class ConnectionDumpStrategy extends DumpStrategy()(BaseStrategy)
         const name = this.config.name as string
         const directory = this.config.directory as string | undefined
 
-        let docker = this.config.docker as boolean | undefined
-
-        if (docker === undefined) {
-            docker = config.get<boolean>('zbackups.connection.docker')
-        }
-
-        if (docker === undefined) {
-            docker = config.get<boolean>('zbackups.docker.enabled', false)
-        }
-
         const connection = config.get(`database.connections.${name}`) as Record<string, any>
 
         const tmpFilename = tmpPath(`backup_${Date.now()}.sql`)
@@ -56,7 +52,7 @@ export default class ConnectionDumpStrategy extends DumpStrategy()(BaseStrategy)
                 username: connection.user,
                 password: connection.password,
                 database: connection.database,
-                docker: docker,
+                docker: this.useDocker,
             })
         }
 

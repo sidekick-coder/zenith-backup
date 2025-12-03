@@ -2,12 +2,13 @@ import path from 'path'
 import fs from 'fs'
 import { format } from 'date-fns'
 import { DumpStrategy } from '../mixins/dumpStrategy.mixin.ts'
+import { DockerStrategy } from '../mixins/dockerStrategy.mixin.ts'
 import BaseStrategy from './base.strategy.ts'
 import shell from '#server/facades/shell.facade.ts'
-import config from '#server/facades/config.facade.ts'
 import { $t } from '#shared/lang.ts'
 import { tmpPath } from '#server/utils/paths.ts'
 import { cuid } from '#server/utils/cuid.util.ts'
+import { composeWith } from '#shared/utils/compose.ts'
 
 interface DumpOptions {
     filename: string
@@ -19,7 +20,11 @@ interface DumpOptions {
     docker: boolean
 }
 
-export default class PostgresDumpStrategy extends DumpStrategy()(BaseStrategy) {
+export default class PostgresDumpStrategy extends composeWith(
+    BaseStrategy,
+    DockerStrategy(),
+    DumpStrategy()
+) {
     public static id = 'postgres_dump'
     public static label = 'Postgres Dump'
     public static description = $t('This strategy uses pg_dump to backup a Postgres database.')
@@ -115,16 +120,6 @@ export default class PostgresDumpStrategy extends DumpStrategy()(BaseStrategy) {
         const password = this.config.password as string | undefined
         const database = this.config.database as string
         const directory = this.config.directory as string | undefined
-        
-        let docker = this.config.docker as boolean | undefined
-
-        if (docker === undefined) {
-            docker = config.get<boolean>('zbackups.pg_dump.docker')
-        }
-
-        if (docker === undefined) {
-            docker = config.get<boolean>('zbackups.docker.enabled', false)
-        }
 
         const tmpFilename = tmpPath(`backup_${Date.now()}.sql`)
 
@@ -135,7 +130,7 @@ export default class PostgresDumpStrategy extends DumpStrategy()(BaseStrategy) {
             username,
             password,
             database,
-            docker: !!docker,
+            docker: this.useDocker,
         })
 
         const stats = await fs.promises.stat(tmpFilename)
