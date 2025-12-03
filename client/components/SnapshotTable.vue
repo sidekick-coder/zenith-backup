@@ -158,9 +158,9 @@ watch(() => [props.planId], load, { immediate: true })
                         <AlertButton
                             variant="ghost"
                             size="sm"
-                            :fetch="`/api/zbackup/plans/${planId}/snapshots`"
-                            :loading="deletingItems.includes(row.id)"
-                            @confirm="deleteSnapshot(row.id)"
+                            fetch-method="DELETE"
+                            :fetch="`/api/zbackup/plans/${planId}/snapshots/${row.id}`"
+                            @fetched="load"
                         >
                             <Icon name="trash" />
                         </AlertButton>

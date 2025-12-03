@@ -6,13 +6,15 @@ import cli from '#server/services/cli.service.ts'
 
 program.command('zbackups:backup')
     .option('-p, --plan-id <planId>', 'Plan ID to execute')
+    .option('-d, --description <description>', 'Description for the backup')
+    .option('-o, --origin <origin>', 'Origin of the backup')
     .description('Execute a raw SQL query')
     .helpGroup('zbackups')
-    .action(cli.with('all', async (options: { planId: string }) => {
+    .action(cli.with('all', async (options: { planId: string, description?: string, origin?: string }) => {
         const plan = await Plan.findOrFail(options.planId)
         
         await backup.backup(plan, {
-            origin: 'manual',
-            description: 'Manual backup executed from CLI',
+            origin: options.origin || 'manual',
+            description: options.description || 'Manual backup executed from CLI',
         })
     }))

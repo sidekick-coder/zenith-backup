@@ -54,14 +54,6 @@ const fields = defineFormFields({
             }
         ]
     },
-    max: {
-        component: 'text-field',
-        type: 'number',
-        label: $t('Max Dumps to Keep'),
-        hint: $t('The maximum number of dumps to keep (Excluding manual dumps). leave empty for unlimited.'),
-        min: 0,
-        clearable: true,
-    }
 })
 
 const columns = defineColumns<Plan>([
@@ -91,11 +83,11 @@ const columns = defineColumns<Plan>([
         label: 'Cron',
         field: 'cron',
     },
-    {
-        id: 'valid',
-        label: $t('Valid'),
-        field: 'valid'
-    },
+    // {
+    //     id: 'valid',
+    //     label: $t('Valid'),
+    //     field: 'valid'
+    // },
     { id: 'actions' }
 ])
 

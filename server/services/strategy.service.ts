@@ -6,19 +6,17 @@ import { importAll } from '#server/utils/index.ts'
 export default class StrategyService {
     public async list(){
         const folder = path.resolve(import.meta.dirname, '../strategies')        
-        const imports = await importAll(folder)
+        const imports = await importAll(folder, {
+            exclude: ['base.strategy.ts', 'baseDump.strategy.ts']
+        })
         const strategies = [] as typeof BaseStrategy[]
 
-        for (const [key, value] of Object.entries(imports)) {
-            if (key.endsWith('base.strategy.ts')) {
+        for (const mod of Object.values(imports)) {
+            if (!mod.default?.__is_strategy) {
                 continue
             }
 
-            if (!value.default?.__is_strategy) {
-                continue
-            }
-
-            strategies.push(value.default || value)
+            strategies.push(mod.default || mod)
         }
         
         return strategies
