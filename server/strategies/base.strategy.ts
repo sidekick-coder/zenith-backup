@@ -1,5 +1,6 @@
 import type Plan from '../entities/plan.entity.ts'
 import validator from '#shared/services/validator.service.ts'
+import type Snapshot from '#zenith-backup/shared/entities/snapshot.entity.ts'
 
 export default class BaseStrategy {
     public static __is_strategy = true
@@ -20,14 +21,18 @@ export default class BaseStrategy {
     }
 
     public async backup(metadata: Record<string, unknown>){
-        throw new Error('Not implemented')
+        const error = new Error('Not implemented')
+
+        Object.assign(error, { metadata })
+
+        throw error
     }
 
     public async restore(){
         throw new Error('Not implemented')
     }
 
-    public async list(){
+    public async list(): Promise<Snapshot[]> {
         throw new Error('Not implemented')
     }
 }

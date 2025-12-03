@@ -1,5 +1,6 @@
 import path from 'path'
 import type BaseStrategy from '../strategies/base.strategy'
+import type Plan from '../entities/plan.entity.ts'
 import { importAll } from '#server/utils/index.ts'
 
 export default class StrategyService {
@@ -33,5 +34,11 @@ export default class StrategyService {
         }
 
         return strategy
+    }
+
+    public async instantiate(plan: Plan){
+        const Strategy = await this.find(plan.strategy)
+
+        return new Strategy(plan.config, plan)
     }
 }

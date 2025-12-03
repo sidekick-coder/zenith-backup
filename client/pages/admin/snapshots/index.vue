@@ -5,11 +5,11 @@ import AppLayout from '#client/layouts/AppLayout.vue'
 import PageCrud from '#client/components/PageCrud.vue'
 import { $t } from '#shared/lang.ts'
 import { defineColumns } from '#client/components/DataTable.vue'
-import Dump from '#zenith-backup/shared/entities/dump.entity.ts'
+import Snapshot from '#zenith-backup/shared/entities/snapshot.entity.ts'
 
 const crudRef = ref<ComponentExposed<typeof PageCrud>>()
 
-const columns = defineColumns<Dump>([
+const columns = defineColumns<Snapshot>([
     {
         id: 'id',
         label: 'ID',
@@ -20,9 +20,9 @@ const columns = defineColumns<Dump>([
         label: $t('Plan'),
     },
     {
-        id: 'label',
-        label: $t('Label'),
-        field: 'label'
+        id: 'description',
+        label: $t('Description'),
+        field: 'description'
     },
     {
         id: 'origin',
@@ -48,17 +48,20 @@ const columns = defineColumns<Dump>([
     <AppLayout>
         <PageCrud 
             ref="crudRef"
-            fetch="/api/zbackup/dumps"
+            fetch="/api/zbackup/snapshots"
             :columns="columns"
-            :title="$t('Dumps')"
-            :description="$t('Dump list created from dump plans and manual dumps.')"
-            :serialize="row => new Dump(row)"
+            :title="$t('Snapshots')"
+            :description="$t('Snapshot list created from plans.')"
+            :serialize="row => new Snapshot(row)"
             :actions="['destroy']"
         >
             <template #row-plan="{ row }">
-                <div class="text-primary">
+                <router-link
+                    class="text-primary hover:underline"
+                    :to="`/admin/zbackup/plans/${row.plan_id}`"
+                >
                     {{ row.plan?.name || $t('No plan') }}
-                </div>
+                </router-link>
             </template>
 
             <template #row-label="{ row }">

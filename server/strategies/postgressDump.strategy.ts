@@ -10,6 +10,7 @@ import drive from '#server/facades/drive.facade.ts'
 import { tmpPath } from '#server/utils/paths.ts'
 import BaseException from '#server/exceptions/base.ts'
 import { cuid } from '#server/utils/cuid.util.ts'
+import Snapshot from '#zenith-backup/shared/entities/snapshot.entity.ts'
 
 export default class PostgresDumpStrategy extends BaseStrategy {
     public static id = 'postgres_dump'
@@ -63,13 +64,18 @@ export default class PostgresDumpStrategy extends BaseStrategy {
         }
     }
 
+    public get drive(){
+        const driveId = this.config.drive_id as string
+
+        return drive.use(driveId)
+    }
+
     public async backup(metadata: Record<string, unknown>): Promise<void> {
         const host = this.config.host as string | undefined
         const port = this.config.port as number | undefined
         const username = this.config.username as string
         const password = this.config.password as string | undefined
         const database = this.config.database as string
-        const driveId = this.config.drive_id as string
         const directory = this.config.directory as string | undefined
         
         let docker = this.config.docker as boolean | undefined
@@ -83,7 +89,6 @@ export default class PostgresDumpStrategy extends BaseStrategy {
         }
 
         const tmpFilename = tmpPath(`backup_${Date.now()}.sql`)
-        const driveInstance = drive.use(driveId)
 
         const args = [
             `--host=${host || 'localhost'}`,
@@ -122,19 +127,57 @@ export default class PostgresDumpStrategy extends BaseStrategy {
             await shell.command('pg_dump', args, { env })
         }
 
+        const stats = await fs.promises.stat(tmpFilename)
+
         const id = cuid()
         const folder = directory ? path.join(directory, id) : id
 
-        await driveInstance.upload(tmpFilename, path.join(folder, 'dump.sql'))
+        await this.drive.upload(tmpFilename, path.join(folder, 'dump.sql'))
 
         // metadata
-        await driveInstance.write(path.join(folder, 'metadata.json'), {
+        await this.drive.write(path.join(folder, 'metadata.json'), {
             ...metadata,
             plan_id: this.plan.id,
             strategy: PostgresDumpStrategy.id,
+            size: stats.size,
             created_at: format(new Date(), 'yyyy-MM-dd HH:mm'),
         })
         
         await fs.promises.unlink(tmpFilename)
+    }
+
+    public list: BaseStrategy['list']  = async () => {
+        const folder = this.config.directory as string | undefined
+
+        const entries = await this.drive.list(folder || '')
+
+        const snapshots = [] as Snapshot[]
+
+        for (const entry of entries) {
+            if (!(await this.drive.exists(path.join(entry.path, 'dump.sql')))) {
+                continue
+            }
+
+            if (!(await this.drive.exists(path.join(entry.path, 'metadata.json')))) {
+                continue
+            }
+
+            const uint8 = await this.drive.read(path.join(entry.path, 'metadata.json'))
+            const text = new TextDecoder().decode(uint8)
+            const metadata = JSON.parse(text) as Record<string, unknown>
+
+            snapshots.push(new Snapshot({
+                id: path.basename(entry.path),
+                plan_id: this.plan.id,
+                origin: metadata.origin as string | undefined,
+                description: metadata.description as string | undefined,
+                strategy: PostgresDumpStrategy.id,
+                size: metadata.size as number | undefined,
+                metadata,
+                created_at: metadata.created_at as string,
+            }))
+        }
+
+        return snapshots
     }
 }
