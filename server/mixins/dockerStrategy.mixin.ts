@@ -5,9 +5,10 @@ import config from '#server/facades/config.facade.ts'
 
 interface Options {
     configKeys?: string[]
+    defaultImage?: string
 }
 
-export function DockerStrategy<T extends string>(options: Options = {}) {
+export function DockerStrategy(options: Options = {}) {
     return function DockerStrategyExtend<TBase extends Constructor>(Base: TBase) {
         return class extends Base {
             static {
@@ -36,31 +37,56 @@ export function DockerStrategy<T extends string>(options: Options = {}) {
                     component: 'select',
                     section_id: 'docker',
                     label: $t('Use Docker'),
+                    clearable: true,
                     options: [
                         { 
-                            value: true, 
+                            value: 'true', 
                             label: $t('Yes') 
                         },
                         { 
-                            value: false, 
+                            value: 'false', 
                             label: $t('No') 
                         }
                     ],
-                    clearable: true,
                 })
 
-                cls.field('image_tag', {
+                cls.field('docker_image', {
                     component: 'text-field',
                     section_id: 'docker',
-                    label: $t('Image Tag'),
+                    placeholder: options.defaultImage,
+                    label: $t('Image'),
                 })
+            }
+
+            public get dockerImage(): string | undefined {
+                const strategy = this as any as BaseStrategy
+
+                let image = strategy.config.docker_image as string | undefined
+
+                if (!image) {
+                    image = options.defaultImage
+                }
+
+                if (!image) {
+                    return undefined
+                }
+
+                if (!image.includes(':')) {
+                    image = `${image}:latest`
+                }
+
+                return image
             }
 
             public get useDocker(): boolean {
                 const strategy = this as any as BaseStrategy
                 const keys = options.configKeys || ['zbackups.docker.enabled']
                 
-                let result = strategy.config.docker as boolean | undefined | null
+                let result = strategy.config.docker === 'true'
+
+                if (result !== undefined && result !== null) {
+                    return result
+                }
 
                 for (const key of keys) {
                     if (result !== undefined && result !== null) {

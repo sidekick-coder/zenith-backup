@@ -118,6 +118,7 @@ async function toggle(row: Plan) {
         <PageCrud 
             ref="crudRef"
             fetch="/api/zbackup/plans"
+            fetch-destroy="/api/zbackup/plans/:id"
             :fields="fields"
             :fields-edit="{
                 name: fields.name,
