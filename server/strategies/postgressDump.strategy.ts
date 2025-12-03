@@ -16,7 +16,7 @@ import Snapshot from '#zenith-backup/shared/entities/snapshot.entity.ts'
 const sections = [] as StrategyFieldSection[]
 
 sections.push({
-    title: $t('Drive Settings'),
+    title: $t('Drive'),
     description: $t('Settings related to the backup drive and directory.'),
     fields: {
         drive_id: {
@@ -35,7 +35,7 @@ sections.push({
 })
 
 sections.push({
-    title: $t('Database Settings'),
+    title: $t('Database'),
     description: $t('Settings related to the Postgres database connection.'),
     fields: {
         host: { 
@@ -72,6 +72,18 @@ sections.push({
             type: 'number',
             label: $t('Max quantity of backups'),
             description: $t('Maximum quantity of backups to keep.'),
+        },
+    }
+})
+
+sections.push({
+    title: $t('Options'),
+    description: $t('Additional options for the backup process.'),
+    fields: {
+        docker: { 
+            component: 'switch',
+            label: $t('Use Docker'),
+            hint: $t('Whether to use a Docker container to run pg_dump. If not set, the global Docker setting will be used.'),
         },
     }
 })
