@@ -1,4 +1,5 @@
 import StrategyService from './strategy.service.ts'
+import SnapshotService from './snapshots.service.ts'
 import Plan from '#zenith-backup/server/entities/plan.entity.ts'
 import BaseException from '#server/exceptions/base.ts'
 import { tryCatch } from '#shared/utils/tryCatch.ts'
@@ -8,10 +9,12 @@ import scheduler from '#server/facades/scheduler.facade.ts'
 
 export default class BackupService {
     public strategies: StrategyService
+    public snapshots: SnapshotService
     public logger = logger.child({ label: 'backup' })
 
     constructor() {
         this.strategies = new StrategyService()
+        this.snapshots = new SnapshotService(this.strategies)
     }
 
     public async load(){

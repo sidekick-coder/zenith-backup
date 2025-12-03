@@ -180,4 +180,11 @@ export default class PostgresDumpStrategy extends BaseStrategy {
 
         return snapshots
     }
+
+    public async destroy(snapshot: Snapshot): Promise<void> {
+        const directory = this.config.directory as string | undefined
+        const folder = directory ? path.join(directory, snapshot.id) : snapshot.id
+
+        await this.drive.delete(folder)
+    }
 }

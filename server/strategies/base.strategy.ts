@@ -28,8 +28,20 @@ export default class BaseStrategy {
         throw error
     }
 
-    public async restore(){
-        throw new Error('Not implemented')
+    public async restore(snapshot: Snapshot){
+        const error = new Error('Not implemented')
+
+        Object.assign(error, { snapshot })
+
+        throw error
+    }
+
+    public async destroy(snapshot: Snapshot){
+        const error = new Error('Not implemented')
+
+        Object.assign(error, { snapshot })
+
+        throw error
     }
 
     public async list(): Promise<Snapshot[]> {

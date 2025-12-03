@@ -49,6 +49,7 @@ const columns = defineColumns<Snapshot>([
         <PageCrud 
             ref="crudRef"
             fetch="/api/zbackup/snapshots"
+            fetch-destroy="/api/zbackup/plans/:plan_id/snapshots/:id"
             :columns="columns"
             :title="$t('Snapshots')"
             :description="$t('Snapshot list created from plans.')"
