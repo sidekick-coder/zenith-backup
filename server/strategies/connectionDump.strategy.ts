@@ -5,6 +5,7 @@ import { DumpStrategy } from '../mixins/dumpStrategy.mixin.ts'
 import { DockerStrategy } from '../mixins/dockerStrategy.mixin.ts'
 import PostgresDump from './postgresDump.strategy.ts'
 import BaseStrategy from './base.strategy.ts'
+import SQLiteDumpStrategy from './sqliteDump.strategy.ts'
 import config from '#server/facades/config.facade.ts'
 import { $t } from '#shared/lang.ts'
 import { tmpPath } from '#server/utils/paths.ts'
@@ -58,6 +59,11 @@ export default class ConnectionDumpStrategy extends composeWith(
 
         if (connection.driver === 'sqlite') {
             // Use SQLite dump strategy
+            await SQLiteDumpStrategy.dump({
+                filename: tmpFilename,
+                database: connection.database,
+                docker: this.useDocker,
+            })
         }
 
         if (!fs.existsSync(tmpFilename)) {

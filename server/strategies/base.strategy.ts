@@ -32,7 +32,7 @@ export default class BaseStrategy {
     public plan: Plan
 
     public static boot(){
-        console.log('boot strategy')
+        // boot method for subclasses to override
     }
 
     static {

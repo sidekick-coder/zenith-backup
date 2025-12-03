@@ -5,7 +5,15 @@ import { $t } from '#shared/lang.ts'
 import drive from '#server/facades/drive.facade.ts'
 import Snapshot from '#zenith-backup/shared/entities/snapshot.entity.ts'
 
-export function DumpStrategy<T extends string>(_key: T = 'dump' as T) {
+interface DumpStrategyOptions {
+    dumpFilename?: string
+    metadataFilename?: string
+}
+
+export function DumpStrategy<T extends string>(options?: DumpStrategyOptions) {
+    const dumpFilename = options?.dumpFilename || 'dump.sql'
+    const metadataFilename = options?.metadataFilename || 'metadata.json'
+
     return function DumpStrategyExtend<TBase extends Constructor>(Base: TBase) {
         return class extends Base {
             static {
@@ -85,15 +93,15 @@ export function DumpStrategy<T extends string>(_key: T = 'dump' as T) {
                 const snapshots = [] as Snapshot[]
             
                 for (const entry of entries) {
-                    if (!(await this.drive.exists(path.join(entry.path, 'dump.sql')))) {
+                    if (!(await this.drive.exists(path.join(entry.path, dumpFilename)))) {
+                        continue
+                    }
+                    
+                    if (!(await this.drive.exists(path.join(entry.path, metadataFilename)))) {
                         continue
                     }
             
-                    if (!(await this.drive.exists(path.join(entry.path, 'metadata.json')))) {
-                        continue
-                    }
-            
-                    const uint8 = await this.drive.read(path.join(entry.path, 'metadata.json'))
+                    const uint8 = await this.drive.read(path.join(entry.path, metadataFilename))
                     const text = new TextDecoder().decode(uint8)
                     const metadata = JSON.parse(text) as Record<string, unknown>
             
