@@ -16,11 +16,10 @@ import {
     CardHeader,
     CardTitle,
 } from '#client/components/ui/card'
-import type Snapshot from '#zenith-backup/shared/entities/snapshot.entity.ts'
+import Snapshot from '#zenith-backup/shared/entities/snapshot.entity.ts'
 
 interface Props {
     planId: number
-    targetId?: number
 }
 
 const props = defineProps<Props>()
@@ -33,50 +32,51 @@ const restoreDialogSnapshot = ref<Snapshot | null>(null)
 const columns = defineColumns<Snapshot>([
     {
         id: 'id',
-        header: $t('Snapshot ID'),
-        accessorKey: 'id'
+        label: $t('Snapshot ID'),
+        field: 'id'
     },
-   
+    {
+        id: 'description',
+        label: $t('Description'),
+        field: 'description'
+    },
+    {
+        id: 'origin',
+        label: $t('Origin'),
+        field: 'origin'
+    },
+    {
+        id: 'size',
+        label: $t('Size'),
+        field: 'humanSize'
+    },
     {
         id: 'created_at',
-        header: $t('Created At'),
-        accessorKey: 'created_at',
-        cell: ({ getValue }) => new Date(getValue() as string).toLocaleString()
+        label: $t('Created At'),
+        field: 'created_at',
     },
     { id: 'actions' }
 ])
 
-if (!props.targetId) {
-    columns.splice(1,0,{
-        id: 'target_id',
-        header: $t('Target ID'),
-        accessorKey: 'target_id',
-        size: 30,
-    })
-}
-
 async function load() {
     loading.value = true
 
-    const url = `/api/backup/plans/${props.planId}/snapshots`
+    const url = `/api/zbackup/plans/${props.planId}/snapshots`
 
-    const [error, response] = await tryCatch(() => $fetch<{ data: Snapshot[] }>(url, { method: 'GET' }))
+    const [error, response] = await $fetch.try<{ items: Snapshot[] }>(url, { method: 'GET' })
 
     if (error) {
-        console.error('Failed to load snapshots:', error)
         loading.value = false
         return
     }
 
-    let items = response.data || []
+    const items = response.items || []
 
-    if (props.targetId) {
-        items = items.filter(item => item.target_id === props.targetId)
-    }
+    snapshots.value = items.map(item => new Snapshot(item))
 
-    snapshots.value = items
-
-    loading.value = false
+    setTimeout(() => {
+        loading.value = false
+    }, 500)
 }
 
 async function deleteSnapshot(id: string) {
@@ -115,7 +115,7 @@ function onRestoreDialogClose() {
     restoreDialogSnapshot.value = null
 }
 
-watch(() => [props.planId, props.targetId], load, { immediate: true })
+watch(() => [props.planId], load, { immediate: true })
 </script>
 
 <template>
@@ -128,9 +128,15 @@ watch(() => [props.planId, props.targetId], load, { immediate: true })
                         {{ $t('View and manage snapshots for this plan.') }}
                     </CardDescription>
                 </div>
-                <Button @click="load">
-                    <Icon name="refreshCw" />
-                    {{ $t('Refresh') }}
+                <Button
+                    variant="outline"
+                    
+                    @click="load"
+                >
+                    <Icon
+                        name="refreshCw"
+                        :class="{ 'animate-spin': loading }"
+                    />
                 </Button>
             </div>
         </CardHeader>
@@ -142,21 +148,21 @@ watch(() => [props.planId, props.targetId], load, { immediate: true })
             >
                 <template #row-actions="{ row }">
                     <div class="flex items-center gap-2 justify-end">
-                        <Button
+                        <!-- <Button
                             variant="default"
                             size="sm"
                             @click="restore(row.id)"
                         >
                             {{ $t('Restore') }}
-                        </Button>
+                        </Button> -->
                         <AlertButton
-                            variant="destructive"
+                            variant="ghost"
                             size="sm"
-                            
+                            :fetch="`/api/zbackup/plans/${planId}/snapshots`"
                             :loading="deletingItems.includes(row.id)"
                             @confirm="deleteSnapshot(row.id)"
                         >
-                            {{ $t('Delete') }}
+                            <Icon name="trash" />
                         </AlertButton>
                     </div>
                 </template>

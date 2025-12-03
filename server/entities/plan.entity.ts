@@ -35,6 +35,7 @@ export default class Plan extends composeWith(
 
             plan.strategy_label = strategy.label
             plan.strategy_fields = strategy.fields
+            plan.strategy_fields_sections = strategy.fields_sections
 
             if (strategy.schema) {
                 plan.valid = validator.isValid(plan.config, strategy.schema)

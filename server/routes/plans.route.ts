@@ -33,7 +33,10 @@ router.post('/:id/backup', async ({ acl, params }) => {
 
     const plan = await Plan.findOrFail(planId)
 
-    await backup.backup(plan)
+    await backup.backup(plan, {
+        origin: 'manual',
+        description: 'Manual backup triggered via API',
+    })
 })
 
 const read = AuthorizationMiddleware.create({

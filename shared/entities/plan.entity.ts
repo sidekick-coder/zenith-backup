@@ -12,6 +12,7 @@ export default class Plan {
     public strategy: string
     public strategy_label?: string
     public strategy_fields?: Record<string, any>
+    public strategy_fields_sections?: Record<string, any>[]
     
     public created_at: string
     public updated_at: string

@@ -2,6 +2,7 @@ import path from 'path'
 import fs from 'fs'
 import { format } from 'date-fns'
 import BaseStrategy from './base.strategy.ts'
+import type { StrategyFieldSection } from './base.strategy.ts'
 import shell from '#server/facades/shell.facade.ts'
 import config from '#server/facades/config.facade.ts'
 import { $t } from '#shared/lang.ts'
@@ -12,22 +13,12 @@ import BaseException from '#server/exceptions/base.ts'
 import { cuid } from '#server/utils/cuid.util.ts'
 import Snapshot from '#zenith-backup/shared/entities/snapshot.entity.ts'
 
-export default class PostgresDumpStrategy extends BaseStrategy {
-    public static id = 'postgres_dump'
-    public static label = 'Postgres Dump'
-    public static description = $t('This strategy uses pg_dump to backup a Postgres database.')
-    public static schema = validator.create(v => v.object({
-        drive_id: v.string(),
-        directory: v.string(),
+const sections = [] as StrategyFieldSection[]
 
-        host: v.string(),
-        port: v.number(),
-        database: v.string(),
-        username: v.string(),
-        password: v.string(),
-    }))
-            
-    public static fields ={
+sections.push({
+    title: $t('Drive Settings'),
+    description: $t('Settings related to the backup drive and directory.'),
+    fields: {
         drive_id: {
             component: 'select',
             fetch: '/api/drives',
@@ -40,6 +31,13 @@ export default class PostgresDumpStrategy extends BaseStrategy {
             component: 'text-field',
             label: $t('Directory'),
         },
+    }
+})
+
+sections.push({
+    title: $t('Database Settings'),
+    description: $t('Settings related to the Postgres database connection.'),
+    fields: {
         host: { 
             component: 'text-field',
             label: $t('Host'),
@@ -63,6 +61,37 @@ export default class PostgresDumpStrategy extends BaseStrategy {
             type: 'password',
         }
     }
+})
+
+sections.push({
+    title: $t('Limits'),
+    description: $t('Optional limits for the backup process.'),
+    fields: {
+        max_length: { 
+            component: 'text-field',
+            type: 'number',
+            label: $t('Max quantity of backups'),
+            description: $t('Maximum quantity of backups to keep.'),
+        },
+    }
+})
+
+export default class PostgresDumpStrategy extends BaseStrategy {
+    public static id = 'postgres_dump'
+    public static label = 'Postgres Dump'
+    public static description = $t('This strategy uses pg_dump to backup a Postgres database.')
+    public static schema = validator.create(v => v.object({
+        drive_id: v.string(),
+        directory: v.string(),
+
+        host: v.string(),
+        port: v.number(),
+        database: v.string(),
+        username: v.string(),
+        password: v.string(),
+    }))
+            
+    public static fields_sections = sections
 
     public get drive(){
         const driveId = this.config.drive_id as string
@@ -144,6 +173,8 @@ export default class PostgresDumpStrategy extends BaseStrategy {
         })
         
         await fs.promises.unlink(tmpFilename)
+
+        await this.cleanup()
     }
 
     public list: BaseStrategy['list']  = async () => {
@@ -166,6 +197,10 @@ export default class PostgresDumpStrategy extends BaseStrategy {
             const text = new TextDecoder().decode(uint8)
             const metadata = JSON.parse(text) as Record<string, unknown>
 
+            if (metadata.plan_id !== this.plan.id) {
+                continue
+            }
+
             snapshots.push(new Snapshot({
                 id: path.basename(entry.path),
                 plan_id: this.plan.id,
@@ -178,6 +213,8 @@ export default class PostgresDumpStrategy extends BaseStrategy {
             }))
         }
 
+        snapshots.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+
         return snapshots
     }
 
@@ -186,5 +223,29 @@ export default class PostgresDumpStrategy extends BaseStrategy {
         const folder = directory ? path.join(directory, snapshot.id) : snapshot.id
 
         await this.drive.delete(folder)
+    }
+
+    public async cleanup(): Promise<void> {
+        const maxLength = this.config.max_length as number | undefined
+
+        if (!maxLength || maxLength <= 0) {
+            return
+        }
+
+        let snapshots = await this.list()
+
+        snapshots = snapshots.filter(s => s.origin === 'automated')
+
+        snapshots.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
+        
+        if (snapshots.length <= maxLength) {
+            return
+        }
+        
+        const toDelete = snapshots.slice(0, snapshots.length - maxLength)
+
+        for (const snapshot of toDelete) {
+            await this.destroy(snapshot)
+        }
     }
 }

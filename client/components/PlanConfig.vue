@@ -48,18 +48,39 @@ const onSubmit = handleSubmit(async (payload) => {
 <template>
     <form @submit.prevent="onSubmit">
         <Card>
-            <CardHeader>
-                <CardTitle>{{ $t('Config') }}</CardTitle>
-                <CardDescription>
-                    {{ $t('Configure the backup strategy for the plan.') }}
-                </CardDescription>
-            </CardHeader>
-            <CardContent class="space-y-6">
-                <FormAutoFieldList
-                    v-if="props.plan.strategy_fields"
-                    :fields="props.plan.strategy_fields"
-                />
-            </CardContent>
+            <template v-if="plan.strategy_fields && Object.keys(plan.strategy_fields).length">
+                <CardHeader>
+                    <CardTitle>{{ $t('Config') }}</CardTitle>
+                    <CardDescription>
+                        {{ $t('Configure the backup strategy for the plan.') }}
+                    </CardDescription>
+                </CardHeader>
+                <CardContent class="space-y-6">
+                    <FormAutoFieldList
+                        v-if="props.plan.strategy_fields"
+                        :fields="props.plan.strategy_fields"
+                    />
+                </CardContent>
+            </template>
+
+            <template
+                v-for="section in plan.strategy_fields_sections"
+                :key="section.title"
+            >
+                <CardHeader>
+                    <CardTitle>{{ section.title }}</CardTitle>
+                    <CardDescription v-if="section.description">
+                        {{ section.description }}
+                    </CardDescription>
+                </CardHeader>
+
+                <CardContent class="space-y-6">
+                    <FormAutoFieldList
+                        :fields="section.fields"
+                    />
+                </CardContent>
+            </template>
+
             <CardFooter class="flex justify-end gap-4">
                 <Button
                     type="submit"

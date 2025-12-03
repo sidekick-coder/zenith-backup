@@ -2,6 +2,12 @@ import type Plan from '../entities/plan.entity.ts'
 import validator from '#shared/services/validator.service.ts'
 import type Snapshot from '#zenith-backup/shared/entities/snapshot.entity.ts'
 
+export interface StrategyFieldSection {
+    title: string
+    description?: string
+    fields: Record<string, any>
+}
+
 export default class BaseStrategy {
     public static __is_strategy = true
 
@@ -11,6 +17,7 @@ export default class BaseStrategy {
 
     public static schema: any = validator.create(v => v.any())            
     public static fields: any = {}
+    public static fields_sections: StrategyFieldSection[] = []
 
     public config: Record<string, unknown> = {}
     public plan: Plan
