@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { toast } from 'vue-sonner'
 import { format } from 'date-fns'
 import SnapshotRestoreDialog from './SnapshotRestoreDialog.vue'
@@ -88,24 +88,7 @@ async function load() {
         loading.value = false
     }, 500)
 }
-
-async function restore(id: string) {
-    const snapshot = snapshots.value.find(s => s.id === id)
-    if (!snapshot) return
-    
-    restoreDialogSnapshot.value = snapshot
-}
-
-function onRestoreDialogSubmit() {
-    restoreDialogSnapshot.value = null
-    load()
-}
-
-function onRestoreDialogClose() {
-    restoreDialogSnapshot.value = null
-}
-
-watch(() => [props.planId], load, { immediate: true })
+onMounted(load)
 </script>
 
 <template>
@@ -157,6 +140,19 @@ watch(() => [props.planId], load, { immediate: true })
                         <AlertButton
                             variant="ghost"
                             size="sm"
+                            fetch-method="POST"
+                            :fetch="`/api/zbackup/plans/${planId}/snapshots/${row.id}/restore`"
+                            :tooltip="$t('Restore this snapshot')"
+                            :description="$t('Are you sure you want to restore this snapshot? This action cannot be stopped.')"
+                            :toast-on-success="$t('Restore successfully.')"
+                            @fetched="load"
+                        >
+                            <Icon name="TimerReset" />
+                        </AlertButton>
+                        
+                        <AlertButton
+                            variant="ghost"
+                            size="sm"
                             fetch-method="DELETE"
                             :fetch="`/api/zbackup/plans/${planId}/snapshots/${row.id}`"
                             @fetched="load"
@@ -167,7 +163,7 @@ watch(() => [props.planId], load, { immediate: true })
                         <DropdownMenu>
                             <DropdownMenuTrigger as-child>
                                 <Button
-                                    variant="outline"
+                                    variant="ghost"
                                     class="w-8 h-8 p-0"
                                 >
                                     <span class="sr-only">{{ $t('More') }}</span>
@@ -198,13 +194,4 @@ watch(() => [props.planId], load, { immediate: true })
             </DataTable>
         </CardContent>
     </Card>
-
-    <!-- Restore Dialog -->
-    <SnapshotRestoreDialog
-        v-if="restoreDialogSnapshot"
-        :snapshot="restoreDialogSnapshot"
-        :plan-id="planId"
-        @submit="onRestoreDialogSubmit"
-        @close="onRestoreDialogClose"
-    />
 </template>

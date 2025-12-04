@@ -43,3 +43,14 @@ router.delete('/:snapshotId', async ({ params, acl }) => {
     await backup.snapshots.destroy(snapshot)
 })
 
+router.post('/:snapshotId/restore', async ({ params, acl }) => {
+    acl.authorize('create', 'Snapshot')
+
+    const planId = params.planId!
+    const snapshotId = params.snapshotId!
+
+    const snapshot = await backup.snapshots.find(planId, snapshotId)
+
+    await backup.snapshots.restore(snapshot)
+})
+

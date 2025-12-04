@@ -67,4 +67,11 @@ export default class SnapshotService {
 
         await strategy.destroy(snapshot)
     }
+
+    public async restore(snapshot: Snapshot){
+        const plan = await Plan.findOrFail(snapshot.plan_id)
+        const strategy = await this.strategies.instantiate(plan)
+
+        await strategy.restore(snapshot)
+    }
 }
