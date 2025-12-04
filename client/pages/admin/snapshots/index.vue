@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import type { ComponentExposed } from 'vue-component-type-helpers'
+import { format } from 'date-fns'
 import AppLayout from '#client/layouts/AppLayout.vue'
 import PageCrud from '#client/components/PageCrud.vue'
 import { $t } from '#shared/lang.ts'
@@ -37,7 +38,7 @@ const columns = defineColumns<Snapshot>([
     {
         id: 'created_at',
         label: $t('Created At'),
-        field: 'created_at'
+        field: row => row.created_at ? format(new Date(row.created_at), 'yyyy-MM-dd HH:mm:ss') : '-',
     },
     { id: 'actions' }
 ])

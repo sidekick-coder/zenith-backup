@@ -1,4 +1,5 @@
 import { camelCase, upperFirst, lowerCase  } from 'lodash-es'
+import { format } from 'date-fns'
 import { DockerStrategy } from '../mixins/dockerStrategy.mixin.ts'
 import BaseStrategy from './base.strategy.ts'
 import shell from '#server/facades/shell.facade.ts'
@@ -254,11 +255,12 @@ export default class ResticStrategy extends composeWith(
             snapshots.push(new Snapshot({
                 id: resticSnapshot.short_id,
                 plan_id: this.plan.id,
-                origin: tags.origin,
-                description: tags.description || tags.note,
-                size: resticSnapshot.summary?.total_bytes_processed || 0,
-                metadata: resticSnapshot,
-                created_at: resticSnapshot.time
+                data: resticSnapshot,
+                created_at: format(new Date(resticSnapshot.time), 'yyyy-MM-dd HH:mm:ss'),
+                metadata: {
+                    ...tags,
+                    size: resticSnapshot.summary?.total_bytes_processed || 0,
+                }
             }))
         }
 

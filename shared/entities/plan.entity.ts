@@ -6,7 +6,6 @@ export default class Plan {
     public id: string
     public name: string
     public description: string | null
-    public cron: string | null
     public config: Record<string, any>
     public valid: boolean
     public active: boolean

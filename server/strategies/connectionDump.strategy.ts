@@ -82,7 +82,7 @@ export default class ConnectionDumpStrategy extends composeWith(
             ...metadata,
             plan_id: this.plan.id,
             size: stats.size,
-            created_at: format(new Date(), 'yyyy-MM-dd HH:mm'),
+            created_at: new Date().toISOString(),
         })
                 
         await fs.promises.unlink(tmpFilename)

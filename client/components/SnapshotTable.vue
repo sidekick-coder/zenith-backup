@@ -19,6 +19,10 @@ import {
 } from '#client/components/ui/card'
 import Snapshot from '#zenith-backup/shared/entities/snapshot.entity.ts'
 import ObjectInspect from '#client/components/ObjectInspect.vue'
+import DropdownMenu from '#client/components/ui/dropdown-menu/DropdownMenu.vue'
+import DropdownMenuTrigger from '#client/components/ui/dropdown-menu/DropdownMenuTrigger.vue'
+import DropdownMenuItem from '#client/components/ui/dropdown-menu/DropdownMenuItem.vue'
+import DropdownMenuContent from '#client/components/ui/dropdown-menu/DropdownMenuContent.vue'
 
 interface Props {
     planId: string
@@ -32,7 +36,7 @@ const props = defineProps<Props>()
 
 const snapshots = ref<Snapshot[]>([])
 const loading = ref(false)
-const deletingItems = ref<string[]>([])
+const inspect = ref<Record<string, any>>()
 const restoreDialogSnapshot = ref<Snapshot | null>(null)
 
 const columns = defineColumns<Snapshot>([
@@ -52,27 +56,14 @@ const columns = defineColumns<Snapshot>([
         field: 'trigger_type'
     },
     {
-        id: 'origin',
-        label: $t('Origin'),
-        field: 'origin'
-    },
-    {
         id: 'size',
         label: $t('Size'),
         field: 'humanSize'
     },
     {
-        id: 'metadata',
-        label: $t('Metadata'),
-    },
-    {
-        id: 'data',
-        label: $t('Data'),
-    },
-    {
         id: 'created_at',
         label: $t('Created At'),
-        field: row => row.created_at ? format(new Date(row.created_at), 'yyyy-MM-dd HH:mm') : '-',
+        field: row => row.created_at ? format(new Date(row.created_at), 'yyyy-MM-dd HH:mm:ss') : '-',
     },
     { id: 'actions' }
 ])
@@ -96,26 +87,6 @@ async function load() {
     setTimeout(() => {
         loading.value = false
     }, 500)
-}
-
-async function deleteSnapshot(id: string) {
-    deletingItems.value.push(id)
-    
-    const [error] = await tryCatch(() => $fetch(`/api/backup/plans/${props.planId}/snapshots`, {
-        method: 'DELETE',
-        data: { snapshotId: id } 
-    }))
-
-    if (error) {
-        deletingItems.value = deletingItems.value.filter(item => item !== id)
-        return
-    }
-
-    setTimeout(() => {
-        toast.success($t('Deleted successfully.'))
-        deletingItems.value = deletingItems.value.filter(item => item !== id)
-        load()
-    }, 1000)
 }
 
 async function restore(id: string) {
@@ -160,31 +131,19 @@ watch(() => [props.planId], load, { immediate: true })
             </div>
         </CardHeader>
         <CardContent>
+            <ObjectInspect
+                v-if="inspect"
+                :model-value="inspect"
+                :open="true"
+                @update:open="val => { if (!val) inspect = undefined }"
+            >
+                <div class="hidden" />
+            </ObjectInspect>
             <DataTable
                 :rows="snapshots"
                 :columns="columns"
                 :loading="loading"
             >
-                <template #row-data="{ row }">
-                    <ObjectInspect
-                        v-if="row.data"
-                        :model-value="row.data"
-                    />
-                    <div v-else>
-                        -
-                    </div>
-                </template>
-                
-                <template #row-metadata="{ row }">
-                    <ObjectInspect
-                        v-if="row.metadata"
-                        :model-value="row.metadata"
-                    />
-                    <div v-else>
-                        -
-                    </div>
-                </template>
-
                 <template #row-actions="{ row }">
                     <div class="flex items-center gap-2 justify-end">
                         <!-- <Button
@@ -193,7 +152,8 @@ watch(() => [props.planId], load, { immediate: true })
                             @click="restore(row.id)"
                         >
                             {{ $t('Restore') }}
-                        </Button> -->
+                        </Button> -->                      
+
                         <AlertButton
                             variant="ghost"
                             size="sm"
@@ -203,6 +163,36 @@ watch(() => [props.planId], load, { immediate: true })
                         >
                             <Icon name="trash" />
                         </AlertButton>
+
+                        <DropdownMenu>
+                            <DropdownMenuTrigger as-child>
+                                <Button
+                                    variant="outline"
+                                    class="w-8 h-8 p-0"
+                                >
+                                    <span class="sr-only">{{ $t('More') }}</span>
+                                    <Icon
+                                        name="MoreVertical"
+                                        class="w-3 h-3 sm:w-4 sm:h-4"
+                                    />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent class="max-h-60 overflow-y-auto">
+                                <DropdownMenuItem
+                                    class="cursor-pointer"
+                                    @click="inspect = row.metadata"
+                                >
+                                    {{ $t('Metadata') }}
+                                </DropdownMenuItem>
+                                
+                                <DropdownMenuItem
+                                    class="cursor-pointer"
+                                    @click="inspect = row.data"
+                                >
+                                    {{ $t('Data') }}
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </div>
                 </template>
             </DataTable>

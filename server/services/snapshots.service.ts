@@ -24,8 +24,6 @@ export default class SnapshotService {
         
             items.forEach(item => {
                 item.plan = plan
-                item.trigger_type = item.data?.trigger_type
-                item.trigger_id = item.data?.trigger_id
             })
         
             all.push(...items)

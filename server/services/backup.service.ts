@@ -76,7 +76,6 @@ export default class BackupService {
         if (routineIds.length) {
             await scheduler.remove(routineIds)
         }
-    
 
         const handlers = await emmitter.list()
 
