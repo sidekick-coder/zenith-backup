@@ -16,7 +16,7 @@ interface DumpOptions {
     docker: boolean
 }
 
-export default class SQLiteDumpStrategy extends composeWith(
+export default class DumpSQLite extends composeWith(
     BaseStrategy,
     DockerStrategy(),
     DumpStrategy({
@@ -24,8 +24,8 @@ export default class SQLiteDumpStrategy extends composeWith(
         metadataFilename: 'metadata.json',
     })
 ) {
-    public static id = 'sqlite_dump'
-    public static label = 'SQLite Dump'
+    public static id = 'dump_sqlite'
+    public static label = 'Dump SQLite'
     public static description = $t('This strategy uses sqlite3 to backup a SQLite database.')
 
     static {
@@ -113,7 +113,7 @@ export default class SQLiteDumpStrategy extends composeWith(
 
         const tmpFilename = tmpPath(`backup_${Date.now()}.db`)
 
-        await SQLiteDumpStrategy.dump({
+        await DumpSQLite.dump({
             filename: tmpFilename,
             database,
             docker: this.useDocker,
@@ -130,7 +130,7 @@ export default class SQLiteDumpStrategy extends composeWith(
         await this.drive.write(path.join(folder, 'metadata.json'), {
             ...metadata,
             plan_id: this.plan.id,
-            strategy: SQLiteDumpStrategy.id,
+            strategy: DumpSQLite.id,
             size: stats.size,
             created_at: new Date().toISOString(),
         })
@@ -155,7 +155,7 @@ export default class SQLiteDumpStrategy extends composeWith(
 
         await this.drive.download(dumpPath, tmpFilename)
 
-        await SQLiteDumpStrategy.restoreDump({
+        await DumpSQLite.restoreDump({
             filename: tmpFilename,
             database,
             docker: this.useDocker,

@@ -21,13 +21,13 @@ interface DumpOptions {
     docker: boolean
 }
 
-export default class PostgresDumpStrategy extends composeWith(
+export default class DumpPostgres extends composeWith(
     BaseStrategy,
     DockerStrategy(),
     DumpStrategy()
 ) {
-    public static id = 'postgres_dump'
-    public static label = 'Postgres Dump'
+    public static id = 'dump_postgres'
+    public static label = 'Dump Postgres'
     public static description = $t('This strategy uses pg_dump to backup a Postgres database.')
 
     static {
@@ -171,7 +171,7 @@ export default class PostgresDumpStrategy extends composeWith(
 
         const tmpFilename = tmpPath(`backup_${Date.now()}.sql`)
 
-        await PostgresDumpStrategy.dump({
+        await DumpPostgres.dump({
             filename: tmpFilename,
             host,
             port,
@@ -192,7 +192,7 @@ export default class PostgresDumpStrategy extends composeWith(
         await this.drive.write(path.join(folder, 'metadata.json'), {
             ...metadata,
             plan_id: this.plan.id,
-            strategy: PostgresDumpStrategy.id,
+            strategy: DumpPostgres.id,
             size: stats.size,
             created_at: new Date().toISOString(),
         })
@@ -221,7 +221,7 @@ export default class PostgresDumpStrategy extends composeWith(
 
         await this.drive.download(dumpPath, tmpFilename)
 
-        await PostgresDumpStrategy.restoreDump({
+        await DumpPostgres.restoreDump({
             filename: tmpFilename,
             host,
             port,

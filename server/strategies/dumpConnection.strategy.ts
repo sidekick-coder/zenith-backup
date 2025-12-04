@@ -1,11 +1,10 @@
 import path from 'path'
 import fs from 'fs'
-import { format } from 'date-fns'
 import { DumpStrategy } from '../mixins/dumpStrategy.mixin.ts'
 import { DockerStrategy } from '../mixins/dockerStrategy.mixin.ts'
-import PostgresDump from './postgresDump.strategy.ts'
+import DumpPostgres from './dumpPostgres.strategy.ts'
 import BaseStrategy from './base.strategy.ts'
-import SQLiteDumpStrategy from './sqliteDump.strategy.ts'
+import DumpSQLite from './dumpSQLite.strategy.ts'
 import config from '#server/facades/config.facade.ts'
 import { $t } from '#shared/lang.ts'
 import { tmpPath } from '#server/utils/paths.ts'
@@ -13,13 +12,13 @@ import { cuid } from '#server/utils/cuid.util.ts'
 import { composeWith } from '#shared/utils/compose.ts'
 import type Snapshot from '#zenith-backup/shared/entities/snapshot.entity.ts'
 
-export default class ConnectionDumpStrategy extends composeWith(
+export default class DumpConnection extends composeWith(
     BaseStrategy,
     DockerStrategy(),
     DumpStrategy()
 ) {
-    public static id = 'connection_dump'
-    public static label = $t('Connection Dump')
+    public static id = 'dump_connection'
+    public static label = $t('Dump Connection')
     public static description = $t('This strategy uses the appropriate dump strategy based on the connection driver.')
 
     static {
@@ -47,7 +46,7 @@ export default class ConnectionDumpStrategy extends composeWith(
         const tmpFilename = tmpPath(`backup_${Date.now()}.sql`)
 
         if (connection.driver === 'postgresql') {
-            await PostgresDump.dump({
+            await DumpPostgres.dump({
                 filename: tmpFilename,
                 host: connection.host,
                 port: connection.port,
@@ -60,7 +59,7 @@ export default class ConnectionDumpStrategy extends composeWith(
 
         if (connection.driver === 'sqlite') {
             // Use SQLite dump strategy
-            await SQLiteDumpStrategy.dump({
+            await DumpSQLite.dump({
                 filename: tmpFilename,
                 database: connection.database,
                 docker: this.useDocker,
@@ -109,7 +108,7 @@ export default class ConnectionDumpStrategy extends composeWith(
         await this.drive.download(dumpPath, tmpFilename)
 
         if (connection.driver === 'postgresql') {
-            await PostgresDump.restoreDump({
+            await DumpPostgres.restoreDump({
                 filename: tmpFilename,
                 host: connection.host,
                 port: connection.port,
@@ -121,7 +120,7 @@ export default class ConnectionDumpStrategy extends composeWith(
         }
 
         if (connection.driver === 'sqlite') {
-            await SQLiteDumpStrategy.restoreDump({
+            await DumpSQLite.restoreDump({
                 filename: tmpFilename,
                 database: connection.database,
                 docker: this.useDocker,
