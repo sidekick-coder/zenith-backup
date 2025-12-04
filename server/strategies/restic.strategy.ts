@@ -308,4 +308,56 @@ export default class ResticStrategy extends composeWith(
 
         await shell.command('restic', forgetArgs, { env })
     }
+
+    public async restore(snapshot: Snapshot): Promise<void> {
+        const repository = this.config.repository as string
+        const password = this.config.password as string
+        const paths = this.config.paths as string[] | undefined
+
+        if (!repository) {
+            throw new Error('Repository path is required')
+        }
+
+        if (!password) {
+            throw new Error('Repository password is required')
+        }
+
+        if (!paths || paths.length === 0) {
+            throw new Error('At least one backup path is required')
+        }
+
+        const env = {
+            ...process.env,
+            RESTIC_REPOSITORY: repository,
+            RESTIC_PASSWORD: password,
+        }
+
+        for (const p of paths) {
+            const restoreArgs = ['restore', `${snapshot.data?.id}:${p}`, '--target', p]
+
+            if (this.useDocker && this.dockerImage) {
+                const dockerRestoreArgs = [
+                    'run',
+                    '--rm',
+                    '-e',
+                    `RESTIC_REPOSITORY=${repository}`,
+                    '-e',
+                    `RESTIC_PASSWORD=${password}`,
+                    '-v',
+                    `${repository}:${repository}`,
+                    '-v',
+                    `${p}:${p}`
+                ]
+    
+                dockerRestoreArgs.push(this.dockerImage, 'restic', ...restoreArgs)
+    
+                await shell.command('docker', dockerRestoreArgs, { env })
+                return
+            }
+    
+            await shell.command('restic', restoreArgs, { env })
+        }
+
+
+    }
 }
