@@ -19,7 +19,7 @@ export default class DumpConnection extends composeWith(
 ) {
     public static id = 'dump_connection'
     public static label = $t('Dump Connection')
-    public static description = $t('This strategy uses the appropriate dump strategy based on the connection driver.')
+    public static description = $t('This strategy generate dumps from zenith database connections.')
 
     static {
         this.section('database', {
