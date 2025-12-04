@@ -54,17 +54,41 @@ export function DumpStrategy<T extends string>(options?: DumpStrategyOptions) {
                     label: $t('Directory'),
                 })
 
-                cls.section('options', {
-                    title: $t('Options'),
-                    description: $t('Additional options for the backup process.'),
+                cls.section('cleanup', {
+                    title: $t('Cleanup'),
+                    description: $t('Cleanup settings for old backups.'),
                 })
 
                 cls.field('max_length', {
                     component: 'text-field',
-                    section_id: 'options',
+                    section_id: 'cleanup',
                     type: 'number',
                     label: $t('Max quantity of backups'),
                     description: $t('Maximum quantity of backups to keep.'),
+                })
+
+                cls.field('ignore_triggers', {
+                    component: 'select',
+                    multiple: true,
+                    section_id: 'cleanup',
+                    label: $t('Ignore Triggers'),
+                    description: $t('Select backup triggers to ignore during cleanup.'),
+                    labelKey: 'label',
+                    valueKey: 'value',
+                    options: [
+                        {
+                            label: $t('Manual'),
+                            value: 'manual',
+                        },
+                        {
+                            label: $t('Cron'),
+                            value: 'cron',
+                        },
+                        {
+                            label: $t('Event'),
+                            value: 'event',
+                        }
+                    ]
                 })
             }
 
@@ -134,14 +158,17 @@ export function DumpStrategy<T extends string>(options?: DumpStrategyOptions) {
             public async cleanup(): Promise<void> {
                 const strategy = this as any as BaseStrategy
                 const maxLength = strategy.config.max_length as number | undefined
+                const ignoreTriggers = strategy.config.ignore_triggers as string[] | undefined
             
                 if (!maxLength || maxLength <= 0) {
                     return
                 }
             
                 let snapshots = await this.list()
-            
-                snapshots = snapshots.filter(s => s.origin === 'automated')
+
+                if (ignoreTriggers && ignoreTriggers.length > 0) {
+                    snapshots = snapshots.filter(s => !ignoreTriggers.includes(s.trigger_type))
+                }
             
                 snapshots.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
                     
