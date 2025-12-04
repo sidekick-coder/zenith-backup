@@ -94,7 +94,7 @@ onMounted(load)
 
             <!-- Right Content Area -->
             <div class="flex-1">
-                <Tabs 
+                <Tabs
                     v-model="tab"
                     default-value="configuration" 
                 >

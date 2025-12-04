@@ -11,6 +11,7 @@ import { $t } from '#shared/lang.ts'
 import { tmpPath } from '#server/utils/paths.ts'
 import { cuid } from '#server/utils/cuid.util.ts'
 import { composeWith } from '#shared/utils/compose.ts'
+import type Snapshot from '#zenith-backup/shared/entities/snapshot.entity.ts'
 
 export default class ConnectionDumpStrategy extends composeWith(
     BaseStrategy,
@@ -88,5 +89,45 @@ export default class ConnectionDumpStrategy extends composeWith(
         await fs.promises.unlink(tmpFilename)
         
         await this.cleanup()
+    }
+
+    public async restore(snapshot: Snapshot): Promise<void> {
+        const name = this.config.name as string
+        const directory = this.config.directory as string | undefined
+
+        const connection = config.get(`database.connections.${name}`) as Record<string, any>
+
+        const folder = directory ? path.join(directory, snapshot.id) : snapshot.id
+        const dumpPath = path.join(folder, 'dump.sql')
+
+        if (!(await this.drive.exists(dumpPath))) {
+            throw new Error(`Dump file not found in snapshot ${snapshot.id}`)
+        }
+
+        const tmpFilename = tmpPath(`restore_${Date.now()}.sql`)
+
+        await this.drive.download(dumpPath, tmpFilename)
+
+        if (connection.driver === 'postgresql') {
+            await PostgresDump.restoreDump({
+                filename: tmpFilename,
+                host: connection.host,
+                port: connection.port,
+                username: connection.user,
+                password: connection.password,
+                database: connection.database,
+                docker: this.useDocker,
+            })
+        }
+
+        if (connection.driver === 'sqlite') {
+            await SQLiteDumpStrategy.restoreDump({
+                filename: tmpFilename,
+                database: connection.database,
+                docker: this.useDocker,
+            })
+        }
+
+        await fs.promises.unlink(tmpFilename)
     }
 }

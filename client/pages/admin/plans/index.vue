@@ -78,16 +78,6 @@ const columns = defineColumns<Plan>([
         label: $t('Strategy'),
         field: 'strategy_label'
     },
-    {
-        id: 'cron',
-        label: 'Cron',
-        field: 'cron',
-    },
-    // {
-    //     id: 'valid',
-    //     label: $t('Valid'),
-    //     field: 'valid'
-    // },
     { id: 'actions' }
 ])
 
