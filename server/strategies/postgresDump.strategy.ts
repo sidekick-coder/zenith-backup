@@ -9,6 +9,7 @@ import { $t } from '#shared/lang.ts'
 import { tmpPath } from '#server/utils/paths.ts'
 import { cuid } from '#server/utils/cuid.util.ts'
 import { composeWith } from '#shared/utils/compose.ts'
+import type Snapshot from '#zenith-backup/shared/entities/snapshot.entity.ts'
 
 interface DumpOptions {
     filename: string
@@ -83,6 +84,7 @@ export default class PostgresDumpStrategy extends composeWith(
             `--username=${username}`,
             `--dbname=${database}`,
             `--file=${filename}`,
+            '--clean'
         ]
 
         if (docker) {
@@ -111,6 +113,52 @@ export default class PostgresDumpStrategy extends composeWith(
         }
         
         return shell.command('pg_dump', args, { env })
+    }
+
+    public static async restoreDump(options: DumpOptions): Promise<void> {
+        const host = options.host as string | undefined
+        const port = options.port as number | undefined
+        const username = options.username as string
+        const password = options.password as string | undefined
+        const database = options.database as string
+        const filename = options.filename
+        const docker = options.docker
+
+        const env: Record<string, string> = {}
+
+        if (password) {
+            env.PGPASSWORD = password
+        }
+
+        if (docker) {
+            const args = []
+
+            args.push('run', '--rm')
+
+            if (password) {
+                args.push('-e', `PGPASSWORD=${password}`)
+            }
+
+            args.push('-v', `${path.dirname(filename)}:/dumps`)
+            args.push('postgres', 'psql')
+            args.push(`--host=${host || 'localhost'}`)
+            args.push(`--port=${port || 5432}`)
+            args.push(`--username=${username}`)
+            args.push(`--dbname=${database}`)
+            args.push('-f', `/dumps/${path.basename(filename)}`)
+
+            return shell.command('docker', args)
+        }
+
+        const args = [] as string[]
+        
+        args.push(`--host=${host || 'localhost'}`)
+        args.push(`--port=${port || 5432}`)
+        args.push(`--username=${username}`)
+        args.push(`--dbname=${database}`)
+        args.push('-f', filename)
+
+        return shell.command('psql', args, { env })
     }
 
     public async backup(metadata: Record<string, unknown>): Promise<void> {
@@ -152,5 +200,37 @@ export default class PostgresDumpStrategy extends composeWith(
         await fs.promises.unlink(tmpFilename)
 
         await this.cleanup()
+    }
+
+    public async restore(snapshot: Snapshot): Promise<void> {
+        const host = this.config.host as string | undefined
+        const port = this.config.port as number | undefined
+        const username = this.config.username as string
+        const password = this.config.password as string | undefined
+        const database = this.config.database as string
+        const directory = this.config.directory as string | undefined
+
+        const folder = directory ? path.join(directory, snapshot.id) : snapshot.id
+        const dumpPath = path.join(folder, 'dump.sql')
+
+        if (!(await this.drive.exists(dumpPath))) {
+            throw new Error(`Dump file not found in snapshot ${snapshot.id}`)
+        }
+
+        const tmpFilename = tmpPath(`restore_${Date.now()}.sql`)
+
+        await this.drive.download(dumpPath, tmpFilename)
+
+        await PostgresDumpStrategy.restoreDump({
+            filename: tmpFilename,
+            host,
+            port,
+            username,
+            password,
+            database,
+            docker: this.useDocker,
+        })
+
+        await fs.promises.unlink(tmpFilename)
     }
 }
