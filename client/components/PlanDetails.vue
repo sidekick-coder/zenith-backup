@@ -6,7 +6,6 @@ import FormTextField from '#client/components/FormTextField.vue'
 import FormTextarea from '#client/components/FormTextarea.vue'
 import Button from '#client/components/Button.vue'
 import Icon from '#client/components/Icon.vue'
-import ClientOnly from '#client/components/ClientOnly.vue'
 import {
     Card,
     CardContent,
@@ -15,18 +14,10 @@ import {
     CardTitle,
     CardFooter,
 } from '#client/components/ui/card'
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from '#client/components/ui/dropdown-menu'
 import { $fetch } from '#client/utils/fetcher.ts'
-import { tryCatch } from '#shared/utils/tryCatch.ts'
 import { $t } from '#shared/lang.ts'
 import Plan from '#zenith-backup/shared/entities/plan.entity.ts'
+import DialogForm from '#client/components/DialogForm.vue'
 
 interface Props {
     plan: Plan
@@ -37,40 +28,9 @@ const props = defineProps<Props>()
 
 const saving = ref(false)
 
-const { handleSubmit, setValues, setFieldValue } = useForm({
+const { handleSubmit, setValues } = useForm({
     initialValues: props.plan,
 })
-
-const cronShortcuts = [
-    { 
-        label: $t('Every minute'), 
-        value: '* * * * *' 
-    },
-    { 
-        label: $t('Every hour'), 
-        value: '0 * * * *' 
-    },
-    { 
-        label: $t('Every day at 2 AM'), 
-        value: '0 2 * * *' 
-    },
-    { 
-        label: $t('Every week (Sunday at 2 AM)'), 
-        value: '0 2 * * 0' 
-    },
-    { 
-        label: $t('Every month (1st at 2 AM)'), 
-        value: '0 2 1 * *' 
-    },
-    { 
-        label: $t('Every year (Jan 1st at 2 AM)'), 
-        value: '0 2 1 1 *' 
-    }
-]
-
-function setCronShortcut(cronValue: string) {
-    setFieldValue('cron', cronValue)
-}
 
 const onSubmit = handleSubmit(async (data) => {
     saving.value = true
@@ -79,7 +39,6 @@ const onSubmit = handleSubmit(async (data) => {
         method: 'PATCH',
         data: {
             name: data.name,
-            cron: data.cron,
             description: data.description,
         }
     })
@@ -101,7 +60,6 @@ watch(() => props.plan, (newPlan: Plan) => {
     if (newPlan) {
         setValues({
             name: newPlan.name,
-            cron: newPlan.cron || '',
             description: newPlan.description || '',
         })
     }
@@ -110,11 +68,12 @@ watch(() => props.plan, (newPlan: Plan) => {
 // execute 
 const executing = ref(false)
 
-async function execute() {
+async function execute(data: any) {
     executing.value = true
 
     const [error] = await $fetch.try(`/api/zbackup/plans/${props.planId}/backup`, { 
-        method: 'POST'
+        method: 'POST',
+        data
     })
 
     if (error) {
@@ -159,41 +118,6 @@ async function execute() {
                     :placeholder="$t('Enter plan name')"
                 />
 
-                <div class="flex gap-x-2 items-end">
-                    <div class="flex-1">
-                        <FormTextField
-                            name="cron"
-                            :label="$t('Cron Schedule')"
-                            :placeholder="$t('0 2 * * *')"
-                        />
-                    </div>
-                    <ClientOnly>
-                        <DropdownMenu>
-                            <DropdownMenuTrigger>
-                                <Button
-                                    variant="outline"
-                                    class="h-10"
-                                >
-                                    <Icon name="calendar" />
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                                <DropdownMenuLabel>
-                                    {{ $t('Common schedules') }}
-                                </DropdownMenuLabel>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem
-                                    v-for="shortcut in cronShortcuts"
-                                    :key="shortcut.value"
-                                    @click="setCronShortcut(shortcut.value)"
-                                >
-                                    {{ shortcut.label }}
-                                </DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    </ClientOnly>
-                </div>
-
                 <FormTextarea
                     name="description"
                     :label="$t('Description')"
@@ -202,14 +126,26 @@ async function execute() {
                 />
             </CardContent>
             <CardFooter class="flex justify-end gap-4">
-                <Button
-                    variant="outline"
-                    :loading="executing"
-                    @click="execute"
+                <DialogForm
+                    :title="$t('Execute Backup')"
+                    :description="$t('Execute a manual backup for this plan.')"
+                    :submit-text="$t('Run Backup')"
+                    :handle="execute"
+                    :fields="{
+                        description: {
+                            component: 'text-field',
+                            label: $t('Description'),
+                        }
+                    }"
                 >
-                    <Icon name="play" />
-                    {{ $t('Run') }}
-                </Button>
+                    <Button
+                        variant="outline"
+                        :loading="executing"
+                    >
+                        <Icon name="play" />
+                        {{ $t('Run') }}
+                    </Button>
+                </DialogForm>
                 <Button
                     type="submit"
                     :loading="saving"

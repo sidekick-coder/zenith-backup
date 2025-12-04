@@ -4,6 +4,7 @@ import authMiddleware from '#server/middlewares/auth.middleware.ts'
 import root from '#server/facades/router.facade.ts'
 import RouterResourceConfig from '#server/services/routerResourceConfig.service.ts'
 import { AuthorizationMiddleware } from '#server/middlewares/authorization.middleware.ts'
+import { $t } from '#shared/lang.ts'
 
 const router = root.prefix('/api/zbackup/plans')
     .use(authMiddleware)
@@ -26,7 +27,7 @@ router.get('/strategies', async ({ acl }) => {
     }
 })
 
-router.post('/:id/backup', async ({ acl, params }) => {
+router.post('/:id/backup', async ({ acl, params, body }) => {
     acl.authorize('manage', 'ZBackupPlan')
 
     const planId = params.id!
@@ -34,8 +35,8 @@ router.post('/:id/backup', async ({ acl, params }) => {
     const plan = await Plan.findOrFail(planId)
 
     await backup.backup(plan, {
-        origin: 'manual',
-        description: 'Manual backup triggered via API',
+        trigger_type: 'manual',
+        description: body?.description || $t('Manual backup executed via API'),
     })
 })
 
