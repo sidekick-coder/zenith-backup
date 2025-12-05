@@ -102,7 +102,7 @@ export function DumpStrategy<T extends string>(options?: DumpStrategyOptions) {
 
             public list = async (): Promise<Snapshot[]> => {
                 const strategy = this as any as BaseStrategy
-                const folder = strategy.config.directory as string | undefined
+                const folder = strategy.config?.directory as string | undefined
 
                 if (!folder || folder.trim() === '') {
                     return []
