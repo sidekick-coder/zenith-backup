@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import {
     ref, onMounted, computed, 
-    defineAsyncComponent
+    defineAsyncComponent,
+    onServerPrefetch
 } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { toast } from 'vue-sonner'
 import { useRouteQuery } from '@vueuse/router'
+import { useHead } from '@unhead/vue'
 import AppLayout from '#client/layouts/AppLayout.vue'
-import { $fetch } from '#client/utils/fetcher.ts'
-import { tryCatch } from '#shared/utils/tryCatch.ts'
+import $fetch from '#client/facades/fetch.facade.ts'
 import { $t } from '#shared/lang.ts'
 import Plan from '#zenith-backup/shared/entities/plan.entity.ts'
 import PlanDetails from '#zenith-backup/client/components/PlanDetails.vue'
@@ -18,11 +19,12 @@ import {
     TabsList,
     TabsTrigger,
 } from '#client/components/ui/tabs'
+import { useState } from '#client/composables/useState.ts'
 
 const route = useRoute()
 const router = useRouter()
 const planId = computed(() => String(route.params.id))
-const plan = ref<Plan>()
+const plan = useState<Plan>(`zbackup-plan-${planId.value}`)
 const tab = useRouteQuery('tab', 'config')
 const loading = ref(false)
 
@@ -60,7 +62,22 @@ async function load() {
     loading.value = false
 }
 
-onMounted(load)
+useHead({
+    title: () => plan.value ? plan.value.name : $t('Loading...'),
+})
+
+onMounted(async () => {
+    if (!plan.value) {
+        await load()
+    }
+})
+
+onServerPrefetch(async () => {
+    if (!plan.value) {
+        await load()
+    }
+})
+
 </script>
 
 <template>

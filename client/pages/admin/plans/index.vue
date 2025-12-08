@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import type { ComponentExposed } from 'vue-component-type-helpers'
+import { Head } from '@unhead/vue/components'
 import AppLayout from '#client/layouts/AppLayout.vue'
 import PageCrud from '#client/components/PageCrud.vue'
 import { defineFormFields } from '#client/components/FormAutoFieldList.vue'
@@ -82,6 +83,13 @@ async function toggle(row: Plan) {
 </script>
 
 <template>
+    <Head>
+        <title>{{ $t('Plans') }}</title>
+        <meta
+            name="description"
+            :content="$t('Manage your backup plans')"
+        >
+    </Head>
     <AppLayout>
         <PageCrud 
             ref="crudRef"
