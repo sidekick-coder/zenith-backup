@@ -4,6 +4,8 @@ import router from '#client/facades/router.facade.ts'
 import authGuard from '#client/guards/auth.guard.ts'
 import { $t } from '#shared/lang.ts'
 
+import './assets/css/styles.css'
+
 export default class MyModule extends Module {
     public async onLoad(): Promise<void> {
         const menu = useMenu()
