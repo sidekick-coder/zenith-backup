@@ -36,16 +36,23 @@ export default class ResticStrategy extends composeWith(
             description: $t('Password for encrypting/decrypting the Restic repository.'),
         })
 
-        this.section('targets', {
-            title:  $t('Backup Targets'),
+        this.section('backup', {
+            title:  $t('Backup'),
             description: $t('Settings related to the files and directories to be backed up.'),
         })
 
         this.field('paths', {
             component: 'string-list-input',
-            section_id: 'targets',
+            section_id: 'backup',
             label: $t('Paths'),
             description: $t('List of file and directory paths to include in the backup.'),
+        })
+
+        this.field('backup_flags', {
+            component: 'textarea',
+            section_id: 'backup',
+            label: $t('Backup Flags'),
+            description: $t('Additional Restic backup command flags (e.g., --exclude /path/to/exclude).'),
         })
 
         this.section('cleanup', {
@@ -83,6 +90,7 @@ export default class ResticStrategy extends composeWith(
         const repository = this.config.repository as string
         const password = this.config.password as string
         const paths = this.config.paths as string[] | undefined
+        const backupFlags = this.config.backup_flags as string | undefined
 
         if (!repository) {
             throw new Error('Repository path is required')
@@ -97,13 +105,23 @@ export default class ResticStrategy extends composeWith(
         }
 
         const env = {
-            ...process.env,
             RESTIC_REPOSITORY: repository,
             RESTIC_PASSWORD: password,
         }
 
         // Run backup
-        const backupArgs = ['backup', ...paths]
+        const backupArgs = ['backup']
+
+        // Add custom backup flags
+        if (backupFlags) {
+            // Split by spaces and break lines
+            backupFlags.split(/[\s\r\n]+/).forEach((flag: string) => {
+                backupArgs.push(flag)
+            })
+        }
+
+        // Add paths to backup
+        backupArgs.push(...paths)
 
         // Add metadata as tags
         if (metadata && Object.keys(metadata).length > 0) {
