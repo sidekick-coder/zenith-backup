@@ -12,8 +12,8 @@ export default class ResticStrategy extends composeWith(
     DockerStrategy({ defaultImage: 'restic/restic:latest' }),
 ) {
     public static id = 'restic-folder'
-    public static label = $t('Restic Local Folder Backup')
-    public static description = $t('Backup folders from local filesystem to a Restic repository')
+    public static label = $t('Restic')
+    public static description = $t('Backup folders and files to a Restic repository')
 
     static {
         this.section('repository', {
@@ -46,6 +46,7 @@ export default class ResticStrategy extends composeWith(
             section_id: 'backup',
             label: $t('Paths'),
             description: $t('List of file and directory paths to include in the backup.'),
+            placeholder: $t('Absolute path to file or directory2 (e.g., /var/www/html)'),
         })
 
         this.field('backup_flags', {

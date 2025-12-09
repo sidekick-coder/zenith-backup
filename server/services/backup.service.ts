@@ -14,10 +14,11 @@ export default class BackupService {
     public strategies: StrategyService
     public snapshots: SnapshotService
     public logger = logger.child({ label: 'backup' })
+    public debug = false
 
-    constructor() {
-        this.strategies = new StrategyService()
-        this.snapshots = new SnapshotService(this.strategies)
+    constructor(data: Partial<BackupService> = {}) {
+        this.strategies = data.strategies || new StrategyService()
+        this.snapshots = data.snapshots || new SnapshotService(this.strategies)
     }
 
     public async load(){

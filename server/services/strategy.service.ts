@@ -2,6 +2,7 @@ import path from 'path'
 import type BaseStrategy from '../strategies/base.strategy'
 import type Plan from '../entities/plan.entity.ts'
 import { importAll } from '#server/utils/index.ts'
+import env from '#server/facades/env.facade.ts'
 
 export default class StrategyService {
     public items: typeof BaseStrategy[] = []
@@ -10,8 +11,11 @@ export default class StrategyService {
         const folder = path.resolve(import.meta.dirname, '../strategies')        
         
         const imports = await importAll(folder, {
-            exclude: ['base.strategy.ts']
+            exclude: ['base.strategy.ts'],
+            cache: env.production,
         })
+
+        console.log('load stra2')
 
         const strategies = [] as typeof BaseStrategy[]
 
@@ -27,10 +31,6 @@ export default class StrategyService {
     }
 
     public async list(){
-        if (this.items.length === 0) {
-            await this.load()
-        }
-
         return this.items
     }
 
