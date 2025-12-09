@@ -4,6 +4,7 @@ import { useForm } from 'vee-validate'
 import { toast } from 'vue-sonner'
 import FormTextField from '#client/components/FormTextField.vue'
 import FormTextarea from '#client/components/FormTextarea.vue'
+import FormSwitch from '#client/components/FormSwitch.vue'
 import Button from '#client/components/Button.vue'
 import Icon from '#client/components/Icon.vue'
 import {
@@ -40,6 +41,7 @@ const onSubmit = handleSubmit(async (data) => {
         data: {
             name: data.name,
             description: data.description,
+            active: data.active,
         }
     })
 
@@ -100,22 +102,15 @@ async function execute(data: any) {
             </CardHeader>
             <CardContent class="space-y-6">
                 <FormTextField
-                    name="id"
-                    :label="$t('ID')"
-                    disabled
-                />
-                
-                <FormTextField
-                    name="strategy_label"
-                    :label="$t('Strategy')"
-                    disabled
-                />
-
-
-                <FormTextField
                     name="name"
                     :label="$t('Name')"
                     :placeholder="$t('Enter plan name')"
+                />
+
+                <FormSwitch
+                    name="active"
+                    :label="$t('Active')"
+                    :hint="$t('Activate or deactivate this backup plan')"
                 />
 
                 <FormTextarea

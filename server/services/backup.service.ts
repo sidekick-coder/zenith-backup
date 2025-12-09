@@ -19,13 +19,17 @@ export default class BackupService {
     constructor(data: Partial<BackupService> = {}) {
         this.strategies = data.strategies || new StrategyService()
         this.snapshots = data.snapshots || new SnapshotService(this.strategies)
+        this.debug = data.debug || false
+
+        if (this.debug) {
+            this.logger.debug('initialized in debug mode')
+        }
     }
 
     public async load(){
         let plans = await Plan.list()
             
         plans = plans.filter(plan => plan.active)
-
         
         for (const plan of plans) {
             if (!plan.triggers) continue            
@@ -64,6 +68,12 @@ export default class BackupService {
                     }
                 }
             }
+        }
+
+        if (this.debug) {
+            this.logger.debug('loaded plans', {
+                count: plans.length,
+            })
         }
     }
 

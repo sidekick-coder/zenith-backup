@@ -11,5 +11,7 @@ export default class ZenithBackup extends Module {
         router.addDir(this.makePath('server/routes'))
 
         await backup.strategies.load()
+        
+        await backup.load()
     }
 }
