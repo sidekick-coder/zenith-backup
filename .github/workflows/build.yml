@@ -1,0 +1,55 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: docker
+        uses: docker/setup-buildx-action@v3
+
+      - name: git-config
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Prepare build branch
+        run: |
+          # Fetch and checkout build branch (create if missing)
+          git fetch origin build || true
+          if git show-ref --quiet refs/remotes/origin/build; then
+            git checkout build
+            git merge origin/main --no-edit
+          else
+            git checkout -b build
+          fi
+
+      - name: install
+        run: npm install
+
+      - name: build
+        run: |
+          docker run --rm \
+              -v ./:/app/modules/mod \
+              zzhenryquezz/zenith:latest \
+              sh -c "node arte module:build --prepare true -m mod"
+
+
+      - name: push
+        run: |
+          git add -f client-dist
+          git commit -m "Build: $(date '+%Y-%m-%d %H:%M:%S')"
+          git push origin build
