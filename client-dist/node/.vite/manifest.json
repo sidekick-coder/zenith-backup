@@ -1,0 +1,85 @@
+{
+  "_snapshot.entity-DsurgNca.js": {
+    "file": "snapshot.entity-DsurgNca.js",
+    "name": "snapshot.entity"
+  },
+  "modules/mod/client/components/PlanConfig.vue": {
+    "file": "PlanConfig-B-dDTwvK.js",
+    "name": "PlanConfig",
+    "src": "modules/mod/client/components/PlanConfig.vue",
+    "isDynamicEntry": true
+  },
+  "modules/mod/client/components/PlanTriggers.vue": {
+    "file": "PlanTriggers-Bm2wxgIS.js",
+    "name": "PlanTriggers",
+    "src": "modules/mod/client/components/PlanTriggers.vue",
+    "isDynamicEntry": true
+  },
+  "modules/mod/client/components/SnapshotTable.vue": {
+    "file": "SnapshotTable-744HqmDT.js",
+    "name": "SnapshotTable",
+    "src": "modules/mod/client/components/SnapshotTable.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "_snapshot.entity-DsurgNca.js"
+    ]
+  },
+  "modules/mod/client/components/TargetTarForm.vue": {
+    "file": "TargetTarForm-DxdCtEaY.js",
+    "name": "TargetTarForm",
+    "src": "modules/mod/client/components/TargetTarForm.vue",
+    "isDynamicEntry": true
+  },
+  "modules/mod/client/module.client.ts": {
+    "file": "module.client.js",
+    "name": "module.client",
+    "src": "modules/mod/client/module.client.ts",
+    "isEntry": true,
+    "dynamicImports": [
+      "modules/mod/client/pages/admin/plans/[id].vue",
+      "modules/mod/client/pages/admin/plans/index.vue",
+      "modules/mod/client/pages/admin/snapshots/index.vue",
+      "modules/mod/client/pages/admin/targets/[id].vue"
+    ]
+  },
+  "modules/mod/client/pages/admin/plans/[id].vue": {
+    "file": "_id_-C5TsYL16.js",
+    "name": "_id_",
+    "src": "modules/mod/client/pages/admin/plans/[id].vue",
+    "isDynamicEntry": true,
+    "dynamicImports": [
+      "modules/mod/client/components/PlanConfig.vue",
+      "modules/mod/client/components/PlanTriggers.vue",
+      "modules/mod/client/components/SnapshotTable.vue"
+    ]
+  },
+  "modules/mod/client/pages/admin/plans/index.vue": {
+    "file": "index-QDDtcLoD.js",
+    "name": "index",
+    "src": "modules/mod/client/pages/admin/plans/index.vue",
+    "isDynamicEntry": true
+  },
+  "modules/mod/client/pages/admin/snapshots/index.vue": {
+    "file": "index-CtPnb1m6.js",
+    "name": "index",
+    "src": "modules/mod/client/pages/admin/snapshots/index.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "_snapshot.entity-DsurgNca.js"
+    ]
+  },
+  "modules/mod/client/pages/admin/targets/[id].vue": {
+    "file": "_id_-CMFWpYg0.js",
+    "name": "_id_",
+    "src": "modules/mod/client/pages/admin/targets/[id].vue",
+    "isDynamicEntry": true,
+    "dynamicImports": [
+      "modules/mod/client/components/SnapshotTable.vue",
+      "modules/mod/client/components/TargetTarForm.vue"
+    ]
+  },
+  "style.css": {
+    "file": "styles.css",
+    "src": "style.css"
+  }
+}
