@@ -6,7 +6,7 @@ import DumpPostgres from './dumpPostgres.strategy.ts'
 import BaseStrategy from './base.strategy.ts'
 import DumpSQLite from './dumpSQLite.strategy.ts'
 import config from '#server/facades/config.facade.ts'
-import { $t } from '#shared/lang.ts'
+
 import { tmpPath } from '#server/utils/paths.ts'
 import { cuid } from '#server/utils/cuid.util.ts'
 import { composeWith } from '#shared/utils/compose.ts'

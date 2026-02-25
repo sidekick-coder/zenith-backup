@@ -10,7 +10,7 @@ import { useRouteQuery } from '@vueuse/router'
 import { useHead } from '@unhead/vue'
 import AppLayout from '#client/layouts/AppLayout.vue'
 import $fetch from '#client/facades/fetch.facade.ts'
-import { $t } from '#shared/lang.ts'
+
 import Plan from '#zenith-backup/shared/entities/plan.entity.ts'
 import PlanDetails from '#zenith-backup/client/components/PlanDetails.vue'
 import {

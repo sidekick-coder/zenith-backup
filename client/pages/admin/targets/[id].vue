@@ -18,7 +18,7 @@ import {
     TabsList,
     TabsTrigger,
 } from '#client/components/ui/tabs'
-import { $t } from '#shared/lang.ts'
+
 import { $fetch } from '#client/utils/fetcher.ts'
 import { tryCatch } from '#shared/utils/tryCatch.ts'
 import type Target from '#zenith-backup/shared/entities/target.entity.ts'

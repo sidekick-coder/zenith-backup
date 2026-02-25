@@ -3,7 +3,7 @@ import { format } from 'date-fns'
 import { DockerStrategy } from '../mixins/dockerStrategy.mixin.ts'
 import BaseStrategy from './base.strategy.ts'
 import shell from '#server/facades/shell.facade.ts'
-import { $t } from '#shared/lang.ts'
+
 import { composeWith } from '#shared/utils/compose.ts'
 import Snapshot from '#zenith-backup/shared/entities/snapshot.entity.ts'
 

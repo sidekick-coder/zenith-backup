@@ -16,7 +16,7 @@ import {
 } from '#client/components/ui/dialog'
 import { $fetch } from '#client/utils/fetcher.ts'
 import { tryCatch } from '#shared/utils/tryCatch.ts'
-import { $t } from '#shared/lang.ts'
+
 import type Snapshot from '#zenith-backup/shared/entities/snapshot.entity.ts'
 import DriveEntryPicker from '#client/components/DriveEntryPicker.vue'
 

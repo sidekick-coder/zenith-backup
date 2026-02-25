@@ -1,6 +1,6 @@
 import type BaseStrategy from '../strategies/base.strategy'
 import type { Constructor } from '#shared/utils/compose.ts'
-import { $t } from '#shared/lang.ts'
+
 import config from '#server/facades/config.facade.ts'
 
 interface Options {

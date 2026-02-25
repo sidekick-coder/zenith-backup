@@ -3,7 +3,7 @@ import { ref, watch } from 'vue'
 import { toast } from 'vue-sonner'
 import TargetDialog from './TargetDialog.vue'
 import DataTable, { defineColumns } from '#client/components/DataTable.vue'
-import { $t } from '#shared/lang.ts'
+
 import { $fetch } from '#client/utils/fetcher.ts'
 import { tryCatch } from '#shared/utils/tryCatch.ts'
 import Button from '#client/components/Button.vue'

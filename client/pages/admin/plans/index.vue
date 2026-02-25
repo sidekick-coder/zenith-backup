@@ -5,7 +5,7 @@ import { Head } from '@unhead/vue/components'
 import AppLayout from '#client/layouts/AppLayout.vue'
 import PageCrud from '#client/components/PageCrud.vue'
 import { defineFormFields } from '#client/components/FormAutoFieldList.vue'
-import { $t } from '#shared/lang.ts'
+
 import { defineColumns } from '#client/components/DataTable.vue'
 import Plan from '#zenith-backup/shared/entities/plan.entity.ts'
 import Button from '#client/components/Button.vue'

@@ -8,7 +8,7 @@ import logger from '#server/facades/logger.facade.ts'
 import type Target from '#zenith-backup/shared/entities/target.entity.ts'
 import scheduler from '#server/facades/scheduler.facade.ts'
 import emmitter from '#server/facades/emmitter.facade.ts'
-import { $t } from '#shared/lang.ts'
+
 
 export default class BackupService {
     public strategies: StrategyService

@@ -4,7 +4,7 @@ import { DumpStrategy } from '../mixins/dumpStrategy.mixin.ts'
 import { DockerStrategy } from '../mixins/dockerStrategy.mixin.ts'
 import BaseStrategy from './base.strategy.ts'
 import shell from '#server/facades/shell.facade.ts'
-import { $t } from '#shared/lang.ts'
+
 import { tmpPath, basePath } from '#server/utils/paths.ts'
 import { cuid } from '#server/utils/cuid.util.ts'
 import { composeWith } from '#shared/utils/compose.ts'

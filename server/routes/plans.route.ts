@@ -4,7 +4,7 @@ import authMiddleware from '#server/middlewares/auth.middleware.ts'
 import root from '#server/facades/router.facade.ts'
 import RouterResourceConfig from '#server/services/routerResourceConfig.service.ts'
 import { AuthorizationMiddleware } from '#server/middlewares/authorization.middleware.ts'
-import { $t } from '#shared/lang.ts'
+
 
 const router = root.prefix('/api/zbackup/plans')
     .use(authMiddleware)

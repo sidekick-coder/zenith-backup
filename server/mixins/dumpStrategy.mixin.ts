@@ -1,7 +1,7 @@
 import path from 'path'
 import type BaseStrategy from '../strategies/base.strategy.ts'
 import type { Constructor } from '#shared/utils/compose.ts'
-import { $t } from '#shared/lang.ts'
+
 import drive from '#server/facades/drive.facade.ts'
 import Snapshot from '#zenith-backup/shared/entities/snapshot.entity.ts'
 

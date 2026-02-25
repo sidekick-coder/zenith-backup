@@ -2,7 +2,6 @@ import { useMenu } from '#client/composables/useMenu.ts'
 import Module from '#client/entities/module.entity.ts'
 import router from '#client/facades/router.facade.ts'
 import authGuard from '#client/guards/auth.guard.ts'
-import { $t } from '#shared/lang.ts'
 
 import './assets/css/styles.css'
 

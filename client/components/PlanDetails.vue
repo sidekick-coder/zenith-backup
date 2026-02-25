@@ -16,7 +16,7 @@ import {
     CardFooter,
 } from '#client/components/ui/card'
 import { $fetch } from '#client/utils/fetcher.ts'
-import { $t } from '#shared/lang.ts'
+
 import Plan from '#zenith-backup/shared/entities/plan.entity.ts'
 import DialogForm from '#client/components/DialogForm.vue'
 

@@ -6,7 +6,7 @@ import { toast } from 'vue-sonner'
 import FormSelect from '#client/components/FormSelect.vue'
 import FormTextField from '#client/components/FormTextField.vue'
 import Button from '#client/components/Button.vue'
-import { $t } from '#shared/lang.ts'
+
 import Card from '#client/components/ui/card/Card.vue'
 import CardHeader from '#client/components/ui/card/CardHeader.vue'
 import CardTitle from '#client/components/ui/card/CardTitle.vue'
