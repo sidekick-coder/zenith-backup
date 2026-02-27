@@ -53,7 +53,9 @@ export default class DumpConnection extends composeWith(
                 username: connection.user,
                 password: connection.password,
                 database: connection.database,
-                docker: this.useDocker,
+                docker_enabled: this.useDocker,
+                docker_image: this.dockerImage || '',
+                docker_extra_flags: this.config.docker_extra_flags as string | undefined,
             })
         }
 
@@ -62,7 +64,9 @@ export default class DumpConnection extends composeWith(
             await DumpSQLite.dump({
                 filename: tmpFilename,
                 database: connection.database,
-                docker: this.useDocker,
+                docker_enabled: this.useDocker,
+                docker_image: this.dockerImage || '',
+                docker_extra_flags: this.config.docker_extra_flags as string | undefined,
             })
         }
 
@@ -115,7 +119,10 @@ export default class DumpConnection extends composeWith(
                 username: connection.user,
                 password: connection.password,
                 database: connection.database,
-                docker: this.useDocker,
+
+                docker_enabled: this.useDocker,
+                docker_image: this.dockerImage,
+                docker_extra_flags: this.config.docker_extra_flags as string | undefined,
             })
         }
 
@@ -123,7 +130,10 @@ export default class DumpConnection extends composeWith(
             await DumpSQLite.restoreDump({
                 filename: tmpFilename,
                 database: connection.database,
-                docker: this.useDocker,
+                
+                docker_enabled: this.useDocker,
+                docker_image: this.dockerImage,
+                docker_extra_flags: this.config.docker_extra_flags as string | undefined,
             })
         }
 
