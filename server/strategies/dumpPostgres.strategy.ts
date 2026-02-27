@@ -19,7 +19,7 @@ interface DumpOptions {
     password?: string
     database: string
     docker_enabled: boolean
-    docker_image: string
+    docker_image?: string
     docker_extra_flags?: string
 }
 
@@ -108,7 +108,7 @@ export default class DumpPostgres extends composeWith(
                 dockerArgs.push(...extraFlags)
             }
 
-            dockerArgs.push(options.docker_image, 'pg_dump')
+            dockerArgs.push(options.docker_image || 'postgres:latest', 'pg_dump')
                 
             args.forEach(a => {
                 dockerArgs.push(a.replace(path.dirname(filename), '/dumps'))

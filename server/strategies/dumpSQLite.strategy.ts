@@ -13,12 +13,16 @@ import type Snapshot from '#zenith-backup/shared/entities/snapshot.entity.ts'
 interface DumpOptions {
     filename: string
     database: string
-    docker: boolean
+    docker_enabled: boolean
+    docker_image?: string
+    docker_extra_flags?: string
 }
 
 export default class DumpSQLite extends composeWith(
     BaseStrategy,
-    DockerStrategy(),
+    DockerStrategy({
+        defaultImage: 'nouchka/sqlite3:latest',
+    }),
     DumpStrategy({
         dumpFilename: 'dump.db',
         metadataFilename: 'metadata.json',
@@ -44,7 +48,7 @@ export default class DumpSQLite extends composeWith(
     public static async dump(options: DumpOptions): Promise<void> {
         const database = options.database
         const filename = options.filename
-        const docker = options.docker
+        const dockerEnabled = options.docker_enabled
 
         if (!fs.existsSync(database)) {
             throw new Error(`SQLite database file '${database}' does not exist`)
@@ -55,13 +59,20 @@ export default class DumpSQLite extends composeWith(
             `".backup '${filename}'"`,
         ]
 
-        if (docker) {
+        if (dockerEnabled) {
             const dockerArgs = [] as string[]
         
             dockerArgs.push('run', '--rm')
             dockerArgs.push('-v', `${path.dirname(database)}:/database`)
             dockerArgs.push('-v', `${path.dirname(filename)}:/dumps`)
-            dockerArgs.push('nouchka/sqlite3')
+            
+            if (options.docker_extra_flags) {
+                const extraFlags = options.docker_extra_flags.split(' ').filter(f => f.trim() !== '')
+                
+                dockerArgs.push(...extraFlags)
+            }
+
+            dockerArgs.push(options.docker_image || 'nouchka/sqlite3:latest')
                 
             dockerArgs.push(`/database/${path.basename(database)}`)
             dockerArgs.push(`.backup '/dumps/${path.basename(filename)}'`)
@@ -77,20 +88,27 @@ export default class DumpSQLite extends composeWith(
     public static async restoreDump(options: DumpOptions): Promise<void> {
         const database = options.database
         const filename = options.filename
-        const docker = options.docker
+        const dockerEnabled = options.docker_enabled
 
         const args = [
             database,
             `".restore '${filename}'"`,
         ]
 
-        if (docker) {
+        if (dockerEnabled) {
             const dockerArgs = [] as string[]
 
             dockerArgs.push('run', '--rm')
             dockerArgs.push('-v', `${path.dirname(database)}:/database`)
             dockerArgs.push('-v', `${path.dirname(filename)}:/dumps`)
-            dockerArgs.push('nouchka/sqlite3')
+
+            if (options.docker_extra_flags) {
+                const extraFlags = options.docker_extra_flags.split(' ').filter(f => f.trim() !== '')
+                
+                dockerArgs.push(...extraFlags)
+            }
+
+            dockerArgs.push(options.docker_image || 'nouchka/sqlite3:latest')
 
             dockerArgs.push(`/database/${path.basename(database)}`)
             dockerArgs.push(`.restore '/dumps/${path.basename(filename)}'`)
@@ -116,7 +134,9 @@ export default class DumpSQLite extends composeWith(
         await DumpSQLite.dump({
             filename: tmpFilename,
             database,
-            docker: this.useDocker,
+            docker_enabled: this.useDocker,
+            docker_image: this.dockerImage,
+            docker_extra_flags: this.config.docker_extra_flags as string | undefined,
         })
 
         const stats = await fs.promises.stat(tmpFilename)
@@ -158,7 +178,9 @@ export default class DumpSQLite extends composeWith(
         await DumpSQLite.restoreDump({
             filename: tmpFilename,
             database,
-            docker: this.useDocker,
+            docker_enabled: this.useDocker,
+            docker_image: this.dockerImage,
+            docker_extra_flags: this.config.docker_extra_flags as string | undefined,
         })
 
         await fs.promises.unlink(tmpFilename)
