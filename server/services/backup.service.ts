@@ -2,7 +2,6 @@ import { format } from 'date-fns'
 import StrategyService from './strategy.service.ts'
 import SnapshotService from './snapshots.service.ts'
 import Plan from '#zenith-backup/server/entities/plan.entity.ts'
-import BaseException from '#server/exceptions/base.ts'
 import { tryCatch } from '#shared/utils/tryCatch.ts'
 import logger from '#server/facades/logger.facade.ts'
 import type Target from '#zenith-backup/shared/entities/target.entity.ts'
@@ -113,9 +112,9 @@ export default class BackupService {
         const [error] = await tryCatch(() => instance.backup(metadata || {}))
 
         if (error) {
-            this.logger.error(error)
+            this.logger.error('backup failed', error)
 
-            throw new BaseException('backup failed')
+            throw error
         }
 
         this.logger.info('backup completed successfully', {
