@@ -1,3 +1,6 @@
+import fs from 'fs'
+import os from 'os'
+import path from 'path'
 import type Plan from '../entities/plan.entity.ts'
 import validator from '#shared/services/validator.service.ts'
 import type Snapshot from '#zenith-backup/shared/entities/snapshot.entity.ts'
@@ -137,5 +140,15 @@ export default class BaseStrategy {
 
     public async list(): Promise<Snapshot[]> {
         throw new Error('Not implemented')
+    }
+
+    public static makeTmpPath(...parts: string[]) {
+        const base = path.join(os.tmpdir(), 'zenith-backup')
+
+        if (!fs.existsSync(base)) {
+            fs.mkdirSync(base)
+        }
+
+        return path.join(base, ...parts)
     }
 }

@@ -5,7 +5,7 @@ import { DockerStrategy } from '../mixins/dockerStrategy.mixin.ts'
 import BaseStrategy from './base.strategy.ts'
 import shell from '#server/facades/shell.facade.ts'
 
-import { tmpPath, basePath } from '#server/utils/paths.ts'
+import { basePath } from '#server/utils/paths.ts'
 import { cuid } from '#server/utils/cuid.util.ts'
 import { composeWith } from '#shared/utils/compose.ts'
 import type Snapshot from '#zenith-backup/shared/entities/snapshot.entity.ts'
@@ -129,7 +129,7 @@ export default class DumpSQLite extends composeWith(
             throw new Error(`SQLite database file '${database}' does not exist`)
         }
 
-        const tmpFilename = tmpPath(`backup_${Date.now()}.db`)
+        const tmpFilename = BaseStrategy.makeTmpPath(`backup_${Date.now()}.db`)
 
         await DumpSQLite.dump({
             filename: tmpFilename,
@@ -171,7 +171,7 @@ export default class DumpSQLite extends composeWith(
             throw new Error(`Dump file not found in snapshot ${snapshot.id}`)
         }
 
-        const tmpFilename = tmpPath(`restore_${Date.now()}.db`)
+        const tmpFilename = BaseStrategy.makeTmpPath(`restore_${Date.now()}.db`)
 
         await this.drive.download(dumpPath, tmpFilename)
 
