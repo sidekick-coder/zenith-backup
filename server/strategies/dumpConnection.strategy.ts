@@ -6,8 +6,6 @@ import DumpPostgres from './dumpPostgres.strategy.ts'
 import BaseStrategy from './base.strategy.ts'
 import DumpSQLite from './dumpSQLite.strategy.ts'
 import config from '#server/facades/config.facade.ts'
-
-import { tmpPath } from '#server/utils/paths.ts'
 import { cuid } from '#server/utils/cuid.util.ts'
 import { composeWith } from '#shared/utils/compose.ts'
 import type Snapshot from '#zenith-backup/shared/entities/snapshot.entity.ts'
@@ -43,7 +41,7 @@ export default class DumpConnection extends composeWith(
 
         const connection = config.get(`database.connections.${name}`) as Record<string, any>
 
-        const tmpFilename = tmpPath(`backup_${Date.now()}.sql`)
+        const tmpFilename = BaseStrategy.makeTmpPath(`backup_${Date.now()}.sql`)
 
         if (connection.driver === 'postgresql') {
             await DumpPostgres.dump({
@@ -107,7 +105,7 @@ export default class DumpConnection extends composeWith(
             throw new Error(`Dump file not found in snapshot ${snapshot.id}`)
         }
 
-        const tmpFilename = tmpPath(`restore_${Date.now()}.sql`)
+        const tmpFilename = BaseStrategy.makeTmpPath(`restore_${Date.now()}.sql`)
 
         await this.drive.download(dumpPath, tmpFilename)
 
