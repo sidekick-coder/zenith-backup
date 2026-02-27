@@ -87,13 +87,19 @@ export default class DumpPostgres extends composeWith(
             '--clean'
         ]
 
+        const env: Record<string, string> = {}
+
+        if (password) {
+            env.PGPASSWORD = password
+        }
+
         if (docker) {
             const dockerArgs = [] as string[]
         
             dockerArgs.push('run', '--rm')
         
             if (password) {
-                dockerArgs.push('-e', `PGPASSWORD=${password}`)
+                dockerArgs.push('-e', 'PGPASSWORD')
             }
                 
             dockerArgs.push('-v', `${path.dirname(filename)}:/dumps`)
@@ -103,13 +109,7 @@ export default class DumpPostgres extends composeWith(
                 dockerArgs.push(a.replace(path.dirname(filename), '/dumps'))
             })
         
-            return shell.command('docker', dockerArgs)
-        }
-
-        const env: Record<string, string> = {}
-
-        if (password) {
-            env.PGPASSWORD = password
+            return shell.command('docker', dockerArgs, { env })
         }
         
         return shell.command('pg_dump', args, { env })
@@ -136,7 +136,7 @@ export default class DumpPostgres extends composeWith(
             args.push('run', '--rm')
 
             if (password) {
-                args.push('-e', `PGPASSWORD=${password}`)
+                args.push('-e', 'PGPASSWORD')
             }
 
             args.push('-v', `${path.dirname(filename)}:/dumps`)
@@ -147,7 +147,7 @@ export default class DumpPostgres extends composeWith(
             args.push(`--dbname=${database}`)
             args.push('-f', `/dumps/${path.basename(filename)}`)
 
-            return shell.command('docker', args)
+            return shell.command('docker', args, { env })
         }
 
         const args = [] as string[]
