@@ -33,7 +33,7 @@ export function DockerStrategy(options: Options = {}) {
                     description: $t('Settings related to Docker execution and container configuration.'),
                 })
 
-                cls.field('docker', {
+                cls.field('docker_enabled', {
                     component: 'select',
                     section_id: 'docker',
                     label: $t('Use Docker'),
@@ -55,6 +55,13 @@ export function DockerStrategy(options: Options = {}) {
                     section_id: 'docker',
                     placeholder: options.defaultImage,
                     label: $t('Image'),
+                })
+
+                cls.field('docker_extra_flags', {
+                    component: 'text-field',
+                    section_id: 'docker',
+                    label: $t('Extra Flags'),
+                    placeholder: $t('Additional Docker flags'),
                 })
             }
 
@@ -82,7 +89,7 @@ export function DockerStrategy(options: Options = {}) {
                 const strategy = this as any as BaseStrategy
                 const keys = options.configKeys || ['zbackups.docker.enabled']
                 
-                let result = strategy.config.docker === 'true'
+                let result = strategy.config.docker_enabled === 'true'
 
                 if (result !== undefined && result !== null) {
                     return result
