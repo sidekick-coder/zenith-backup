@@ -18,12 +18,16 @@ interface DumpOptions {
     username: string
     password?: string
     database: string
-    docker: boolean
+    docker_enabled: boolean
+    docker_image: string
+    docker_extra_flags?: string
 }
 
 export default class DumpPostgres extends composeWith(
     BaseStrategy,
-    DockerStrategy(),
+    DockerStrategy({
+        defaultImage: 'postgres:latest',
+    }),
     DumpStrategy()
 ) {
     public static id = 'dump_postgres'
@@ -70,40 +74,41 @@ export default class DumpPostgres extends composeWith(
     }
 
     public static async dump(options: DumpOptions): Promise<void> {
-        const host = options.host as string | undefined
-        const port = options.port as number | undefined
-        const username = options.username as string
-        const password = options.password as string | undefined
-        const database = options.database as string
         const filename = options.filename
-        const docker = options.docker
 
         const args = [
-            `--host=${host || 'localhost'}`,
-            `--port=${port || 5432}`,
-            `--username=${username}`,
-            `--dbname=${database}`,
-            `--file=${filename}`,
+            `--host=${options.host || 'localhost'}`,
+            `--port=${options.port || 5432}`,
+            `--username=${options.username}`,
+            `--dbname=${options.database}`,
+            `--file=${options.filename}`,
             '--clean'
         ]
 
         const env: Record<string, string> = {}
 
-        if (password) {
-            env.PGPASSWORD = password
+        if (options.password) {
+            env.PGPASSWORD = options.password
         }
 
-        if (docker) {
+        if (options.docker_enabled) {
             const dockerArgs = [] as string[]
         
             dockerArgs.push('run', '--rm')
         
-            if (password) {
+            if (options.password) {
                 dockerArgs.push('-e', 'PGPASSWORD')
             }
                 
             dockerArgs.push('-v', `${path.dirname(filename)}:/dumps`)
-            dockerArgs.push('postgres', 'pg_dump')
+
+            if (options.docker_extra_flags) {
+                const extraFlags = options.docker_extra_flags.split(' ').filter(f => f.trim() !== '')
+                
+                dockerArgs.push(...extraFlags)
+            }
+
+            dockerArgs.push(options.docker_image, 'pg_dump')
                 
             args.forEach(a => {
                 dockerArgs.push(a.replace(path.dirname(filename), '/dumps'))
@@ -116,35 +121,30 @@ export default class DumpPostgres extends composeWith(
     }
 
     public static async restoreDump(options: DumpOptions): Promise<void> {
-        const host = options.host as string | undefined
-        const port = options.port as number | undefined
-        const username = options.username as string
-        const password = options.password as string | undefined
-        const database = options.database as string
         const filename = options.filename
-        const docker = options.docker
+        const docker = options.docker_enabled
 
         const env: Record<string, string> = {}
 
-        if (password) {
-            env.PGPASSWORD = password
+        if (options.password) {
+            env.PGPASSWORD = options.password
         }
 
         if (docker) {
-            const args = []
+            const args = [] as string[]
 
             args.push('run', '--rm')
 
-            if (password) {
+            if (options.password) {
                 args.push('-e', 'PGPASSWORD')
             }
 
             args.push('-v', `${path.dirname(filename)}:/dumps`)
             args.push('postgres', 'psql')
-            args.push(`--host=${host || 'localhost'}`)
-            args.push(`--port=${port || 5432}`)
-            args.push(`--username=${username}`)
-            args.push(`--dbname=${database}`)
+            args.push(`--host=${options.host || 'localhost'}`)
+            args.push(`--port=${options.port || 5432}`)
+            args.push(`--username=${options.username}`)
+            args.push(`--dbname=${options.database}`)
             args.push('-f', `/dumps/${path.basename(filename)}`)
 
             return shell.command('docker', args, { env })
@@ -152,10 +152,10 @@ export default class DumpPostgres extends composeWith(
 
         const args = [] as string[]
         
-        args.push(`--host=${host || 'localhost'}`)
-        args.push(`--port=${port || 5432}`)
-        args.push(`--username=${username}`)
-        args.push(`--dbname=${database}`)
+        args.push(`--host=${options.host || 'localhost'}`)
+        args.push(`--port=${options.port || 5432}`)
+        args.push(`--username=${options.username}`)
+        args.push(`--dbname=${options.database}`)
         args.push('-f', filename)
 
         return shell.command('psql', args, { env })
@@ -178,7 +178,9 @@ export default class DumpPostgres extends composeWith(
             username,
             password,
             database,
-            docker: this.useDocker,
+            docker_enabled: this.useDocker,
+            docker_image: this.dockerImage || '',
+            docker_extra_flags: this.config.docker_extra_flags as string | undefined,
         })
 
         const stats = await fs.promises.stat(tmpFilename)
@@ -228,7 +230,9 @@ export default class DumpPostgres extends composeWith(
             username,
             password,
             database,
-            docker: this.useDocker,
+            docker_enabled: this.useDocker,
+            docker_image: this.dockerImage || '',
+            docker_extra_flags: this.config.docker_extra_flags as string | undefined,
         })
 
         await fs.promises.unlink(tmpFilename)
