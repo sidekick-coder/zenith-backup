@@ -4,6 +4,8 @@ import type { Constructor } from '#shared/utils/compose.ts'
 
 import drive from '#server/facades/drive.facade.ts'
 import Snapshot from '#zenith-backup/shared/entities/snapshot.entity.ts'
+import logger from '#server/facades/logger.facade.ts'
+import { tryCatch } from '#shared/utils/tryCatch.ts'
 
 interface DumpStrategyOptions {
     dumpFilename?: string
@@ -105,14 +107,16 @@ export function DumpStrategy<T extends string>(options?: DumpStrategyOptions) {
                 const folder = strategy.config?.directory as string | undefined
 
                 if (!folder || folder.trim() === '') {
-                    return []
-                }
-
-                if (!(await this.drive.exists(folder))) {
+                    logger.warn('No drive directory configured. Returning empty snapshot list.')
                     return []
                 }
             
-                const entries = await this.drive.list(folder || '')
+                const [error, entries] = await tryCatch(() => this.drive.list(folder))
+
+                if (error) {
+                    logger.error(`Failed to list drive entries in folder "${folder}": ${error}`)
+                    return []
+                }
             
                 const snapshots = [] as Snapshot[]
             
