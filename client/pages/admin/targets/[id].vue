@@ -22,7 +22,7 @@ import {
 import { $fetch } from '#client/utils/fetcher.ts'
 import { tryCatch } from '#shared/utils/tryCatch.ts'
 import type Target from '#zenith-backup/shared/entities/target.entity.ts'
-import AppLayout from '#client/layouts/AppLayout.vue'
+import AdminLayout from '#client/layouts/AdminLayout.vue'
 import Plan from '#zenith-backup/shared/entities/plan.entity.ts'
 
 const route = useRoute()
@@ -97,7 +97,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <AppLayout
+    <AdminLayout
         :breadcrumbs="[
             { label: $t('Backup'), to: '/admin/backup' },
             { label: $t('Plans'), to: '/admin/backup/plans' },
@@ -223,5 +223,5 @@ onMounted(() => {
                 </Tabs>
             </div>
         </div>
-    </AppLayout>
+    </AdminLayout>
 </template>

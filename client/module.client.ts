@@ -1,5 +1,5 @@
-import { useMenu } from '#client/composables/useMenu.ts'
 import Module from '#client/entities/module.entity.ts'
+import menu from '#client/facades/menu.facade.ts'
 import router from '#client/facades/router.facade.ts'
 import authGuard from '#client/guards/auth.guard.ts'
 
@@ -7,8 +7,6 @@ import './assets/css/styles.css'
 
 export default class MyModule extends Module {
     public async onLoad(): Promise<void> {
-        const menu = useMenu()
-        
         router.auto(import.meta.glob<any>('./pages/admin/**/*.vue'), {
             strip: ['pages', 'admin'],
             prefix: '/admin/zbackup',
@@ -22,6 +20,7 @@ export default class MyModule extends Module {
 
         menu.add({
             id: 'zbackup-snapshots',
+            layout: 'admin',
             label: $t('Snapshots'),
             icon: 'DatabaseBackup',
             group: $t('Backups'),
@@ -30,6 +29,7 @@ export default class MyModule extends Module {
         
         menu.add({
             id: 'zbackup-plans',
+            layout: 'admin',
             label: $t('Plans'),
             icon: 'CalendarCheck',
             group: $t('Backups'),
