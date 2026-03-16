@@ -1,11 +1,11 @@
 import { f as w, S as C } from "./snapshot.entity-Cf_ZlVq5.js";
-const { defineComponent: u } = await globalThis.importAsync("vue"), { ref: m } = await globalThis.importAsync("vue"), { resolveComponent: y } = await globalThis.importAsync("vue"), { createBlock: f } = await globalThis.importAsync("vue"), { openBlock: i } = await globalThis.importAsync("vue"), { withCtx: o } = await globalThis.importAsync("vue"), { createVNode: n } = await globalThis.importAsync("vue"), { unref: l } = await globalThis.importAsync("vue"), { createElementVNode: _ } = await globalThis.importAsync("vue"), { createElementBlock: b } = await globalThis.importAsync("vue"), { createCommentVNode: h } = await globalThis.importAsync("vue"), { toDisplayString: a } = await globalThis.importAsync("vue"), { createTextVNode: g } = await globalThis.importAsync("vue"), s = await globalThis.importAsync("#client/layouts/AppLayout.vue"), v = s.default || s, c = await globalThis.importAsync("#client/components/PageCrud.vue"), A = c.default || c, { defineColumns: T } = await globalThis.importAsync("#client/components/DataTable.vue"), k = {
+const { defineComponent: m } = await globalThis.importAsync("vue"), { ref: u } = await globalThis.importAsync("vue"), { resolveComponent: y } = await globalThis.importAsync("vue"), { createBlock: f } = await globalThis.importAsync("vue"), { openBlock: i } = await globalThis.importAsync("vue"), { withCtx: o } = await globalThis.importAsync("vue"), { createVNode: n } = await globalThis.importAsync("vue"), { unref: l } = await globalThis.importAsync("vue"), { createElementVNode: _ } = await globalThis.importAsync("vue"), { createElementBlock: b } = await globalThis.importAsync("vue"), { createCommentVNode: h } = await globalThis.importAsync("vue"), { toDisplayString: a } = await globalThis.importAsync("vue"), { createTextVNode: g } = await globalThis.importAsync("vue"), s = await globalThis.importAsync("#client/layouts/AdminLayout.vue"), v = s.default || s, c = await globalThis.importAsync("#client/components/PageCrud.vue"), A = c.default || c, { defineColumns: T } = await globalThis.importAsync("#client/components/DataTable.vue"), k = {
   key: 0,
   class: "text-sm text-muted-foreground"
-}, S = /* @__PURE__ */ u({
+}, S = /* @__PURE__ */ m({
   __name: "index",
   setup(N) {
-    const r = m(), p = T([
+    const r = u(), d = T([
       {
         id: "id",
         label: "ID",
@@ -38,7 +38,7 @@ const { defineComponent: u } = await globalThis.importAsync("vue"), { ref: m } =
       { id: "actions" }
     ]);
     return (t, $) => {
-      const d = y("router-link");
+      const p = y("router-link");
       return i(), f(v, null, {
         default: o(() => [
           n(A, {
@@ -46,14 +46,14 @@ const { defineComponent: u } = await globalThis.importAsync("vue"), { ref: m } =
             ref: r,
             fetch: "/api/zbackup/snapshots",
             "fetch-destroy": "/api/zbackup/plans/:plan_id/snapshots/:id",
-            columns: l(p),
+            columns: l(d),
             title: t.$t("Snapshots"),
             description: t.$t("Snapshot list created from plans."),
             serialize: (e) => new (l(C))(e),
             actions: ["destroy"]
           }, {
             "row-plan": o(({ row: e }) => [
-              n(d, {
+              n(p, {
                 class: "text-primary hover:underline",
                 to: `/admin/zbackup/plans/${e.plan_id}`
               }, {

@@ -13,8 +13,8 @@ const { useSSRContext } = await globalThis.importAsync("vue");
 const { ssrRenderComponent } = await globalThis.importAsync("vue/server-renderer");
 const { ssrInterpolate } = await globalThis.importAsync("vue/server-renderer");
 import { format } from "date-fns";
-const __module__AppLayout__ = await globalThis.importAsync("#client/layouts/AppLayout.vue");
-const AppLayout = __module__AppLayout__.default || __module__AppLayout__;
+const __module__AdminLayout__ = await globalThis.importAsync("#client/layouts/AdminLayout.vue");
+const AdminLayout = __module__AdminLayout__.default || __module__AdminLayout__;
 const __module__PageCrud__ = await globalThis.importAsync("#client/components/PageCrud.vue");
 const PageCrud = __module__PageCrud__.default || __module__PageCrud__;
 const { defineColumns } = await globalThis.importAsync("#client/components/DataTable.vue");
@@ -58,7 +58,7 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
     ]);
     return (_ctx, _push, _parent, _attrs) => {
       const _component_router_link = resolveComponent("router-link");
-      _push(ssrRenderComponent(AppLayout, _attrs, {
+      _push(ssrRenderComponent(AdminLayout, _attrs, {
         default: withCtx((_, _push2, _parent2, _scopeId) => {
           if (_push2) {
             _push2(ssrRenderComponent(PageCrud, {

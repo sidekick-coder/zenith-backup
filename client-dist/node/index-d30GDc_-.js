@@ -11,8 +11,8 @@ const { ssrRenderComponent } = await globalThis.importAsync("vue/server-renderer
 const { ssrInterpolate } = await globalThis.importAsync("vue/server-renderer");
 const { ssrRenderAttr } = await globalThis.importAsync("vue/server-renderer");
 import { Head } from "@unhead/vue/components";
-const __module__AppLayout__ = await globalThis.importAsync("#client/layouts/AppLayout.vue");
-const AppLayout = __module__AppLayout__.default || __module__AppLayout__;
+const __module__AdminLayout__ = await globalThis.importAsync("#client/layouts/AdminLayout.vue");
+const AdminLayout = __module__AdminLayout__.default || __module__AdminLayout__;
 const __module__PageCrud__ = await globalThis.importAsync("#client/components/PageCrud.vue");
 const PageCrud = __module__PageCrud__.default || __module__PageCrud__;
 const { defineFormFields } = await globalThis.importAsync("#client/components/FormAutoFieldList.vue");
@@ -125,7 +125,7 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
         }),
         _: 1
       }, _parent));
-      _push(ssrRenderComponent(AppLayout, null, {
+      _push(ssrRenderComponent(AdminLayout, null, {
         default: withCtx((_, _push2, _parent2, _scopeId) => {
           if (_push2) {
             _push2(ssrRenderComponent(PageCrud, {

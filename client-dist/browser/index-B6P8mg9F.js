@@ -1,5 +1,5 @@
 import { u as F } from "./vue.Bm-NbY4b-Q5152MOJ.js";
-const { defineComponent: T } = await globalThis.importAsync("vue"), { ref: f } = await globalThis.importAsync("vue"), { onBeforeUnmount: C } = await globalThis.importAsync("vue"), { watchEffect: $ } = await globalThis.importAsync("vue"), { createElementBlock: z } = await globalThis.importAsync("vue"), { openBlock: r } = await globalThis.importAsync("vue"), { Fragment: B } = await globalThis.importAsync("vue"), { createVNode: d } = await globalThis.importAsync("vue"), { unref: l } = await globalThis.importAsync("vue"), { withCtx: c } = await globalThis.importAsync("vue"), { createElementVNode: h } = await globalThis.importAsync("vue"), { toDisplayString: E } = await globalThis.importAsync("vue"), { createBlock: p } = await globalThis.importAsync("vue"), g = await globalThis.importAsync("#client/layouts/AppLayout.vue"), N = g.default || g, _ = await globalThis.importAsync("#client/components/PageCrud.vue"), P = _.default || _, { defineFormFields: x } = await globalThis.importAsync("#client/components/FormAutoFieldList.vue"), { defineColumns: I } = await globalThis.importAsync("#client/components/DataTable.vue"), b = await globalThis.importAsync("#client/components/Button.vue"), S = b.default || b, v = await globalThis.importAsync("#client/components/Icon.vue"), m = v.default || v, { $fetch: D } = await globalThis.importAsync("#client/utils"), A = await globalThis.importAsync("#client/components/ui/switch/Switch.vue"), H = A.default || A;
+const { defineComponent: T } = await globalThis.importAsync("vue"), { ref: f } = await globalThis.importAsync("vue"), { onBeforeUnmount: C } = await globalThis.importAsync("vue"), { watchEffect: $ } = await globalThis.importAsync("vue"), { createElementBlock: z } = await globalThis.importAsync("vue"), { openBlock: r } = await globalThis.importAsync("vue"), { Fragment: B } = await globalThis.importAsync("vue"), { createVNode: d } = await globalThis.importAsync("vue"), { unref: l } = await globalThis.importAsync("vue"), { withCtx: c } = await globalThis.importAsync("vue"), { createElementVNode: h } = await globalThis.importAsync("vue"), { toDisplayString: E } = await globalThis.importAsync("vue"), { createBlock: m } = await globalThis.importAsync("vue"), g = await globalThis.importAsync("#client/layouts/AdminLayout.vue"), N = g.default || g, _ = await globalThis.importAsync("#client/components/PageCrud.vue"), P = _.default || _, { defineFormFields: x } = await globalThis.importAsync("#client/components/FormAutoFieldList.vue"), { defineColumns: I } = await globalThis.importAsync("#client/components/DataTable.vue"), b = await globalThis.importAsync("#client/components/Button.vue"), S = b.default || b, v = await globalThis.importAsync("#client/components/Icon.vue"), p = v.default || v, { $fetch: D } = await globalThis.importAsync("#client/utils"), A = await globalThis.importAsync("#client/components/ui/switch/Switch.vue"), H = A.default || A;
 class L {
   static TRIGGER_PREFIX = "zbackups:plans";
   id;
@@ -148,22 +148,22 @@ const V = /* @__PURE__ */ T({
             actions: ["create", "destroy"]
           }, {
             "row-active": c(({ row: o }) => [
-              a.value.includes(o.id) ? (r(), p(m, {
+              a.value.includes(o.id) ? (r(), m(p, {
                 key: 0,
                 name: "Loader2",
                 class: "animate-spin"
-              })) : (r(), p(H, {
+              })) : (r(), m(H, {
                 key: 1,
                 "model-value": !!o.active,
                 onClick: (O) => k(o)
               }, null, 8, ["model-value", "onClick"]))
             ]),
             "row-valid": c(({ row: o }) => [
-              o.valid ? (r(), p(m, {
+              o.valid ? (r(), m(p, {
                 key: 0,
                 name: "CheckCircle2",
                 class: "text-green-500 size-5"
-              })) : (r(), p(m, {
+              })) : (r(), m(p, {
                 key: 1,
                 name: "AlertCircle",
                 class: "text-yellow-500 size-5"
@@ -176,7 +176,7 @@ const V = /* @__PURE__ */ T({
                 to: `/admin/zbackup/plans/${o.id}`
               }, {
                 default: c(() => [
-                  d(m, { name: "Edit" })
+                  d(p, { name: "Edit" })
                 ]),
                 _: 1
               }, 8, ["to"])

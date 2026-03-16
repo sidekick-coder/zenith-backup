@@ -29,8 +29,8 @@ const { useRouter } = await globalThis.importAsync("vue-router");
 const { toast } = await globalThis.importAsync("vue-sonner");
 import { useRouteQuery } from "@vueuse/router";
 import { useHead } from "@unhead/vue";
-const __module__AppLayout__ = await globalThis.importAsync("#client/layouts/AppLayout.vue");
-const AppLayout = __module__AppLayout__.default || __module__AppLayout__;
+const __module__AdminLayout__ = await globalThis.importAsync("#client/layouts/AdminLayout.vue");
+const AdminLayout = __module__AdminLayout__.default || __module__AdminLayout__;
 const __module__$fetch$1__ = await globalThis.importAsync("#client/facades/fetch.facade.ts");
 const $fetch$1 = __module__$fetch$1__.default || __module__$fetch$1__;
 const { useForm } = await globalThis.importAsync("vee-validate");
@@ -464,7 +464,7 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
       }
     });
     return (_ctx, _push, _parent, _attrs) => {
-      _push(ssrRenderComponent(AppLayout, mergeProps({
+      _push(ssrRenderComponent(AdminLayout, mergeProps({
         breadcrumbs: [
           { label: _ctx.$t("Backup"), to: "/admin/backup" },
           { label: _ctx.$t("Plans"), to: "/admin/backup/plans" },

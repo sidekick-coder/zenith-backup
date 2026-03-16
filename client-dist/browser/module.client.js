@@ -1,22 +1,23 @@
-const { useMenu: o } = await globalThis.importAsync("#client/composables/useMenu.ts"), s = await globalThis.importAsync("#client/entities/module.entity.ts"), u = s.default || s, t = await globalThis.importAsync("#client/facades/router.facade.ts"), e = t.default || t, n = await globalThis.importAsync("#client/guards/auth.guard.ts"), i = n.default || n;
-class p extends u {
+const a = await globalThis.importAsync("#client/entities/module.entity.ts"), o = a.default || a, t = await globalThis.importAsync("#client/facades/menu.facade.ts"), s = t.default || t, e = await globalThis.importAsync("#client/facades/router.facade.ts"), n = e.default || e, d = await globalThis.importAsync("#client/guards/auth.guard.ts"), i = d.default || d;
+class l extends o {
   async onLoad() {
-    const a = o();
-    e.auto(/* @__PURE__ */ Object.assign({ "./pages/admin/plans/[id].vue": () => import("./_id_-CuCfWeKu.js"), "./pages/admin/plans/index.vue": () => import("./index-DPDU3I2g.js"), "./pages/admin/snapshots/index.vue": () => import("./index-Dxtr6K4v.js"), "./pages/admin/targets/[id].vue": () => import("./_id_-CXfAB_Re.js") }), {
+    n.auto(/* @__PURE__ */ Object.assign({ "./pages/admin/plans/[id].vue": () => import("./_id_-BYINBmdO.js"), "./pages/admin/plans/index.vue": () => import("./index-B6P8mg9F.js"), "./pages/admin/snapshots/index.vue": () => import("./index-BUgvKvB-.js"), "./pages/admin/targets/[id].vue": () => import("./_id_-BiIWnX_n.js") }), {
       strip: ["pages", "admin"],
       prefix: "/admin/zbackup",
       guards: [i]
-    }), e.addRoute({
+    }), n.addRoute({
       path: "/admin/zbackup",
       redirect: "/admin/zbackup/plans"
-    }), a.add({
+    }), s.add({
       id: "zbackup-snapshots",
+      layout: "admin",
       label: $t("Snapshots"),
       icon: "DatabaseBackup",
       group: $t("Backups"),
       to: "/admin/zbackup/snapshots"
-    }), a.add({
+    }), s.add({
       id: "zbackup-plans",
+      layout: "admin",
       label: $t("Plans"),
       icon: "CalendarCheck",
       group: $t("Backups"),
@@ -25,5 +26,5 @@ class p extends u {
   }
 }
 export {
-  p as default
+  l as default
 };

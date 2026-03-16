@@ -34,8 +34,8 @@ const { TabsTrigger } = await globalThis.importAsync("#client/components/ui/tabs
 const { TabsContent } = await globalThis.importAsync("#client/components/ui/tabs");
 const { $fetch } = await globalThis.importAsync("#client/utils/fetcher.ts");
 const { tryCatch } = await globalThis.importAsync("#shared/utils/tryCatch.ts");
-const __module__AppLayout__ = await globalThis.importAsync("#client/layouts/AppLayout.vue");
-const AppLayout = __module__AppLayout__.default || __module__AppLayout__;
+const __module__AdminLayout__ = await globalThis.importAsync("#client/layouts/AdminLayout.vue");
+const AdminLayout = __module__AdminLayout__.default || __module__AdminLayout__;
 const _sfc_main = /* @__PURE__ */ defineComponent({
   __name: "[id]",
   __ssrInlineRender: true,
@@ -95,7 +95,7 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
       load();
     });
     return (_ctx, _push, _parent, _attrs) => {
-      _push(ssrRenderComponent(AppLayout, mergeProps({
+      _push(ssrRenderComponent(AdminLayout, mergeProps({
         breadcrumbs: [
           { label: _ctx.$t("Backup"), to: "/admin/backup" },
           { label: _ctx.$t("Plans"), to: "/admin/backup/plans" },
