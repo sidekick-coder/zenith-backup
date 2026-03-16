@@ -1,19 +1,17 @@
-
 import { program } from 'commander'
 import backup from '../facades/backup.facade.ts'
 import Plan from '../entities/plan.entity.ts'
-import cli from '#server/services/cli.service.ts'
 
 program.command('zbackups:backup')
     .option('-p, --plan-id <planId>', 'Plan ID to execute')
     .option('-d, --description <description>', 'Description for the backup')
     .description('Execute a raw SQL query')
     .helpGroup('zbackups')
-    .action(cli.with('all', async (options: { planId: string, description?: string }) => {
+    .action(async (options: { planId: string, description?: string }) => {
         const plan = await Plan.findOrFail(options.planId)
         
         await backup.backup(plan, {
             trigger_type: 'manual',
             description: options.description || 'Manual backup executed from CLI',
         })
-    }))
+    })

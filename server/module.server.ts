@@ -16,6 +16,5 @@ export default class ZenithBackup extends Module {
         if (!env.get('ZARTE')) {
             await backup.load()
         }
-        
     }
 }

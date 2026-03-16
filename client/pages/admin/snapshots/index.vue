@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import type { ComponentExposed } from 'vue-component-type-helpers'
 import { format } from 'date-fns'
-import AppLayout from '#client/layouts/AppLayout.vue'
+import AdminLayout from '#client/layouts/AdminLayout.vue'
 import PageCrud from '#client/components/PageCrud.vue'
 
 import { defineColumns } from '#client/components/DataTable.vue'
@@ -46,7 +46,7 @@ const columns = defineColumns<Snapshot>([
 </script>
 
 <template>
-    <AppLayout>
+    <AdminLayout>
         <PageCrud 
             ref="crudRef"
             fetch="/api/zbackup/snapshots"
@@ -76,5 +76,5 @@ const columns = defineColumns<Snapshot>([
                 </div>
             </template>
         </PageCrud>
-    </AppLayout>
+    </AdminLayout>
 </template>

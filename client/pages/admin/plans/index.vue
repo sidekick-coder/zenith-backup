@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import type { ComponentExposed } from 'vue-component-type-helpers'
 import { Head } from '@unhead/vue/components'
-import AppLayout from '#client/layouts/AppLayout.vue'
+import AdminLayout from '#client/layouts/AdminLayout.vue'
 import PageCrud from '#client/components/PageCrud.vue'
 import { defineFormFields } from '#client/components/FormAutoFieldList.vue'
 
@@ -90,7 +90,7 @@ async function toggle(row: Plan) {
             :content="$t('Manage your backup plans')"
         >
     </Head>
-    <AppLayout>
+    <AdminLayout>
         <PageCrud 
             ref="crudRef"
             fetch="/api/zbackup/plans"
@@ -144,5 +144,5 @@ async function toggle(row: Plan) {
                 </Button>
             </template>
         </PageCrud>
-    </AppLayout>
+    </AdminLayout>
 </template>

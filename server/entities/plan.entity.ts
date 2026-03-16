@@ -1,5 +1,5 @@
 import backup from '../facades/backup.facade.ts'
-import { HooksStatic } from '#server/mixins/hooks.mixin.ts'
+import { HooksStatic } from '#server/mixins/index.ts'
 import ModelConfig from '#server/mixins/modelConfig.mixin.ts'
 import validator from '#shared/services/validator.service.ts'
 import { composeWith } from '#shared/utils/compose.ts'

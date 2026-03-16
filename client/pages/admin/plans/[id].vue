@@ -8,7 +8,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { toast } from 'vue-sonner'
 import { useRouteQuery } from '@vueuse/router'
 import { useHead } from '@unhead/vue'
-import AppLayout from '#client/layouts/AppLayout.vue'
+import AdminLayout from '#client/layouts/AdminLayout.vue'
 import $fetch from '#client/facades/fetch.facade.ts'
 
 import Plan from '#zenith-backup/shared/entities/plan.entity.ts'
@@ -81,7 +81,7 @@ onServerPrefetch(async () => {
 </script>
 
 <template>
-    <AppLayout
+    <AdminLayout
         :breadcrumbs="[
             { label: $t('Backup'), to: '/admin/backup' },
             { label: $t('Plans'), to: '/admin/backup/plans' },
@@ -141,5 +141,5 @@ onServerPrefetch(async () => {
                 </Tabs>
             </div>
         </div>
-    </AppLayout>
+    </AdminLayout>
 </template>
