@@ -20,7 +20,6 @@ import CardFooter from '#client/components/ui/card/CardFooter.vue'
 import { $fetch } from '#client/utils/fetcher.ts'
 import { tryCatch } from '#shared/utils/tryCatch.ts'
 import type Plan from '#zenith-backup/shared/entities/plan.entity.ts'
-import DriveEntryPicker from '#client/components/DriveEntryPicker.vue'
 import Meta from '#shared/entities/meta.entity.ts'
 
 interface Props {
@@ -159,17 +158,7 @@ onMounted(() => {
                         :label="$t('Folder')"
                         :placeholder="$t('repository')"
                         :hint="$t('Folder path within the drive where the repository will be stored')"
-                    >
-                        <template #append>
-                            <DriveEntryPicker
-                                :drive-id="values?.drive_id"
-                                class="h-10"
-                                @update:model-value="setValues({
-                                    folder: $event[0]?.path || ''
-                                })"
-                            />
-                        </template>
-                    </FormTextField>
+                    />
                 </template>
 
                 <FormTextField

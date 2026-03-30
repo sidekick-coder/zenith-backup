@@ -17,7 +17,6 @@ import { $fetch } from '#client/utils/fetcher.ts'
 import { tryCatch } from '#shared/utils/tryCatch.ts'
 import type Plan from '#zenith-backup/shared/entities/plan.entity.ts'
 import validator from '#shared/services/validator.service'
-import DriveEntryPicker from '#client/components/DriveEntryPicker.vue'
 
 interface Props {
     plan: Plan
@@ -33,7 +32,7 @@ const schema = validator.create(v => v.object({
     folder: v.optional(v.string())
 }))
 
-const { handleSubmit, values, setValues } = useForm({
+const { handleSubmit, values } = useForm({
     validationSchema: toTypedSchema(schema), 
     initialValues: JSON.parse(JSON.stringify(props.plan?.options || {}))
 })
@@ -86,17 +85,7 @@ const onSubmit = handleSubmit(async (payload) => {
                     :label="$t('Folder')"
                     :placeholder="$t('backups')"
                     :hint="$t('Folder path within the drive where backups will be stored')"
-                >
-                    <template #append>
-                        <DriveEntryPicker
-                            :drive-id="values?.drive_id"
-                            class="h-10"
-                            @update:model-value="setValues({
-                                folder: $event[0]?.path || ''
-                            })"
-                        />
-                    </template>
-                </FormTextField>
+                />
             </CardContent>
             <CardFooter class="flex justify-end gap-4">
                 <Button
