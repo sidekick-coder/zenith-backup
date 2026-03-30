@@ -6,35 +6,40 @@ const __module__router__ = await globalThis.importAsync("#client/facades/router.
 const router = __module__router__.default || __module__router__;
 const __module__authGuard__ = await globalThis.importAsync("#client/guards/auth.guard.ts");
 const authGuard = __module__authGuard__.default || __module__authGuard__;
-class MyModule extends Module {
-  async onLoad() {
-    router.auto(/* @__PURE__ */ Object.assign({ "./pages/admin/plans/[id].vue": () => import("./_id_-y46a_88n.js"), "./pages/admin/plans/index.vue": () => import("./index-d30GDc_-.js"), "./pages/admin/snapshots/index.vue": () => import("./index-AYJQaZjB.js"), "./pages/admin/targets/[id].vue": () => import("./_id_-CmSzVoP2.js") }), {
-      strip: ["pages", "admin"],
-      prefix: "/admin/zbackup",
-      guards: [authGuard]
-    });
-    router.addRoute({
-      path: "/admin/zbackup",
-      redirect: "/admin/zbackup/plans"
-    });
-    menu.add({
-      id: "zbackup-snapshots",
-      layout: "admin",
-      label: $t("Snapshots"),
-      icon: "DatabaseBackup",
-      group: $t("Backups"),
-      to: "/admin/zbackup/snapshots"
-    });
-    menu.add({
-      id: "zbackup-plans",
-      layout: "admin",
-      label: $t("Plans"),
-      icon: "CalendarCheck",
-      group: $t("Backups"),
-      to: "/admin/zbackup/plans"
-    });
-  }
-}
-export {
-  MyModule as default
+//#region modules/mod/client/module.client.ts
+var MyModule = class extends Module {
+	async onLoad() {
+		router.auto(/* @__PURE__ */ Object.assign({
+			"./pages/admin/plans/[id].vue": () => import("./_id_-BnFI3zcF.js"),
+			"./pages/admin/plans/index.vue": () => import("./plans-CVHX-KAm.js"),
+			"./pages/admin/snapshots/index.vue": () => import("./snapshots-C6mkgARA.js"),
+			"./pages/admin/targets/[id].vue": () => import("./_id_-C-5ZhZ8S.js")
+		}), {
+			strip: ["pages", "admin"],
+			prefix: "/admin/zbackup",
+			guards: [authGuard]
+		});
+		router.addRoute({
+			path: "/admin/zbackup",
+			redirect: "/admin/zbackup/plans"
+		});
+		menu.add({
+			id: "zbackup-snapshots",
+			layout: "admin",
+			label: $t("Snapshots"),
+			icon: "DatabaseBackup",
+			group: $t("Backups"),
+			to: "/admin/zbackup/snapshots"
+		});
+		menu.add({
+			id: "zbackup-plans",
+			layout: "admin",
+			label: $t("Plans"),
+			icon: "CalendarCheck",
+			group: $t("Backups"),
+			to: "/admin/zbackup/plans"
+		});
+	}
 };
+//#endregion
+export { MyModule as default };

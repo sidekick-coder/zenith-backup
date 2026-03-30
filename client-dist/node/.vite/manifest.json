@@ -1,31 +1,35 @@
 {
-  "_snapshot.entity-DsurgNca.js": {
-    "file": "snapshot.entity-DsurgNca.js",
+  "_plan.entity-Dalh7ttT.js": {
+    "file": "plan.entity-Dalh7ttT.js",
+    "name": "plan.entity"
+  },
+  "_snapshot.entity-BsMamHAk.js": {
+    "file": "snapshot.entity-BsMamHAk.js",
     "name": "snapshot.entity"
   },
   "modules/mod/client/components/PlanConfig.vue": {
-    "file": "PlanConfig-B-dDTwvK.js",
+    "file": "PlanConfig-CRIwKC1e.js",
     "name": "PlanConfig",
     "src": "modules/mod/client/components/PlanConfig.vue",
     "isDynamicEntry": true
   },
   "modules/mod/client/components/PlanTriggers.vue": {
-    "file": "PlanTriggers-Bm2wxgIS.js",
+    "file": "PlanTriggers-BCygx7bR.js",
     "name": "PlanTriggers",
     "src": "modules/mod/client/components/PlanTriggers.vue",
     "isDynamicEntry": true
   },
   "modules/mod/client/components/SnapshotTable.vue": {
-    "file": "SnapshotTable-744HqmDT.js",
+    "file": "SnapshotTable-BOMAgtV2.js",
     "name": "SnapshotTable",
     "src": "modules/mod/client/components/SnapshotTable.vue",
     "isDynamicEntry": true,
     "imports": [
-      "_snapshot.entity-DsurgNca.js"
+      "_snapshot.entity-BsMamHAk.js"
     ]
   },
   "modules/mod/client/components/TargetTarForm.vue": {
-    "file": "TargetTarForm-DxdCtEaY.js",
+    "file": "TargetTarForm-BICT9Z40.js",
     "name": "TargetTarForm",
     "src": "modules/mod/client/components/TargetTarForm.vue",
     "isDynamicEntry": true
@@ -43,7 +47,7 @@
     ]
   },
   "modules/mod/client/pages/admin/plans/[id].vue": {
-    "file": "_id_-y46a_88n.js",
+    "file": "_id_-BnFI3zcF.js",
     "name": "_id_",
     "src": "modules/mod/client/pages/admin/plans/[id].vue",
     "isDynamicEntry": true,
@@ -54,22 +58,25 @@
     ]
   },
   "modules/mod/client/pages/admin/plans/index.vue": {
-    "file": "index-d30GDc_-.js",
-    "name": "index",
+    "file": "plans-CVHX-KAm.js",
+    "name": "plans",
     "src": "modules/mod/client/pages/admin/plans/index.vue",
-    "isDynamicEntry": true
+    "isDynamicEntry": true,
+    "imports": [
+      "_plan.entity-Dalh7ttT.js"
+    ]
   },
   "modules/mod/client/pages/admin/snapshots/index.vue": {
-    "file": "index-AYJQaZjB.js",
-    "name": "index",
+    "file": "snapshots-C6mkgARA.js",
+    "name": "snapshots",
     "src": "modules/mod/client/pages/admin/snapshots/index.vue",
     "isDynamicEntry": true,
     "imports": [
-      "_snapshot.entity-DsurgNca.js"
+      "_snapshot.entity-BsMamHAk.js"
     ]
   },
   "modules/mod/client/pages/admin/targets/[id].vue": {
-    "file": "_id_-CmSzVoP2.js",
+    "file": "_id_-C-5ZhZ8S.js",
     "name": "_id_",
     "src": "modules/mod/client/pages/admin/targets/[id].vue",
     "isDynamicEntry": true,
@@ -77,9 +84,5 @@
       "modules/mod/client/components/SnapshotTable.vue",
       "modules/mod/client/components/TargetTarForm.vue"
     ]
-  },
-  "style.css": {
-    "file": "styles.css",
-    "src": "style.css"
   }
 }
