@@ -42,7 +42,7 @@ jobs:
               run: |
                   docker run --rm \
                       -v ./:/app/modules/mod \
-                      sidekickcoder/zenith:0.1.0 \
+                      sidekickcoder/zenith:latest \
                       sh -c "node arte module:build --prepare true -m mod"
 
             - name: push
