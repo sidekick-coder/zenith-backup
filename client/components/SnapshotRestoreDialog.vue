@@ -18,7 +18,6 @@ import { $fetch } from '#client/utils/fetcher.ts'
 import { tryCatch } from '#shared/utils/tryCatch.ts'
 
 import type Snapshot from '#zenith-backup/shared/entities/snapshot.entity.ts'
-import DriveEntryPicker from '#client/components/DriveEntryPicker.vue'
 
 interface Props {
     snapshot: Snapshot
@@ -95,18 +94,7 @@ function close() {
                         :label="$t('Restore Folder')"
                         :placeholder="$t('Leave empty to restore to original location')"
                         :hint="$t('Optional: Specify a custom folder to restore the snapshot to')"
-                    >
-                        <template #append>
-                            <DriveEntryPicker
-                                drive-id="root"
-                                class="h-10"
-                                :initial-path="values.restore_folder"
-                                @update:model-value="setValues({
-                                    restore_folder: $event[0]?.path || ''
-                                })"
-                            />
-                        </template>
-                    </FormTextField>
+                    />
                 </div>
 
                 <DialogFooter class="mt-6">

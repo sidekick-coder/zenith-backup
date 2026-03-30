@@ -17,7 +17,6 @@ import { $fetch } from '#client/utils/fetcher.ts'
 import { tryCatch } from '#shared/utils/tryCatch.ts'
 
 import targetValidator from '#zenith-backup/shared/validators/target.validator.ts'
-import DriveEntryPicker from '#client/components/DriveEntryPicker.vue'
 import type Target from '#zenith-backup/shared/entities/target.entity.ts'
 import validator from '#shared/services/validator.service'
 
@@ -37,7 +36,7 @@ const saving = ref(false)
 
 const schema = validator.create(v => v.omit(targetValidator.create, ['plan_id']))
 
-const { handleSubmit, values, setValues } = useForm({
+const { handleSubmit } = useForm({
     validationSchema: toTypedSchema(schema),
     initialValues: { path: '' },
 })
@@ -94,18 +93,7 @@ function close() {
                         name="path"
                         :label="$t('Path')"
                         :placeholder="$t('Enter path to backup')"
-                    >
-                        <template #append>
-                            <DriveEntryPicker
-                                drive-id="root"
-                                class="h-10"
-                                :initial-path="values.path"
-                                @update:model-value="setValues({
-                                    path: $event[0]?.path || ''
-                                })"
-                            />
-                        </template>
-                    </FormTextField>
+                    />
                 </div>
 
                 <DialogFooter class="mt-6">
