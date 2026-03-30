@@ -145,7 +145,7 @@ var ne = /* @__PURE__ */ u({
 			{
 				value: "snapshots",
 				label: $t("Snapshots"),
-				component: l(() => import("./SnapshotTable-wIHbOtfb.js"))
+				component: l(() => import("./SnapshotTable-BNGZ7Ut9.js"))
 			}
 		];
 		async function k() {

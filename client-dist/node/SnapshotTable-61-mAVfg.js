@@ -55,8 +55,6 @@ const { DialogDescription } = await globalThis.importAsync("#client/components/u
 const { DialogFooter } = await globalThis.importAsync("#client/components/ui/dialog");
 const { DialogHeader } = await globalThis.importAsync("#client/components/ui/dialog");
 const { DialogTitle } = await globalThis.importAsync("#client/components/ui/dialog");
-const __module__DriveEntryPicker__ = await globalThis.importAsync("#client/components/DriveEntryPicker.vue");
-const DriveEntryPicker = __module__DriveEntryPicker__.default || __module__DriveEntryPicker__;
 //#region modules/mod/client/components/SnapshotRestoreDialog.vue?vue&type=script&setup=true&lang.ts
 var SnapshotRestoreDialog_vue_vue_type_script_setup_true_lang_default = /* @__PURE__ */ defineComponent({
 	__name: "SnapshotRestoreDialog",
@@ -137,23 +135,7 @@ var SnapshotRestoreDialog_vue_vue_type_script_setup_true_lang_default = /* @__PU
 									label: _ctx.$t("Restore Folder"),
 									placeholder: _ctx.$t("Leave empty to restore to original location"),
 									hint: _ctx.$t("Optional: Specify a custom folder to restore the snapshot to")
-								}, {
-									append: withCtx((_, _push, _parent, _scopeId) => {
-										if (_push) _push(ssrRenderComponent(DriveEntryPicker, {
-											"drive-id": "root",
-											class: "h-10",
-											"initial-path": unref(values).restore_folder,
-											"onUpdate:modelValue": ($event) => unref(setValues)({ restore_folder: $event[0]?.path || "" })
-										}, null, _parent, _scopeId));
-										else return [createVNode(DriveEntryPicker, {
-											"drive-id": "root",
-											class: "h-10",
-											"initial-path": unref(values).restore_folder,
-											"onUpdate:modelValue": ($event) => unref(setValues)({ restore_folder: $event[0]?.path || "" })
-										}, null, 8, ["initial-path", "onUpdate:modelValue"])];
-									}),
-									_: 1
-								}, _parent, _scopeId));
+								}, null, _parent, _scopeId));
 								_push(`</div>`);
 								_push(ssrRenderComponent(unref(DialogFooter), { class: "mt-6" }, {
 									default: withCtx((_, _push, _parent, _scopeId) => {
@@ -209,15 +191,7 @@ var SnapshotRestoreDialog_vue_vue_type_script_setup_true_lang_default = /* @__PU
 								label: _ctx.$t("Restore Folder"),
 								placeholder: _ctx.$t("Leave empty to restore to original location"),
 								hint: _ctx.$t("Optional: Specify a custom folder to restore the snapshot to")
-							}, {
-								append: withCtx(() => [createVNode(DriveEntryPicker, {
-									"drive-id": "root",
-									class: "h-10",
-									"initial-path": unref(values).restore_folder,
-									"onUpdate:modelValue": ($event) => unref(setValues)({ restore_folder: $event[0]?.path || "" })
-								}, null, 8, ["initial-path", "onUpdate:modelValue"])]),
-								_: 1
-							}, 8, [
+							}, null, 8, [
 								"label",
 								"placeholder",
 								"hint"
@@ -255,15 +229,7 @@ var SnapshotRestoreDialog_vue_vue_type_script_setup_true_lang_default = /* @__PU
 							label: _ctx.$t("Restore Folder"),
 							placeholder: _ctx.$t("Leave empty to restore to original location"),
 							hint: _ctx.$t("Optional: Specify a custom folder to restore the snapshot to")
-						}, {
-							append: withCtx(() => [createVNode(DriveEntryPicker, {
-								"drive-id": "root",
-								class: "h-10",
-								"initial-path": unref(values).restore_folder,
-								"onUpdate:modelValue": ($event) => unref(setValues)({ restore_folder: $event[0]?.path || "" })
-							}, null, 8, ["initial-path", "onUpdate:modelValue"])]),
-							_: 1
-						}, 8, [
+						}, null, 8, [
 							"label",
 							"placeholder",
 							"hint"

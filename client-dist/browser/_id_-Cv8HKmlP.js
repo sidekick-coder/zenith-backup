@@ -17,7 +17,7 @@ var P = { class: "flex gap-6 h-full" }, F = { class: "w-full lg:w-4/12 xl:w-3/12
 			let e = [{
 				value: "snapshots",
 				label: $t("Snapshots"),
-				component: l(() => import("./SnapshotTable-wIHbOtfb.js"))
+				component: l(() => import("./SnapshotTable-BNGZ7Ut9.js"))
 			}];
 			return Z.value?.strategy === "tar" && e.splice(0, 0, {
 				value: "config",

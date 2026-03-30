@@ -10,10 +10,10 @@ const authGuard = __module__authGuard__.default || __module__authGuard__;
 var MyModule = class extends Module {
 	async onLoad() {
 		router.auto(/* @__PURE__ */ Object.assign({
-			"./pages/admin/plans/[id].vue": () => import("./_id_-BnFI3zcF.js"),
+			"./pages/admin/plans/[id].vue": () => import("./_id_-CVXdQPlu.js"),
 			"./pages/admin/plans/index.vue": () => import("./plans-CVHX-KAm.js"),
 			"./pages/admin/snapshots/index.vue": () => import("./snapshots-C6mkgARA.js"),
-			"./pages/admin/targets/[id].vue": () => import("./_id_-C-5ZhZ8S.js")
+			"./pages/admin/targets/[id].vue": () => import("./_id_-BYqKkvE7.js")
 		}), {
 			strip: ["pages", "admin"],
 			prefix: "/admin/zbackup",

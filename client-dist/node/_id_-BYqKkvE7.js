@@ -50,7 +50,7 @@ var _id__vue_vue_type_script_setup_true_lang_default = /* @__PURE__ */ defineCom
 			const items = [{
 				value: "snapshots",
 				label: $t("Snapshots"),
-				component: defineAsyncComponent(() => import("./SnapshotTable-BOMAgtV2.js"))
+				component: defineAsyncComponent(() => import("./SnapshotTable-61-mAVfg.js"))
 			}];
 			if (plan.value?.strategy === "tar") items.splice(0, 0, {
 				value: "config",

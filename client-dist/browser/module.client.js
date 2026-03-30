@@ -3,10 +3,10 @@ const e = await globalThis.importAsync("#client/entities/module.entity.ts"), t =
 var c = class extends t {
 	async onLoad() {
 		a.auto(/* @__PURE__ */ Object.assign({
-			"./pages/admin/plans/[id].vue": () => import("./_id_-C5R6PQGZ.js"),
+			"./pages/admin/plans/[id].vue": () => import("./_id_-f6oDCQeG.js"),
 			"./pages/admin/plans/index.vue": () => import("./plans-CUbM46bW.js"),
 			"./pages/admin/snapshots/index.vue": () => import("./snapshots-GD6Egwja.js"),
-			"./pages/admin/targets/[id].vue": () => import("./_id_-Otj8TdX-.js")
+			"./pages/admin/targets/[id].vue": () => import("./_id_-Cv8HKmlP.js")
 		}), {
 			strip: ["pages", "admin"],
 			prefix: "/admin/zbackup",
