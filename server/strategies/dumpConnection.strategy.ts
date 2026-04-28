@@ -9,6 +9,7 @@ import config from '#server/facades/config.facade.ts'
 import { cuid } from '#server/utils/cuid.util.ts'
 import { composeWith } from '#shared/utils/compose.ts'
 import type Snapshot from '#zenith-backup/shared/entities/snapshot.entity.ts'
+import { tmpPath } from '#server/utils/paths.ts'
 
 export default class DumpConnection extends composeWith(
     BaseStrategy,
@@ -41,9 +42,14 @@ export default class DumpConnection extends composeWith(
 
         const connection = config.get(`database.connections.${name}`) as Record<string, any>
 
-        const tmpFilename = BaseStrategy.makeTmpPath(`backup_${Date.now()}.sql`)
+        const tmpFilename = tmpPath(`backup_${Date.now()}.sql`)
+        const dialect = connection.dialect
 
-        if (connection.driver === 'postgresql') {
+        if (dialect !== 'postgresql' && dialect !== 'sqlite') {
+            throw new Error(`Unsupported database dialect: ${connection.dialect}`)
+        }
+
+        if (connection.dialect === 'postgresql') {
             await DumpPostgres.dump({
                 filename: tmpFilename,
                 host: connection.host,
@@ -57,7 +63,7 @@ export default class DumpConnection extends composeWith(
             })
         }
 
-        if (connection.driver === 'sqlite') {
+        if (connection.dialect === 'sqlite') {
             // Use SQLite dump strategy
             await DumpSQLite.dump({
                 filename: tmpFilename,
@@ -109,7 +115,7 @@ export default class DumpConnection extends composeWith(
 
         await this.drive.download(dumpPath, tmpFilename)
 
-        if (connection.driver === 'postgresql') {
+        if (connection.dialect === 'postgresql') {
             await DumpPostgres.restoreDump({
                 filename: tmpFilename,
                 host: connection.host,
@@ -124,7 +130,7 @@ export default class DumpConnection extends composeWith(
             })
         }
 
-        if (connection.driver === 'sqlite') {
+        if (connection.dialect === 'sqlite') {
             await DumpSQLite.restoreDump({
                 filename: tmpFilename,
                 database: connection.database,

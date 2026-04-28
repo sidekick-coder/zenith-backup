@@ -45,6 +45,54 @@ export default class DumpSQLite extends composeWith(
         })
     }
 
+    public static async dumpWithDocker(options: DumpOptions): Promise<void> {
+        const database = options.database
+        const filename = options.filename
+        const dirname = path.dirname(filename)
+        const volume = `sqlite_dumps`
+
+        await shell.command('docker', ['volume', 'create', volume], {
+            shell: false
+        })
+
+        const dockerArgs = [] as string[]
+
+        dockerArgs.push('run', '--rm')
+        dockerArgs.push('-v', `${volume}:/data`)
+
+        if (options.docker_extra_flags) {
+            const extraFlags = options.docker_extra_flags.split(' ').filter(f => f.trim() !== '')
+
+            dockerArgs.push(...extraFlags)
+        }
+
+        dockerArgs.push(options.docker_image || 'nouchka/sqlite3:latest')
+
+        dockerArgs.push(`/data/${path.basename(database)}`)
+        dockerArgs.push(`.backup '/data/${path.basename(filename)}'`)
+
+        await shell.command('docker', dockerArgs, {
+            shell: false
+        })
+
+        // copy dump file from volume to host
+        const copyArgs = [] as string[]
+        const uid = process.getuid ? process.getuid() : 1000
+
+        copyArgs.push('run', '--rm')
+        copyArgs.push('-u', `${uid}:${uid}`)
+        copyArgs.push('-v', `${volume}:/data:rw`)
+        copyArgs.push('-v', `${dirname}:/backup:rw`)
+        copyArgs.push('alpine')
+        copyArgs.push('cp')
+        copyArgs.push(`/data/${path.basename(filename)}`)
+        copyArgs.push(`/backup/${path.basename(filename)}`)
+
+        await shell.command('docker', copyArgs, {
+            shell: false
+        })
+    }
+
     public static async dump(options: DumpOptions): Promise<void> {
         const database = options.database
         const filename = options.filename
@@ -60,28 +108,9 @@ export default class DumpSQLite extends composeWith(
         ]
 
         if (dockerEnabled) {
-            const dockerArgs = [] as string[]
-        
-            dockerArgs.push('run', '--rm')
-            dockerArgs.push('-v', `${path.dirname(database)}:/database`)
-            dockerArgs.push('-v', `${path.dirname(filename)}:/dumps`)
-            
-            if (options.docker_extra_flags) {
-                const extraFlags = options.docker_extra_flags.split(' ').filter(f => f.trim() !== '')
-                
-                dockerArgs.push(...extraFlags)
-            }
-
-            dockerArgs.push(options.docker_image || 'nouchka/sqlite3:latest')
-                
-            dockerArgs.push(`/database/${path.basename(database)}`)
-            dockerArgs.push(`.backup '/dumps/${path.basename(filename)}'`)
-        
-            return shell.command('docker', dockerArgs, {
-                shell: false
-            })
+            return this.dumpWithDocker(options)
         }
-        
+
         return shell.command('sqlite3', args)
     }
 
@@ -104,7 +133,7 @@ export default class DumpSQLite extends composeWith(
 
             if (options.docker_extra_flags) {
                 const extraFlags = options.docker_extra_flags.split(' ').filter(f => f.trim() !== '')
-                
+
                 dockerArgs.push(...extraFlags)
             }
 
@@ -154,7 +183,7 @@ export default class DumpSQLite extends composeWith(
             size: stats.size,
             created_at: new Date().toISOString(),
         })
-        
+
         await fs.promises.unlink(tmpFilename)
 
         await this.cleanup()
