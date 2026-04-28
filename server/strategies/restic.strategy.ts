@@ -157,7 +157,7 @@ export default class ResticStrategy extends composeWith(
                 dockerBackupArgs.push(`${path}:${path}:ro`)
             })
 
-            dockerBackupArgs.push(this.dockerImage, 'restic', ...backupArgs)
+            dockerBackupArgs.push(this.dockerImage, ...backupArgs)
 
             return shell.command('docker', dockerBackupArgs, { env })
         }
@@ -196,7 +196,6 @@ export default class ResticStrategy extends composeWith(
                 '-v',
                 `${repository}:${repository}`,
                 this.dockerImage,
-                'restic',
                 ...forgetArgs
             ]
 
@@ -238,7 +237,6 @@ export default class ResticStrategy extends composeWith(
                 '-v',
                 `${repository}:${repository}`,
                 this.dockerImage,
-                'restic',
                 ...snapshotsArgs
             ]
 
@@ -317,7 +315,6 @@ export default class ResticStrategy extends composeWith(
                 '-v',
                 `${repository}:${repository}`,
                 this.dockerImage,
-                'restic',
                 ...forgetArgs
             ]
 
