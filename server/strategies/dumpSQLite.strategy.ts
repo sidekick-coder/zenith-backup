@@ -49,7 +49,7 @@ export default class DumpSQLite extends composeWith(
         const database = options.database
         const filename = options.filename
         const dirname = path.dirname(filename)
-        const volume = `sqlite_dumps`
+        const volume = `zenith-backup-volume`
 
         await shell.command('docker', ['volume', 'create', volume], {
             shell: false

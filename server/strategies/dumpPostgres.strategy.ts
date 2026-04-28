@@ -89,29 +89,49 @@ export default class DumpPostgres extends composeWith(
         }
 
         if (options.docker_enabled) {
+            const volume = 'zenith-backup-volume'
+            const dirname = path.dirname(filename)
+            const uid = process.getuid ? process.getuid() : 1000
+
+            await shell.command('docker', ['volume', 'create', volume], { shell: false })
+
             const dockerArgs = [] as string[]
-        
+
             dockerArgs.push('run', '--rm')
-        
+
             if (options.password) {
                 dockerArgs.push('-e', 'PGPASSWORD')
             }
-                
-            dockerArgs.push('-v', `${path.dirname(filename)}:/dumps`)
+
+            dockerArgs.push('-v', `${volume}:/dumps`)
 
             if (options.docker_extra_flags) {
                 const extraFlags = options.docker_extra_flags.split(' ').filter(f => f.trim() !== '')
-                
+
                 dockerArgs.push(...extraFlags)
             }
 
             dockerArgs.push(options.docker_image || 'postgres:latest', 'pg_dump')
-                
+
             args.forEach(a => {
-                dockerArgs.push(a.replace(path.dirname(filename), '/dumps'))
+                dockerArgs.push(a.replace(dirname, '/dumps'))
             })
-        
-            return shell.command('docker', dockerArgs, { env })
+
+            await shell.command('docker', dockerArgs, { env })
+
+            // copy dump file from volume to host
+            const copyArgs = [] as string[]
+
+            copyArgs.push('run', '--rm')
+            copyArgs.push('-u', `${uid}:${uid}`)
+            copyArgs.push('-v', `${volume}:/data:rw`)
+            copyArgs.push('-v', `${dirname}:/backup:rw`)
+            copyArgs.push('alpine')
+            copyArgs.push('cp')
+            copyArgs.push(`/data/${path.basename(filename)}`)
+            copyArgs.push(`/backup/${path.basename(filename)}`)
+
+            return shell.command('docker', copyArgs, { shell: false })
         }
         
         return shell.command('pg_dump', args, { env })
@@ -128,6 +148,26 @@ export default class DumpPostgres extends composeWith(
         }
 
         if (docker) {
+            const volume = 'zenith-backup-volume'
+            const dirname = path.dirname(filename)
+            const uid = process.getuid ? process.getuid() : 1000
+
+            await shell.command('docker', ['volume', 'create', volume], { shell: false })
+
+            // copy restore file from host to volume
+            const copyArgs = [] as string[]
+
+            copyArgs.push('run', '--rm')
+            copyArgs.push('-u', `${uid}:${uid}`)
+            copyArgs.push('-v', `${dirname}:/backup:rw`)
+            copyArgs.push('-v', `${volume}:/data:rw`)
+            copyArgs.push('alpine')
+            copyArgs.push('cp')
+            copyArgs.push(`/backup/${path.basename(filename)}`)
+            copyArgs.push(`/data/${path.basename(filename)}`)
+
+            await shell.command('docker', copyArgs, { shell: false })
+
             const args = [] as string[]
 
             args.push('run', '--rm')
@@ -136,8 +176,8 @@ export default class DumpPostgres extends composeWith(
                 args.push('-e', 'PGPASSWORD')
             }
 
-            args.push('-v', `${path.dirname(filename)}:/dumps`)
-            args.push('postgres', 'psql')
+            args.push('-v', `${volume}:/dumps`)
+            args.push(options.docker_image || 'postgres:latest', 'psql')
             args.push(`--host=${options.host || 'localhost'}`)
             args.push(`--port=${options.port || 5432}`)
             args.push(`--username=${options.username}`)
