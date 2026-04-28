@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useForm } from 'vee-validate'
 import { toast } from 'vue-sonner'
 import Button from '#client/components/Button.vue'
@@ -15,10 +15,16 @@ import FormAutoFieldList from '#client/components/FormAutoFieldList.vue'
 
 interface Props {
     plan: Plan
+    sectionId?: string
 }
 
 const props = defineProps<Props>()
 const saving = ref(false)
+
+const currentSection = computed(() => {
+    if (!props.sectionId) return null
+    return props.plan.strategy_fields_sections?.find(s => s.id === props.sectionId) ?? null
+})
 
 const { handleSubmit } = useForm({
     initialValues: props.plan?.config || {}
@@ -47,7 +53,7 @@ const onSubmit = handleSubmit(async (payload) => {
 <template>
     <form @submit.prevent="onSubmit">
         <Card>
-            <template v-if="plan.strategy_fields && Object.keys(plan.strategy_fields).length">
+            <template v-if="!props.sectionId && plan.strategy_fields && Object.keys(plan.strategy_fields).length">
                 <CardHeader>
                     <CardTitle>{{ $t('Config') }}</CardTitle>
                     <CardDescription>
@@ -56,26 +62,21 @@ const onSubmit = handleSubmit(async (payload) => {
                 </CardHeader>
                 <CardContent class="space-y-6">
                     <FormAutoFieldList
-                        v-if="props.plan.strategy_fields"
                         :fields="props.plan.strategy_fields"
                     />
                 </CardContent>
             </template>
 
-            <template
-                v-for="section in plan.strategy_fields_sections"
-                :key="section.title"
-            >
+            <template v-if="props.sectionId && currentSection">
                 <CardHeader>
-                    <CardTitle>{{ section.title }}</CardTitle>
-                    <CardDescription v-if="section.description">
-                        {{ section.description }}
+                    <CardTitle>{{ currentSection.title }}</CardTitle>
+                    <CardDescription v-if="currentSection.description">
+                        {{ currentSection.description }}
                     </CardDescription>
                 </CardHeader>
-
                 <CardContent class="space-y-6">
                     <FormAutoFieldList
-                        :fields="section.fields"
+                        :fields="currentSection.fields"
                     />
                 </CardContent>
             </template>
@@ -88,6 +89,6 @@ const onSubmit = handleSubmit(async (payload) => {
                     {{ $t('Save') }}
                 </Button>
             </CardFooter>
-        </card>
+        </Card>
     </form>
 </template>

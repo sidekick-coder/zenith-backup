@@ -2,7 +2,8 @@
 import {
     ref, onMounted, computed, 
     defineAsyncComponent,
-    onServerPrefetch
+    onServerPrefetch,
+    watch,
 } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { toast } from 'vue-sonner'
@@ -28,23 +29,48 @@ const plan = useState<Plan>(`zbackup-plan-${planId.value}`)
 const tab = useRouteQuery('tab', 'config')
 const loading = ref(false)
 
-const tabs = [
-    {
-        value: 'config',
-        label: $t('Configuration'),
-        component: defineAsyncComponent(() => import('#zenith-backup/client/components/PlanConfig.vue')),
-    },
-    {
-        value: 'triggers',
-        label: $t('Triggers'),
-        component: defineAsyncComponent(() => import('#zenith-backup/client/components/PlanTriggers.vue')),
-    },
-    {
-        value: 'snapshots',
-        label: $t('Snapshots'),
-        component: defineAsyncComponent(() => import('#zenith-backup/client/components/SnapshotTable.vue')),
-    },
-]
+const PlanConfigComponent = defineAsyncComponent(() => import('#zenith-backup/client/components/PlanConfig.vue'))
+const PlanTriggersComponent = defineAsyncComponent(() => import('#zenith-backup/client/components/PlanTriggers.vue'))
+const SnapshotTableComponent = defineAsyncComponent(() => import('#zenith-backup/client/components/SnapshotTable.vue'))
+
+const tabs = computed(() => {
+    const result = [] as { value: string, label: string, component: any, props?: Record<string, any> }[]
+
+    const sections = plan.value?.strategy_fields_sections || []
+    const unsectionedFields = plan.value?.strategy_fields || {}
+
+    if (Object.keys(unsectionedFields).length) {
+        result.push({
+            value: 'config',
+            label: $t('Configuration'),
+            component: PlanConfigComponent,
+        })
+    }
+
+    for (const section of sections) {
+        result.push({
+            value: `config-${section.id}`,
+            label: section.title,
+            component: PlanConfigComponent,
+            props: { sectionId: section.id },
+        })
+    }
+
+    result.push(
+        { value: 'triggers', label: $t('Triggers'), component: PlanTriggersComponent },
+        { value: 'snapshots', label: $t('Snapshots'), component: SnapshotTableComponent },
+    )
+
+    return result
+})
+
+watch(tabs, (newTabs) => {
+    const values = newTabs.map(t => t.value)
+
+    if (values.length && !values.includes(tab.value)) {
+        tab.value = values[0]
+    }
+}, { immediate: true })
 
 async function load() {
     loading.value = true
@@ -134,6 +160,7 @@ onServerPrefetch(async () => {
                         <component
                             :is="t.component"
                             v-if="t.component && plan"
+                            v-bind="t.props || {}"
                             :plan="plan"
                             :plan-id="planId"
                         />
