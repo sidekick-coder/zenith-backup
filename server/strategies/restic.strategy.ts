@@ -1,4 +1,4 @@
-import { camelCase, upperFirst, lowerCase  } from 'lodash-es'
+import { camelCase, upperFirst, lowerCase } from 'lodash-es'
 import { format } from 'date-fns'
 import { DockerStrategy } from '../mixins/dockerStrategy.mixin.ts'
 import BaseStrategy from './base.strategy.ts'
@@ -37,7 +37,7 @@ export default class ResticStrategy extends composeWith(
         })
 
         this.section('backup', {
-            title:  $t('Backup'),
+            title: $t('Backup'),
             description: $t('Settings related to the files and directories to be backed up.'),
         })
 
@@ -68,13 +68,13 @@ export default class ResticStrategy extends composeWith(
             description: $t('Enable automatic cleanup of old snapshots after backup.'),
             clearable: true,
             options: [
-                { 
-                    value: true, 
-                    label: $t('Yes') 
+                {
+                    value: true,
+                    label: $t('Yes')
                 },
-                { 
-                    value: false, 
-                    label: $t('No') 
+                {
+                    value: false,
+                    label: $t('No')
                 }
             ],
         })
@@ -138,18 +138,15 @@ export default class ResticStrategy extends composeWith(
                 }
             }
         }
-        
+
         if (this.useDocker && this.dockerImage) {
-            const dockerBackupArgs = [
-                'run',
-                '--rm',
-                '-e',
-                `RESTIC_REPOSITORY=${repository}`,
-                '-e',
-                `RESTIC_PASSWORD=${password}`,
-                '-v',
-                `${repository}:${repository}`
-            ]
+            const uid = process.getuid ? process.getuid() : '1000'
+            const dockerBackupArgs = ['run', '--rm'] as string[]
+
+            dockerBackupArgs.push('-e', `RESTIC_REPOSITORY=${repository}`)
+            dockerBackupArgs.push('-e', `RESTIC_PASSWORD=${password}`,)
+            dockerBackupArgs.push('-v', `${repository}:${repository}`,)
+            dockerBackupArgs.push('-u', `${uid}:${uid}`,)
 
             // Mount each path for backup
             paths.forEach(path => {
@@ -184,7 +181,7 @@ export default class ResticStrategy extends composeWith(
         }
 
         const forgetArgs = ['forget', ...forgetFlags.split(' ').filter(Boolean), '--prune']
-        
+
         if (this.useDocker && this.dockerImage) {
             const dockerForgetArgs = [
                 'run',
@@ -200,7 +197,7 @@ export default class ResticStrategy extends composeWith(
             ]
 
             await shell.command('docker', dockerForgetArgs, { env })
-        } 
+        }
 
         await shell.command('restic', forgetArgs, { env })
     }
@@ -253,7 +250,7 @@ export default class ResticStrategy extends composeWith(
 
         for (const resticSnapshot of resticSnapshots) {
             const tags: Record<string, string> = {}
-            
+
             if (resticSnapshot.tags) {
                 for (const tag of resticSnapshot.tags) {
                     const [key, value] = tag.split(':')
@@ -262,7 +259,7 @@ export default class ResticStrategy extends composeWith(
                         tags.description = upperFirst(lowerCase(value))
                         continue
                     }
-                    
+
                     if (key && value) {
                         tags[key] = value
                     }
@@ -364,13 +361,13 @@ export default class ResticStrategy extends composeWith(
                     '-v',
                     `${p}:${p}`
                 ]
-    
+
                 dockerRestoreArgs.push(this.dockerImage, 'restic', ...restoreArgs)
-    
+
                 await shell.command('docker', dockerRestoreArgs, { env })
                 return
             }
-    
+
             await shell.command('restic', restoreArgs, { env })
         }
 
