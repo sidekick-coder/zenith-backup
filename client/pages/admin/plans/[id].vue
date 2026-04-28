@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import {
-    ref, onMounted, computed, 
+    ref, onMounted, computed, shallowRef,
     defineAsyncComponent,
     onServerPrefetch,
-    watch,
 } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { toast } from 'vue-sonner'
@@ -33,8 +32,10 @@ const PlanConfigComponent = defineAsyncComponent(() => import('#zenith-backup/cl
 const PlanTriggersComponent = defineAsyncComponent(() => import('#zenith-backup/client/components/PlanTriggers.vue'))
 const SnapshotTableComponent = defineAsyncComponent(() => import('#zenith-backup/client/components/SnapshotTable.vue'))
 
-const tabs = computed(() => {
-    const result = [] as { value: string, label: string, component: any, props?: Record<string, any> }[]
+const tabs = shallowRef([] as { value: string, label: string, component: any, props?: Record<string, any> }[])
+
+function loadTabs() {
+    const result = [] as typeof tabs.value
 
     const sections = plan.value?.strategy_fields_sections || []
     const unsectionedFields = plan.value?.strategy_fields || {}
@@ -61,16 +62,14 @@ const tabs = computed(() => {
         { value: 'snapshots', label: $t('Snapshots'), component: SnapshotTableComponent },
     )
 
-    return result
-})
+    tabs.value = result
 
-watch(tabs, (newTabs) => {
-    const values = newTabs.map(t => t.value)
+    const values = result.map(t => t.value)
 
     if (values.length && !values.includes(tab.value)) {
         tab.value = values[0]
     }
-}, { immediate: true })
+}
 
 async function load() {
     loading.value = true
@@ -86,6 +85,8 @@ async function load() {
 
     plan.value = response
     loading.value = false
+
+    loadTabs()
 }
 
 useHead({
@@ -95,12 +96,16 @@ useHead({
 onMounted(async () => {
     if (!plan.value) {
         await load()
+    } else {
+        loadTabs()
     }
 })
 
 onServerPrefetch(async () => {
     if (!plan.value) {
         await load()
+    } else {
+        loadTabs()
     }
 })
 
