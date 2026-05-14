@@ -6,3 +6,12 @@ arte
 tmp
 dist
 client-dist
+
+config/*
+!config/.gitkeep
+
+storage/*
+!storage/.gitkeep
+
+*.db
+

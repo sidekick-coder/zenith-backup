@@ -1,32 +1,31 @@
 {
-  "name": "zenith-backup",
-  "version": "1.0.0",
-  "imports": {
-    "#client/*": "./root/client/*",
-    "#server/*": "./root/server/*",
-    "#shared/*": "./root/shared/*",
-    "#config/*": "./root/config/*",
-    "#zenith-backup/server/*": "./server/*",
-    "#zenith-backup/shared/*": "./shared/*",
-    "#zenith-backup/client/*": "./client/*"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/sidekick-coder/zenith-backup.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/sidekick-coder/zenith-backup/issues"
-  },
-  "homepage": "https://github.com/sidekick-coder/zenith-backup#readme",
-  "description": "",
-  "dependencies": {
-    "archiver": "^7.0.1",
-    "tar": "^7.4.3"
-  },
-  "devDependencies": {
-    "@types/archiver": "^6.0.3"
-  }
+    "name": "zenith-backup",
+    "version": "1.0.0",
+    "imports": {
+        "#zenith-backup/server/*": "./server/*",
+        "#zenith-backup/shared/*": "./shared/*",
+        "#zenith-backup/client/*": "./client/*",
+        "#client/*": "./legacy/client/*",
+        "#server/*": "./legacy/server/*",
+        "#shared/*": "./legacy/shared/*"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/sidekick-coder/zenith-backup.git"
+    },
+    "bugs": {
+        "url": "https://github.com/sidekick-coder/zenith-backup/issues"
+    },
+    "homepage": "https://github.com/sidekick-coder/zenith-backup#readme",
+    "scripts": {
+        "dev": "zenith serve"
+    },
+    "dependencies": {
+        "@sidekick-coder/zenith-kit": "^0.0.16",
+        "archiver": "^7.0.1",
+        "tar": "^7.4.3"
+    },
+    "devDependencies": {
+        "@types/archiver": "^6.0.3"
+    }
 }
