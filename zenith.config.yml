@@ -1,5 +1,6 @@
 id: 01KRKSDD5BFHDMCKKD2C53DGBA
 name: zenith-backups
+description: Backup plugin for zenith
 aliases:
     - zenith-backups
     - zb

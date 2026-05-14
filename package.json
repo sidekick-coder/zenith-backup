@@ -2,9 +2,9 @@
     "name": "zenith-backup",
     "version": "1.0.0",
     "imports": {
-        "#zenith-backup/server/*": "./server/*",
-        "#zenith-backup/shared/*": "./shared/*",
-        "#zenith-backup/client/*": "./client/*",
+        "#zenith-backup/server/*": "./src/server/*",
+        "#zenith-backup/shared/*": "./src/shared/*",
+        "#zenith-backup/client/*": "./src/client/*",
         "#client/*": "./legacy/client/*",
         "#server/*": "./legacy/server/*",
         "#shared/*": "./legacy/shared/*"
@@ -21,9 +21,16 @@
         "dev": "zenith serve"
     },
     "dependencies": {
-        "@sidekick-coder/zenith-kit": "^0.0.16",
+        "@sidekick-coder/zenith-kit": "^0.0.17",
+        "@unhead/vue": "^3.1.0",
+        "@vueuse/router": "^14.3.0",
         "archiver": "^7.0.1",
-        "tar": "^7.4.3"
+        "date-fns": "^4.1.0",
+        "lodash-es": "^4.18.1",
+        "tar": "^7.4.3",
+        "vee-validate": "^4.15.1",
+        "vue-router": "^5.0.7",
+        "vue-sonner": "^2.0.9"
     },
     "devDependencies": {
         "@types/archiver": "^6.0.3"

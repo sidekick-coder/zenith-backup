@@ -13,5 +13,9 @@ config/*
 storage/*
 !storage/.gitkeep
 
+backups/*
+!backups/.gitkeep
+
+
 *.db
 
