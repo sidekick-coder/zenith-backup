@@ -23,6 +23,7 @@
     "dependencies": {
         "@sidekick-coder/zenith-kit": "^0.0.17",
         "@unhead/vue": "^3.1.0",
+        "@vee-validate/valibot": "^4.15.1",
         "@vueuse/router": "^14.3.0",
         "archiver": "^7.0.1",
         "date-fns": "^4.1.0",

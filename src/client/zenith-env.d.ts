@@ -31,4 +31,4 @@ declare module 'vue' {
 }
 
 
-declare module '@sidekick-coder/zenith-kit/components';
+// declare module '@sidekick-coder/zenith-kit/components';
