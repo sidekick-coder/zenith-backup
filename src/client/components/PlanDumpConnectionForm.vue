@@ -18,15 +18,19 @@ import {
 } from '#client/components/ui/tabs/index.ts'
 import type Plan from '#zenith-backup/shared/entities/plan.entity.ts'
 import PlanTriggers from '#zenith-backup/client/components/PlanTriggers.vue'
+import { useRouteQuery } from '@sidekick-coder/zenith-kit/components'
+
 
 const plan = defineModel('plan', {
     type: Object as () => Plan,
     required: true,
 })
+
+const tab = useRouteQuery('tab', 'details')
 </script>
 
 <template>
-    <Tabs default-value="details">
+    <Tabs v-model="tab" class="w-full" :unmount-on-hide="false">
         <TabsList>
             <TabsTrigger
                 value="details"
@@ -35,10 +39,22 @@ const plan = defineModel('plan', {
                 {{ $t('Details') }}
             </TabsTrigger>
             <TabsTrigger
-                value="config"
+                value="connection"
                 class="min-w-60"
             >
-                {{ $t('Configuration') }}
+                {{ $t('Connection') }}
+            </TabsTrigger>
+            <TabsTrigger
+                value="docker"
+                class="min-w-60"
+            >
+                {{ $t('Docker') }}
+            </TabsTrigger>
+            <TabsTrigger
+                value="retention"
+                class="min-w-60"
+            >
+                {{ $t('Retention') }}
             </TabsTrigger>
             <TabsTrigger
                 value="triggers"
@@ -77,12 +93,12 @@ const plan = defineModel('plan', {
             </Card>
         </TabsContent>
 
-        <TabsContent value="config">
+        <TabsContent value="connection">
             <Card>
                 <CardHeader>
-                    <CardTitle>{{ $t('Dump Connection Config') }}</CardTitle>
+                    <CardTitle>{{ $t('Connection') }}</CardTitle>
                     <CardDescription>
-                        {{ $t('Configure the dump connection backup strategy for this plan.') }}
+                        {{ $t('Select the database connection and where to store the backups.') }}
                     </CardDescription>
                 </CardHeader>
                 <CardContent class="space-y-6">
@@ -95,14 +111,10 @@ const plan = defineModel('plan', {
                         :hint="$t('Select the database connection to back up')"
                     />
 
-                    <FormSelect
+                    <FormTextField
                         name="config.drive_id"
-                        fetch="/api/drives"
-                        fetch-key="data"
-                        value-key="id"
-                        label-key="name"
-                        :label="$t('Drive')"
-                        :hint="$t('Select the drive where the backup will be stored')"
+                        :label="$t('Drive id')"
+                        :hint="$t('The drive where backups will be stored. Must be defined in the configuration file.')"
                     />
 
                     <FormTextField
@@ -111,7 +123,19 @@ const plan = defineModel('plan', {
                         :placeholder="$t('backups')"
                         :hint="$t('Directory path within the drive where backups will be stored')"
                     />
+                </CardContent>
+            </Card>
+        </TabsContent>
 
+        <TabsContent value="docker">
+            <Card>
+                <CardHeader>
+                    <CardTitle>{{ $t('Docker') }}</CardTitle>
+                    <CardDescription>
+                        {{ $t('Configure Docker settings for running the dump command.') }}
+                    </CardDescription>
+                </CardHeader>
+                <CardContent class="space-y-6">
                     <FormSelect
                         name="config.docker_enabled"
                         :label="$t('Use Docker')"
@@ -138,7 +162,19 @@ const plan = defineModel('plan', {
                         :placeholder="$t('Additional Docker flags')"
                         :hint="$t('Additional flags to pass to the Docker run command')"
                     />
+                </CardContent>
+            </Card>
+        </TabsContent>
 
+        <TabsContent value="retention">
+            <Card>
+                <CardHeader>
+                    <CardTitle>{{ $t('Retention') }}</CardTitle>
+                    <CardDescription>
+                        {{ $t('Control how many backups are kept and which triggers are excluded from cleanup.') }}
+                    </CardDescription>
+                </CardHeader>
+                <CardContent class="space-y-6">
                     <FormTextField
                         name="config.max_length"
                         type="number"

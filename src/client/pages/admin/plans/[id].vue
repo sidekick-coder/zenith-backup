@@ -32,20 +32,22 @@ const loading = ref(false)
 const saving = ref(false)
 const executing = ref(false)
 
-const schema = toTypedSchema(v.object({
+const schema = toTypedSchema(v.partial(v.object({
     name: v.string(),
     description: v.optional(v.string(), ''),
     active: v.boolean(),
     config: v.record(v.string(), v.any()),
-}))
+    triggers: v.array(v.any()),
+})))
 
-const { handleSubmit, resetForm, values } = useForm({
+const { handleSubmit, resetForm, values, errors } = useForm({
     validationSchema: schema,
     initialValues: {
         name: 'hello',
         description: '',
         active: false,
-        config: {} as Record<string, any>
+        config: {} as Record<string, any>,
+        triggers: [],
     },
 })
 
@@ -59,6 +61,7 @@ const save = handleSubmit(async (data) => {
             description: data.description,
             active: data.active,
             config: data.config,
+            triggers: plan.value?.triggers || [],
         },
     })
 
@@ -73,6 +76,7 @@ const save = handleSubmit(async (data) => {
         plan.value.description = data.description
         plan.value.active = data.active
         plan.value.config = data.config
+        plan.value.triggers = plan.value.triggers || []
     }
 
     setTimeout(() => {
@@ -87,6 +91,7 @@ function reset() {
         description: '',
         active: false,
         config: {},
+        triggers: [],
     }
 
     if (plan.value) {
@@ -132,8 +137,9 @@ async function load() {
         values: {
             name: response.name,
             description: response.description || '',
-            active: response.active,
+            active: response.active || false,
             config: response.config || {},
+            triggers: response.triggers || [],
         },
     })
 }
@@ -198,6 +204,16 @@ onServerPrefetch(loadIfNotDefined)
                 </div>
             </div>
 
+            <Alert v-if="Object.keys(errors).length" variant="destructive" class="mb-6">
+                <AlertTitle>{{ $t('Please fix the following errors before saving') }}</AlertTitle>
+                <AlertDescription>
+                    <ul class="mt-1 list-disc list-inside space-y-1">
+                        <li v-for="(msg, field) in errors" :key="field">
+                            <span class="font-medium">{{ field }}</span>: {{ msg }}
+                        </li>
+                    </ul>
+                </AlertDescription>
+            </Alert>
 
             <PlanDumpConnectionForm v-if="plan.strategy === 'dump_connection'" v-model:plan="plan" />
 

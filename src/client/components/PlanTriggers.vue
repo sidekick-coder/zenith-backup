@@ -1,11 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue'
-import { toast } from 'vue-sonner'
-import { format } from 'date-fns'
 import DataTable, { defineColumns } from '#client/components/DataTable.vue'
-
-import { $fetch } from '#client/utils/fetcher.ts'
-import { tryCatch } from '#shared/utils/tryCatch.ts'
 import Button from '#client/components/Button.vue'
 import Icon from '#client/components/Icon.vue'
 import AlertButton from '#client/components/AlertButton.vue'
@@ -16,9 +10,7 @@ import {
     CardHeader,
     CardTitle,
 } from '#client/components/ui/card'
-import Snapshot from '#zenith-backup/shared/entities/snapshot.entity.ts'
 import Trigger from '#zenith-backup/shared/entities/trigger.entity.ts'
-import ObjectInspect from '#client/components/ObjectInspect.vue'
 import type Plan from '#zenith-backup/shared/entities/plan.entity.ts'
 import DialogForm from '#client/components/DialogForm.vue'
 import { defineFormFields } from '#client/components/DialogForm.vue'
@@ -27,7 +19,6 @@ import Badge from '#client/components/ui/badge/Badge.vue'
 import DropdownMenu from '#client/components/ui/dropdown-menu/DropdownMenu.vue'
 import DropdownMenuTrigger from '#client/components/ui/dropdown-menu/DropdownMenuTrigger.vue'
 import DropdownMenuContent from '#client/components/ui/dropdown-menu/DropdownMenuContent.vue'
-import DropdownMenuItem from '#client/components/ui/dropdown-menu/DropdownMenuItem.vue'
 
 const plan = defineModel('plan', {
     type: Object as () => Plan,
@@ -37,10 +28,6 @@ const plan = defineModel('plan', {
 defineOptions({
     inheritAttrs: false,
 })
-
-const triggers = ref<Trigger[]>([])
-const loading = ref(false)
-const deletingId = ref<string>()
 
 const columns = defineColumns<Trigger>([
     {
@@ -99,101 +86,35 @@ const fields = defineFormFields({
     })
 })
 
-function load() {
-    loading.value = true
-
+function create(data: any) {
     const items = JSON.parse(JSON.stringify(plan.value.triggers || []))
 
-    triggers.value = items.map((item: any) => new Trigger(item))
-
-    setTimeout(() => {
-        loading.value = false
-    }, 500)
-}
-
-async function create(data: any) {
-    const id = createId()
-
-    const item = {
-        id,
-        ...data
-    }
-
-    const items = JSON.parse(JSON.stringify(plan.value.triggers || []))
-
-    items.push(item)
-
-    const [error] = await $fetch.try(`/api/zbackup/plans/${plan.value.id}`, {
-        method: 'PUT',
-        data: {
-            triggers: items
-        }
-    })
-
-    if (error) {
-        return
-    }
+    items.push({ id: createId(), ...data })
 
     plan.value.triggers = items.map((item: any) => new Trigger(item))
 }
 
-async function update(id: string, data: any) {
+function update(id: string, data: any) {
     const items = JSON.parse(JSON.stringify(plan.value.triggers || []))
-    
     const index = items.findIndex((i: any) => i.id === id)
-    
+
     if (index === -1) return
 
-    items[index] = {
-        id,
-        ...data
-    }
-
-    const [error] = await $fetch.try(`/api/zbackup/plans/${plan.value.id}`, {
-        method: 'PUT',
-        data: {
-            triggers: items
-        }
-    })
-
-    if (error) {
-        return
-    }
+    items[index] = { id, ...data }
 
     plan.value.triggers = items.map((item: any) => new Trigger(item))
 }
 
-async function destroy(id: string) {
+function destroy(id: string) {
     const items = JSON.parse(JSON.stringify(plan.value.triggers || []))
-    
     const index = items.findIndex((i: any) => i.id === id)
-    
+
     if (index === -1) return
-    
-    deletingId.value = id
 
     items.splice(index, 1)
 
-    const [error] = await $fetch.try(`/api/zbackup/plans/${plan.value.id}`, {
-        method: 'PUT',
-        data: {
-            triggers: items
-        }
-    })
-
-    if (error) {
-        deletingId.value = undefined
-        return
-    }
-
-    
-    setTimeout(() => {
-        triggers.value = triggers.value.filter(t => t.id !== id)
-        plan.value.triggers = items.map((item: any) => new Trigger(item))
-        deletingId.value = undefined
-    }, 500)
+    plan.value.triggers = items.map((item: any) => new Trigger(item))
 }
-onMounted(load)
 </script>
 
 <template>
@@ -207,34 +128,21 @@ onMounted(load)
                     </CardDescription>
                 </div>
 
-                <div class="flex space-x-2">
-                    <Button
-                        variant="outline"
-                        @click="load"
-                    >
-                        <Icon
-                            name="refreshCw"
-                            :class="{ 'animate-spin': loading }"
-                        />
+                <DialogForm
+                    :title="$t('Add Trigger')"
+                    :fields="fields"
+                    :handle="create"
+                >
+                    <Button>
+                        {{ $t('Add') }}
                     </Button>
-                    <DialogForm
-                        :title="$t('Add Trigger')"
-                        :fields="fields"
-                        :handle="create"
-                        @submit="load"
-                    >
-                        <Button>
-                            {{ $t('Add') }}
-                        </Button>
-                    </DialogForm>
-                </div>
+                </DialogForm>
             </div>
         </CardHeader>
         <CardContent>
             <DataTable
-                :rows="triggers"
+                :rows="plan.triggers || []"
                 :columns="columns"
-                :loading="loading"
             >
                 <template #row-value="{ row }">
                     <div v-if="row.type === 'cron'">
@@ -254,9 +162,7 @@ onMounted(load)
 
                         <DropdownMenu v-if="row.events.length > 2">
                             <DropdownMenuTrigger as-child>
-                                <Badge
-                                    class="h-6 cursor-pointer"
-                                >
+                                <Badge class="h-6 cursor-pointer">
                                     <Icon name="MoreHorizontal" />
                                 </Badge>
                             </DropdownMenuTrigger>
@@ -279,7 +185,6 @@ onMounted(load)
                             :fields="fields"
                             :values="row"
                             :handle="data => update(row.id, data)"
-                            @submit="load"
                         >
                             <Button
                                 variant="ghost"
@@ -292,7 +197,6 @@ onMounted(load)
                         <AlertButton
                             variant="ghost"
                             size="sm"
-                            :loading="deletingId === row.id"
                             @confirm="destroy(row.id)"
                         >
                             <Icon name="trash" />
