@@ -1,4 +1,11 @@
+import { LoggerService } from '@sidekick-coder/zenith-kit/shared'
 import type Plan from '../entities/plan.entity.ts'
+
+export interface BaseStrategyOptions {
+    plan: Plan
+    debug?: boolean
+    logger?: LoggerService
+}
 
 export default class BaseStrategy {
     public static id: string = 'base'
@@ -6,9 +13,17 @@ export default class BaseStrategy {
     public static description: string = 'This is the base strategy class.'
 
     public plan: Plan
+    public debug: boolean = false
+    public logger: LoggerService
 
-    constructor(plan: Plan){
-        this.plan = plan
+    constructor(options: BaseStrategyOptions) {
+        this.plan = options.plan
+        this.logger = options.logger || new LoggerService()
+        this.debug = options.debug || false
+
+        if (this.debug) {
+            this.logger.debug(`initialized strategy ${this.constructor.name} with plan ID ${this.plan.id}`)
+        }
     }
 
     public get config() {

@@ -18,7 +18,7 @@ interface StrategyServiceOptions {
 
 export default class StrategyService {
     public items: StrategyDefinition[] = []
-    public debug = false 
+    public debug = false
     public logger: LoggerService
 
     constructor(options: StrategyServiceOptions = {}) {
@@ -30,8 +30,8 @@ export default class StrategyService {
         }
     }
 
-    public async load(){
-        this.items = [] 
+    public async load() {
+        this.items = []
 
         const folder = path.resolve(import.meta.dirname, '../strategies')
 
@@ -54,16 +54,19 @@ export default class StrategyService {
             }
         }
 
-        this.logger.info(`loaded ${this.items.length} strategies`, {
-            strategies: this.items.map(i => i.id),
-        })
+        if (this.debug) {
+            this.logger.debug(`loaded ${this.items.length} strategies`, {
+                strategies: this.items.map(i => i.id),
+            })
+        }
+
     }
 
-    public async list(){
+    public async list() {
         return this.items
     }
 
-    public async find(id: string){
+    public async find(id: string) {
         const strategies = await this.list()
 
         const strategy = strategies.find(s => s.id === id)
@@ -75,7 +78,7 @@ export default class StrategyService {
         return strategy
     }
 
-    public async instantiate(plan: Plan){
+    public async instantiate(plan: Plan) {
         const Strategy = await this.find(plan.strategy)
 
         return new Strategy(plan.config, plan)

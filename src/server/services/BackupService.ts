@@ -2,9 +2,9 @@ import { format } from 'date-fns'
 import StrategyService from './strategy.service.ts'
 import Plan from '#zenith-backup/server/entities/plan.entity.ts'
 import type Target from '#zenith-backup/shared/entities/target.entity.ts'
-import scheduler from '#server/facades/scheduler.facade.ts'
 import emmitter from '#server/facades/emmitter.facade.ts'
 import { LoggerService, tryCatch } from '@sidekick-coder/zenith-kit/shared'
+import { scheduler } from '@sidekick-coder/zenith-kit/server'
 
 export interface BackupServiceOptions {
     debug?: boolean
@@ -44,7 +44,7 @@ export default class BackupService {
                 if (trigger.type === 'cron' && trigger.cron) {
                     const id = `${Plan.TRIGGER_PREFIX}:${plan.id}:${trigger.id}`
 
-                    const cb = () => this.backup(plan, {
+                    const cb = () => this.execute(plan, {
                         description: format(new Date(), 'yyyy-MM-dd HH:mm'),
                         origin: 'automated',
                         trigger_type: 'cron',
@@ -112,7 +112,11 @@ export default class BackupService {
     public async execute(plan: Plan, metadata?: Record<string, any>) {
         const strategy = await this.strategies.find(plan.strategy)
 
-        const instance = new strategy.ctor(plan)
+        const instance = new strategy.ctor({
+            plan,
+            debug: this.debug,
+            logger: this.logger.child({ strategy: strategy.id, plan_id: plan.id }),
+        })
 
         const [error] = await tryCatch(() => instance.execute(metadata))
 
