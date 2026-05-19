@@ -1,40 +1,45 @@
 import { format } from 'date-fns'
 import StrategyService from './strategy.service.ts'
-import SnapshotService from './snapshots.service.ts'
 import Plan from '#zenith-backup/server/entities/plan.entity.ts'
-import { tryCatch } from '#shared/utils/tryCatch.ts'
-import logger from '#server/facades/logger.facade.ts'
 import type Target from '#zenith-backup/shared/entities/target.entity.ts'
 import scheduler from '#server/facades/scheduler.facade.ts'
 import emmitter from '#server/facades/emmitter.facade.ts'
+import { LoggerService, tryCatch } from '@sidekick-coder/zenith-kit/shared'
 
+export interface BackupServiceOptions {
+    debug?: boolean
+    logger?: LoggerService
+}
 
 export default class BackupService {
     public strategies: StrategyService
-    public snapshots: SnapshotService
-    public logger = logger.child({ label: 'backup' })
+    public logger: LoggerService
     public debug = false
 
-    constructor(data: Partial<BackupService> = {}) {
-        this.strategies = data.strategies || new StrategyService()
-        this.snapshots = data.snapshots || new SnapshotService(this.strategies)
-        this.debug = data.debug || false
+    constructor(options: BackupServiceOptions = {}) {
+        this.debug = options.debug || false
+        this.logger = options.logger || new LoggerService()
+
+        this.strategies = new StrategyService({
+            debug: this.debug,
+            logger: this.logger.child({ label: 'strategy-service' }),
+        })
 
         if (this.debug) {
             this.logger.debug('initialized in debug mode')
         }
     }
 
-    public async load(){
+    public async load() {
         let plans = await Plan.list()
-            
+
         plans = plans.filter(plan => plan.active)
-        
+
         for (const plan of plans) {
-            if (!plan.triggers) continue            
+            if (!plan.triggers) continue
 
             for (const trigger of plan.triggers) {
-                
+
 
                 if (trigger.type === 'cron' && trigger.cron) {
                     const id = `${Plan.TRIGGER_PREFIX}:${plan.id}:${trigger.id}`
@@ -53,7 +58,7 @@ export default class BackupService {
                 if (trigger.type === 'event' && trigger.events) {
                     const id = `${Plan.TRIGGER_PREFIX}:${plan.id}:${trigger.id}`
 
-                    
+
                     for (const event of trigger.events) {
                         const cb = (eventPayload: any) => this.backup(plan, {
                             ...eventPayload,
@@ -63,7 +68,7 @@ export default class BackupService {
                             trigger_id: trigger.id,
                         })
 
-                        emmitter.on(event, cb, {  id: `${id}:${event}` })
+                        emmitter.on(event, cb, { id: `${id}:${event}` })
                     }
                 }
             }
@@ -76,9 +81,9 @@ export default class BackupService {
         }
     }
 
-    public async unload(){
+    public async unload() {
         const routines = await scheduler.list()
-    
+
         const routineIds = routines
             .filter(routine => routine.id.startsWith(Plan.TRIGGER_PREFIX))
             .map(routine => routine.id)
@@ -93,23 +98,23 @@ export default class BackupService {
             .filter(handler => handler.id.startsWith(Plan.TRIGGER_PREFIX))
             .map(handler => handler.id)
 
-        if (handlerIds.length){
+        if (handlerIds.length) {
             await emmitter.remove(handlerIds)
         }
 
     }
-    
-    public async reload(){
+
+    public async reload() {
         await this.unload()
         await this.load()
     }
 
-    public async backup(plan: Plan, metadata?: Record<string, unknown>) {
-        const Strategy = await this.strategies.find(plan.strategy)
+    public async execute(plan: Plan, metadata?: Record<string, any>) {
+        const strategy = await this.strategies.find(plan.strategy)
 
-        const instance = new Strategy(plan.config, plan)
+        const instance = new strategy.ctor(plan)
 
-        const [error] = await tryCatch(() => instance.backup(metadata || {}))
+        const [error] = await tryCatch(() => instance.execute(metadata))
 
         if (error) {
             this.logger.error('backup failed', error)
@@ -124,6 +129,11 @@ export default class BackupService {
         })
     }
 
+    /** @deprecated use execute instead */
+    public async backup(plan: Plan, metadata?: Record<string, unknown>) {
+        return this.execute(plan, metadata)
+    }
+
     public async restore(planId: Target['plan_id'], snapshotId: string, restore_folder?: string) {
         // const snapshots = await this.list(planId)
         // const snapshot = snapshots.find(s => s.id === snapshotId)
@@ -135,7 +145,7 @@ export default class BackupService {
         // if (!snapshot) {
         //     throw new BaseException('Snapshot not found', 404)
         // }
-        
+
         // const [error] = await tryCatch(() => strategy.restore({
         //     plan,
         //     targets,
@@ -170,7 +180,7 @@ export default class BackupService {
         // }
 
         // const strategy = this.findStrategy(plan)
-        
+
         // const [error] = await tryCatch(() => strategy.delete({
         //     plan,
         //     targets,
