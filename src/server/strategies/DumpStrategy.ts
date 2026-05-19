@@ -30,6 +30,7 @@ export default class DumpStrategy extends BaseStrategy {
 
     /** Docker options */
     public docker_image: string
+    public docker_env?: Record<string, string>
     public docker_args?: string[]
 
     /** Backup shell command string; use {output} as the dump file path inside the container */
@@ -102,6 +103,10 @@ export default class DumpStrategy extends BaseStrategy {
 
         args.push(...this.docker_args || [])
 
+        for (const key of Object.keys(this.docker_env || {})) {
+            args.push('-e', key)
+        }
+
         args.push(this.docker_image)
 
         return args
@@ -124,7 +129,9 @@ export default class DumpStrategy extends BaseStrategy {
         dockerArgs.push(command)
 
 
-        await shell.command('docker', dockerArgs)
+        await shell.command('docker', dockerArgs, {
+            env: this.docker_env,
+        })
 
         await this.copyFromVolumeToHost(filename, tmpFile)
 

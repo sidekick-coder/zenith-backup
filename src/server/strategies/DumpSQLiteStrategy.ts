@@ -2,7 +2,7 @@ import path from "path";
 import type { BaseStrategyOptions } from "./BaseStrategy.ts";
 import DumpStrategy from "./DumpStrategy.ts";
 
-export default class DumpSQLiteStrategy extends DumpStrategy {
+export default class extends DumpStrategy {
     public static id = 'dump_sqlite'
     public static label = 'Dump SQLite Strategy'
     public static description = 'A dump strategy specifically designed for SQLite databases, utilizing the sqlite3 command-line tool to create dumps. It ensures that the database is properly locked during the dump process to maintain data integrity.'
