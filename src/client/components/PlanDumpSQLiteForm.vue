@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import FormSelect from '#client/components/FormSelect.vue'
 import FormTextField from '#client/components/FormTextField.vue'
 import {
     Card,
@@ -19,7 +18,6 @@ import PlanTriggers from '#zenith-backup/client/components/PlanTriggers.vue'
 import PlanDumpSnapshots from '#zenith-backup/client/components/PlanDumpSnapshots.vue'
 import PlanDumpSectionDetails from '#zenith-backup/client/components/PlanDumpSectionDetails.vue'
 import PlanDumpSectionDrive from '#zenith-backup/client/components/PlanDumpSectionDrive.vue'
-import PlanDumpSectionDocker from '#zenith-backup/client/components/PlanDumpSectionDocker.vue'
 import PlanDumpSectionRetention from '#zenith-backup/client/components/PlanDumpSectionRetention.vue'
 import { useRouteQuery } from '@sidekick-coder/zenith-kit/components'
 
@@ -37,14 +35,11 @@ const tab = useRouteQuery('tab', 'details')
             <TabsTrigger value="details" class="min-w-60">
                 {{ $t('Details') }}
             </TabsTrigger>
-            <TabsTrigger value="connection" class="min-w-60">
-                {{ $t('Connection') }}
+            <TabsTrigger value="database" class="min-w-60">
+                {{ $t('Database') }}
             </TabsTrigger>
             <TabsTrigger value="drive" class="min-w-60">
                 {{ $t('Drive') }}
-            </TabsTrigger>
-            <TabsTrigger value="docker" class="min-w-60">
-                {{ $t('Docker') }}
             </TabsTrigger>
             <TabsTrigger value="retention" class="min-w-60">
                 {{ $t('Retention') }}
@@ -52,8 +47,8 @@ const tab = useRouteQuery('tab', 'details')
             <TabsTrigger value="triggers" class="min-w-60">
                 {{ $t('Triggers') }}
             </TabsTrigger>
-            <TabsTrigger value="snapshots" class="min-w-60">
-                {{ $t('Snapshots') }}
+            <TabsTrigger value="dumps" class="min-w-60">
+                {{ $t('Dumps') }}
             </TabsTrigger>
         </TabsList>
 
@@ -61,22 +56,20 @@ const tab = useRouteQuery('tab', 'details')
             <PlanDumpSectionDetails />
         </TabsContent>
 
-        <TabsContent value="connection">
+        <TabsContent value="database">
             <Card>
                 <CardHeader>
-                    <CardTitle>{{ $t('Connection') }}</CardTitle>
+                    <CardTitle>{{ $t('Database') }}</CardTitle>
                     <CardDescription>
-                        {{ $t('Select the database connection for this backup plan.') }}
+                        {{ $t('Configure the SQLite database file to back up.') }}
                     </CardDescription>
                 </CardHeader>
                 <CardContent class="space-y-6">
-                    <FormSelect
-                        name="config.name"
-                        fetch="/api/database-connections"
-                        value-key="id"
-                        label-key="name"
-                        :label="$t('Connection Name')"
-                        :hint="$t('Select the database connection to back up')"
+                    <FormTextField
+                        name="config.sqlite_filename"
+                        :label="$t('Database File Path')"
+                        :placeholder="$t('/var/data/app.sqlite')"
+                        :hint="$t('Absolute path to the SQLite database file on the host machine.')"
                     />
                 </CardContent>
             </Card>
@@ -84,10 +77,6 @@ const tab = useRouteQuery('tab', 'details')
 
         <TabsContent value="drive">
             <PlanDumpSectionDrive />
-        </TabsContent>
-
-        <TabsContent value="docker">
-            <PlanDumpSectionDocker />
         </TabsContent>
 
         <TabsContent value="retention">
@@ -98,7 +87,7 @@ const tab = useRouteQuery('tab', 'details')
             <PlanTriggers v-model:plan="plan" />
         </TabsContent>
 
-        <TabsContent value="snapshots">
+        <TabsContent value="dumps">
             <PlanDumpSnapshots :plan-id="plan.id" />
         </TabsContent>
     </Tabs>

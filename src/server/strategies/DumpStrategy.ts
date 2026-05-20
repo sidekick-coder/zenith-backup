@@ -201,7 +201,8 @@ export default class DumpStrategy extends BaseStrategy {
         const snapshots = [] as DumpSnapshot[]
 
         for (const entry of entries) {
-            if (!(await this.drive.exists(path.join(entry.path, 'dump')))) {
+            if (!(await this.drive.exists(path.join(entry.path, this.backup_filename)))) {
+                this.logger.warn(`Skipping entry "${entry.path}" because it does not contain a dump file.`)
                 continue
             }
 

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import FormSelect from '#client/components/FormSelect.vue'
 import FormTextField from '#client/components/FormTextField.vue'
 import {
     Card,
@@ -52,8 +51,8 @@ const tab = useRouteQuery('tab', 'details')
             <TabsTrigger value="triggers" class="min-w-60">
                 {{ $t('Triggers') }}
             </TabsTrigger>
-            <TabsTrigger value="snapshots" class="min-w-60">
-                {{ $t('Snapshots') }}
+            <TabsTrigger value="dumps" class="min-w-60">
+                {{ $t('Dumps') }}
             </TabsTrigger>
         </TabsList>
 
@@ -66,17 +65,40 @@ const tab = useRouteQuery('tab', 'details')
                 <CardHeader>
                     <CardTitle>{{ $t('Connection') }}</CardTitle>
                     <CardDescription>
-                        {{ $t('Select the database connection for this backup plan.') }}
+                        {{ $t('Configure the PostgreSQL database connection settings.') }}
                     </CardDescription>
                 </CardHeader>
                 <CardContent class="space-y-6">
-                    <FormSelect
-                        name="config.name"
-                        fetch="/api/database-connections"
-                        value-key="id"
-                        label-key="name"
-                        :label="$t('Connection Name')"
-                        :hint="$t('Select the database connection to back up')"
+                    <FormTextField
+                        name="config.postgres_host"
+                        :label="$t('Host')"
+                        :placeholder="$t('localhost')"
+                        :hint="$t('Hostname or IP address of the PostgreSQL server.')"
+                    />
+                    <FormTextField
+                        name="config.postgres_port"
+                        type="number"
+                        :label="$t('Port')"
+                        :placeholder="$t('5432')"
+                        :hint="$t('Port number of the PostgreSQL server.')"
+                    />
+                    <FormTextField
+                        name="config.postgres_username"
+                        :label="$t('Username')"
+                        :placeholder="$t('postgres')"
+                        :hint="$t('PostgreSQL user with read access to the target database.')"
+                    />
+                    <FormTextField
+                        name="config.postgres_password"
+                        type="password"
+                        :label="$t('Password')"
+                        :hint="$t('Password for the PostgreSQL user.')"
+                    />
+                    <FormTextField
+                        name="config.postgres_database"
+                        :label="$t('Database')"
+                        :placeholder="$t('postgres')"
+                        :hint="$t('Name of the database to back up.')"
                     />
                 </CardContent>
             </Card>
@@ -98,7 +120,7 @@ const tab = useRouteQuery('tab', 'details')
             <PlanTriggers v-model:plan="plan" />
         </TabsContent>
 
-        <TabsContent value="snapshots">
+        <TabsContent value="dumps">
             <PlanDumpSnapshots :plan-id="plan.id" />
         </TabsContent>
     </Tabs>
