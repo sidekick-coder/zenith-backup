@@ -21,16 +21,6 @@ export default class extends PluginEntity {
         })
 
         menu.add({
-            id: 'zbackup-snapshots',
-            layout: 'admin',
-            label: $t('Snapshots'),
-            icon: 'DatabaseBackup',
-            group: $t('Backups'),
-            to: '/admin/zbackup/snapshots',
-        })
-
-        menu.add({
-            id: 'zbackup-plans',
             layout: 'admin',
             label: $t('Plans'),
             icon: 'CalendarCheck',
