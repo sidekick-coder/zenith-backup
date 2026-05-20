@@ -1,4 +1,4 @@
-import Plan from '../entities/plan.entity.ts'
+import Plan from '../entities/PlanEntity.ts'
 import arte from '#server/facades/arte.facade.ts'
 import backup from '../facades/backup.facade.ts'
 import ResticStrategy from '../strategies/ResticStrategy.ts'

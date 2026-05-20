@@ -1,6 +1,6 @@
 import path from 'path'
 import type BaseStrategy from '../strategies/BaseStrategy.ts'
-import type Plan from '../entities/plan.entity.ts'
+import type Plan from '../entities/PlanEntity.ts'
 import { importAll } from '@sidekick-coder/zenith-kit/server'
 import { LoggerService } from '@sidekick-coder/zenith-kit/shared'
 

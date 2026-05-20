@@ -1,5 +1,5 @@
 import { LoggerService } from '@sidekick-coder/zenith-kit/shared'
-import type Plan from '../entities/plan.entity.ts'
+import type Plan from '../entities/PlanEntity.ts'
 
 export interface BaseStrategyOptions {
     plan: Plan

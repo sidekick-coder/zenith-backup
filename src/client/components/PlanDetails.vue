@@ -8,9 +8,9 @@ import {
     CardDescription,
     CardHeader,
     CardTitle,
-} from '#client/components/ui/card'
+} from '#client/components/ui/card/index.ts'
 
-import Plan from '#zenith-backup/shared/entities/plan.entity.ts'
+import Plan from '#zenith-backup/shared/entities/PlanEntity.ts'
 
 interface Props {
     plan: Plan
@@ -29,24 +29,12 @@ defineProps<Props>()
             </CardDescription>
         </CardHeader>
         <CardContent class="space-y-6">
-            <FormTextField
-                name="name"
-                :label="$t('Name')"
-                :placeholder="$t('Enter plan name')"
-            />
+            <FormTextField name="name" :label="$t('Name')" :placeholder="$t('Enter plan name')" />
 
-            <FormSwitch
-                name="active"
-                :label="$t('Active')"
-                :hint="$t('Activate or deactivate this backup plan')"
-            />
+            <FormSwitch name="active" :label="$t('Active')" :hint="$t('Activate or deactivate this backup plan')" />
 
-            <FormTextarea
-                name="description"
-                :label="$t('Description')"
-                :placeholder="$t('Enter plan description')"
-                :hint="$t('Optional description for this backup plan')"
-            />
+            <FormTextarea name="description" :label="$t('Description')" :placeholder="$t('Enter plan description')"
+                :hint="$t('Optional description for this backup plan')" />
         </CardContent>
     </Card>
 </template>

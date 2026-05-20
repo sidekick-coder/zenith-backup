@@ -7,7 +7,7 @@ import PageCrud from '#client/components/PageCrud.vue'
 import { defineFormFields } from '#client/components/FormAutoFieldList.vue'
 
 import { defineColumns } from '#client/components/DataTable.vue'
-import Plan from '#zenith-backup/shared/entities/plan.entity.ts'
+import Plan from '#zenith-backup/shared/entities/PlanEntity.ts'
 import Button from '#client/components/Button.vue'
 import Icon from '#client/components/Icon.vue'
 import { $fetch } from '#client/utils/index.ts'

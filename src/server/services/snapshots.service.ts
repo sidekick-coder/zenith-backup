@@ -1,4 +1,4 @@
-import Plan from '../entities/plan.entity.ts'
+import Plan from '../entities/PlanEntity.ts'
 import type StrategyService from './strategy.service.ts'
 import type Snapshot from '#zenith-backup/shared/entities/snapshot.entity.ts'
 

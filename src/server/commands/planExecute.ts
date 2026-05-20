@@ -1,5 +1,5 @@
 import backup from '../facades/backup.facade.ts'
-import Plan from '../entities/plan.entity.ts'
+import Plan from '../entities/PlanEntity.ts'
 import arte from '#server/facades/arte.facade.ts'
 
 arte.command('zbackups:plan-execute')

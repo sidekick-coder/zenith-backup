@@ -19,7 +19,7 @@ import {
     AlertTitle,
 } from '#client/components/ui/alert'
 
-import Plan from '#zenith-backup/shared/entities/plan.entity.ts'
+import Plan from '#zenith-backup/shared/entities/PlanEntity.ts'
 import PlanDumpConnectionForm from '#zenith-backup/client/components/PlanDumpConnectionForm.vue'
 import PlanDumpSQLiteForm from '#zenith-backup/client/components/PlanDumpSQLiteForm.vue'
 import PlanDumpPostgresForm from '#zenith-backup/client/components/PlanDumpPostgresForm.vue'

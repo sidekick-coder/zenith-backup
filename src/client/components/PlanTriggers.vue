@@ -11,7 +11,7 @@ import {
     CardTitle,
 } from '#client/components/ui/card'
 import Trigger from '#zenith-backup/shared/entities/trigger.entity.ts'
-import type Plan from '#zenith-backup/shared/entities/plan.entity.ts'
+import type Plan from '#zenith-backup/shared/entities/PlanEntity.ts'
 import DialogForm from '#client/components/DialogForm.vue'
 import { defineFormFields } from '#client/components/DialogForm.vue'
 import { createId } from '#client/utils'

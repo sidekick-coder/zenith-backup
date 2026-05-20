@@ -1,6 +1,6 @@
 import { format } from 'date-fns'
 import StrategyService from './strategy.service.ts'
-import Plan from '#zenith-backup/server/entities/plan.entity.ts'
+import Plan from '#zenith-backup/server/entities/PlanEntity.ts'
 import type Target from '#zenith-backup/shared/entities/target.entity.ts'
 import emmitter from '#server/facades/emmitter.facade.ts'
 import { LoggerService, tryCatch } from '@sidekick-coder/zenith-kit/shared'

@@ -13,7 +13,7 @@ import {
     TabsList,
     TabsTrigger,
 } from '#client/components/ui/tabs/index.ts'
-import type Plan from '#zenith-backup/shared/entities/plan.entity.ts'
+import type Plan from '#zenith-backup/shared/entities/PlanEntity.ts'
 import PlanTriggers from '#zenith-backup/client/components/PlanTriggers.vue'
 import PlanDumpSnapshots from '#zenith-backup/client/components/PlanDumpSnapshots.vue'
 import PlanDumpSectionDetails from '#zenith-backup/client/components/PlanDumpSectionDetails.vue'
