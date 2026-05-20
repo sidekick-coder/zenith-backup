@@ -15,12 +15,20 @@ import {
     CardTitle,
 } from '#client/components/ui/card/index.ts'
 import { fetcher } from '@sidekick-coder/zenith-kit/client'
+import Switch from '#client/components/ui/switch/Switch.vue'
 import type Trigger from '#zenith-backup/shared/entities/TriggerEntity.ts'
 
 const triggers = ref<Trigger[]>([])
 const loading = ref(false)
+const toggling = ref<string[]>([])
 
 const columns = defineColumns<Trigger>([
+    {
+        id: 'active',
+        label: $t('Active'),
+        field: 'active',
+        width: 80,
+    },
     {
         id: 'id',
         label: $t('ID'),
@@ -87,6 +95,20 @@ async function load() {
     loading.value = false
 }
 
+async function toggle(row: Trigger) {
+    toggling.value.push(row.id)
+
+    await fetcher.fetch(`/api/triggers/${row.id}`, {
+        method: 'PATCH',
+        data: { active: !row.active },
+    })
+
+    setTimeout(() => {
+        load()
+        toggling.value = toggling.value.filter(id => id !== row.id)
+    }, 500)
+}
+
 onMounted(load)
 </script>
 
@@ -128,6 +150,18 @@ onMounted(load)
             </CardHeader>
             <CardContent>
                 <DataTable :rows="triggers" :columns="columns" :loading="loading">
+                    <template #row-active="{ row }">
+                        <Icon
+                            v-if="toggling.includes(row.id)"
+                            name="Loader2"
+                            class="animate-spin"
+                        />
+                        <Switch
+                            v-else
+                            :model-value="!!row.active"
+                            @click="toggle(row)"
+                        />
+                    </template>
                     <template #row-actions="{ row }">
                         <div class="flex items-center gap-2 justify-end">
                             <DialogForm

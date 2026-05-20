@@ -1,5 +1,5 @@
 import Plan from '../entities/PlanEntity.ts'
-import backup from '../facades/backup.facade.ts'
+import backup from '../facades/backupService.ts'
 import authMiddleware from '#server/middlewares/auth.middleware.ts'
 import root from '#server/facades/router.facade.ts'
 import RouterResourceConfig from '#server/services/routerResourceConfig.service.ts'

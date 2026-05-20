@@ -1,6 +1,6 @@
 import { defineHandler } from '@sidekick-coder/zenith-kit/server'
 import { validator } from '@sidekick-coder/zenith-kit/shared'
-import triggerRepository from '#zenith-backup/server/facades/triggerRepository.facade.ts'
+import triggerRepository from '#zenith-backup/server/facades/triggerRepository.ts'
 
 export default defineHandler(async (ctx) => {
     ctx.acl.authorize('manage', 'ZBackupPlan')

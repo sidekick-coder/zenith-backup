@@ -1,7 +1,7 @@
 import { defineHandler } from '@sidekick-coder/zenith-kit/server'
 import { BaseException } from '@sidekick-coder/zenith-kit/shared'
 import Plan from '#zenith-backup/server/entities/PlanEntity.ts'
-import backup from '#zenith-backup/server/facades/backup.facade.ts'
+import backup from '#zenith-backup/server/facades/backupService.ts'
 import ResticStrategy from '#zenith-backup/server/strategies/ResticStrategy.ts'
 
 export default defineHandler(async (ctx) => {

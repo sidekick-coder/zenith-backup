@@ -1,6 +1,7 @@
 import { emmitter, PluginEntity } from '@sidekick-coder/zenith-kit/server'
 import path from 'node:path'
-import backup from './facades/backup.facade.ts'
+import backup from './facades/backupService.ts'
+import triggerService from './facades/triggerService.ts'
 
 export default class extends PluginEntity {
     public async load() {
@@ -12,5 +13,7 @@ export default class extends PluginEntity {
         emmitter.on('http:booted', async () => {
             await backup.load()
         })
+
+        emmitter.on('scheduler:booted', async () => triggerService.load())
     }
 }

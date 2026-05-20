@@ -1,6 +1,6 @@
 import Plan from '../entities/PlanEntity.ts'
 import arte from '#server/facades/arte.facade.ts'
-import backup from '../facades/backup.facade.ts'
+import backup from '../facades/backupService.ts'
 import DumpStrategy from '../strategies/DumpStrategy.ts'
 
 arte.command('zbackups:dumps-list')
