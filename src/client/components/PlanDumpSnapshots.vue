@@ -48,8 +48,13 @@ function humanSize(size: number): string {
 const columns = defineColumns<DumpSnapshot>([
     {
         id: 'id',
-        label: $t('Dump ID'),
+        label: 'ID',
         field: 'id',
+    },
+    {
+        id: 'description',
+        label: $t('Description'),
+        field: 'metadata.description',
     },
     {
         id: 'size',
@@ -59,7 +64,7 @@ const columns = defineColumns<DumpSnapshot>([
     {
         id: 'created_at',
         label: $t('Created At'),
-        field: row => row.created_at ? format(new Date(row.created_at), 'yyyy-MM-dd HH:mm:ss') : '-',
+        field: row => row.created_at ? $dt(row.created_at) : '-',
     },
     { id: 'actions' },
 ])
@@ -118,7 +123,7 @@ onMounted(load)
                 <div class="hidden" />
             </ObjectInspect>
 
-            <DataTable :rows="dumps" :columns="columns" :loading="loading">
+            <DataTable :rows="dumps" :columns="columns" :loading="loading" hide-pagination>
                 <template #row-actions="{ row }">
                     <div class="flex items-center gap-2 justify-end">
                         <AlertButton variant="ghost" size="sm" fetch-method="POST"

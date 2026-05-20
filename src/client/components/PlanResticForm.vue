@@ -17,7 +17,6 @@ import {
     TabsTrigger,
 } from '#client/components/ui/tabs/index.ts'
 import type Plan from '#zenith-backup/shared/entities/PlanEntity.ts'
-import PlanTriggers from '#zenith-backup/client/components/PlanTriggers.vue'
 import PlanResticSnapshots from '#zenith-backup/client/components/PlanResticSnapshots.vue'
 import PlanDumpSectionDetails from '#zenith-backup/client/components/PlanDumpSectionDetails.vue'
 import { useRouteQuery } from '@sidekick-coder/zenith-kit/components'
@@ -47,9 +46,6 @@ const tab = useRouteQuery('tab', 'details')
             </TabsTrigger>
             <TabsTrigger value="docker" class="min-w-60">
                 {{ $t('Docker') }}
-            </TabsTrigger>
-            <TabsTrigger value="triggers" class="min-w-60">
-                {{ $t('Triggers') }}
             </TabsTrigger>
             <TabsTrigger value="snapshots" class="min-w-60">
                 {{ $t('Snapshots') }}
@@ -156,10 +152,6 @@ const tab = useRouteQuery('tab', 'details')
                     />
                 </CardContent>
             </Card>
-        </TabsContent>
-
-        <TabsContent value="triggers">
-            <PlanTriggers v-model:plan="plan" />
         </TabsContent>
 
         <TabsContent value="snapshots">
