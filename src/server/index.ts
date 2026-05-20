@@ -9,9 +9,10 @@ export default class extends PluginEntity {
         this.addApiFolder(path.resolve(import.meta.dirname, 'api'))
 
         await backup.strategies.load()
+        await triggerService.loadEventTriggers()
 
         emmitter.on('http:booted', async () => await backup.load())
 
-        emmitter.on('scheduler:booted', async () => triggerService.load())
+        emmitter.on('scheduler:booted', async () => triggerService.loadRoutineTriggers())
     }
 }

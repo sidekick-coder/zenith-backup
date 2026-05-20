@@ -154,12 +154,12 @@ export default class TriggerService {
         return this.loadedTriggersRoutines.has(triggerId) || this.loadedTriggersEvents.has(triggerId)
     }
 
-    public async load() {
-        const triggers = await triggerRepository.findMany()
+    public async loadRoutineTriggers() {
+        let triggers = await triggerRepository.findMany()
+
+        triggers = triggers.filter(trigger => trigger.type === 'cron' && trigger.active)
 
         for (const trigger of triggers) {
-            if (!trigger.active) continue
-
             const [error] = await tryCatch(() => this.loadTrigger(trigger))
 
             if (error) {
@@ -168,6 +168,27 @@ export default class TriggerService {
                 this.logger.error(error)
             }
         }
+    }
+
+    public async loadEventTriggers() {
+        let triggers = await triggerRepository.findMany()
+
+        triggers = triggers.filter(trigger => trigger.type === 'event' && trigger.active)
+
+        for (const trigger of triggers) {
+            const [error] = await tryCatch(() => this.loadTrigger(trigger))
+
+            if (error) {
+                Object.assign(error, { trigger_id: trigger.id })
+
+                this.logger.error(error)
+            }
+        }
+    }
+
+    public async load() {
+        await this.loadRoutineTriggers()
+        await this.loadEventTriggers()
     }
 
     public async unload() {
