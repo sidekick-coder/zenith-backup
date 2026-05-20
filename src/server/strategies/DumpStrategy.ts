@@ -112,6 +112,10 @@ export default class DumpStrategy extends BaseStrategy {
     }
 
     public async backup(metadata: Record<string, any> = {}): Promise<DumpSnapshot> {
+        if (!this.backup_command || this.backup_command.trim() === '') {
+            throw new BaseException('Backup command is not configured')
+        }
+
         const id = cuid()
         const filename = `dump_${id}`
         const tmpFile = path.join(os.tmpdir(), filename)
@@ -162,6 +166,10 @@ export default class DumpStrategy extends BaseStrategy {
     }
 
     public async restore(snapshot: DumpSnapshot): Promise<void> {
+        if (!this.restore_command || this.restore_command.trim() === '') {
+            throw new BaseException('Restore command is not configured')
+        }
+
         const folder = this.drive_prefix
             ? path.join(this.drive_prefix, snapshot.id)
             : snapshot.id
