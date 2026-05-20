@@ -11,6 +11,7 @@ arte.command('zbackups:dumps-restore')
     .helpGroup('zbackups')
     .action(async (options: { planId: string, dumpId: string }) => {
         const plans = await Plan.list()
+
         let plan: Plan | undefined = undefined
 
         if (options.planId) {
