@@ -24,6 +24,6 @@ export default class extends DumpStrategy {
         this.backup_command = `/data/${basename} '.backup {{output}}'`
         this.backup_filename = `database.dump`
 
-        this.restore_command = `{{input}} .restore /data/${basename}`
+        this.restore_command = `/data/${basename} '.restore {{input}}'`
     }
 }
