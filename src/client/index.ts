@@ -23,11 +23,18 @@ export default class extends PluginEntity {
         menu.add({
             layout: 'admin',
             label: $t('Plans'),
-            icon: 'CalendarCheck',
+            icon: 'FileText',
             group: $t('Backups'),
             to: '/admin/zbackup/plans',
         })
 
+        menu.add({
+            layout: 'admin',
+            label: $t('Triggers'),
+            icon: 'Clock',
+            group: $t('Backups'),
+            to: '/admin/zbackup/triggers',
+        })
 
     }
 }
