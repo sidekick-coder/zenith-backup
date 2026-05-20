@@ -1,235 +1,169 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { useForm } from 'vee-validate'
-import { toTypedSchema } from '@vee-validate/valibot'
-import { toast } from 'vue-sonner'
-import * as v from 'valibot'
-import { Eye, EyeOff } from 'lucide-vue-next'
 import FormTextField from '#client/components/FormTextField.vue'
 import FormTextarea from '#client/components/FormTextarea.vue'
 import FormSelect from '#client/components/FormSelect.vue'
-import FormSwitch from '#client/components/FormSwitch.vue'
-import Button from '#client/components/Button.vue'
-
-import Card from '#client/components/ui/card/Card.vue'
-import CardHeader from '#client/components/ui/card/CardHeader.vue'
-import CardTitle from '#client/components/ui/card/CardTitle.vue'
-import CardDescription from '#client/components/ui/card/CardDescription.vue'
-import CardContent from '#client/components/ui/card/CardContent.vue'
-import CardFooter from '#client/components/ui/card/CardFooter.vue'
-import { $fetch } from '#client/utils/fetcher.ts'
-import { tryCatch } from '#shared/utils/tryCatch.ts'
+import FormStringListInput from '#client/components/FormStringListInput.vue'
+import {
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle,
+    CardDescription,
+} from '#client/components/ui/card/index.ts'
+import {
+    Tabs,
+    TabsContent,
+    TabsList,
+    TabsTrigger,
+} from '#client/components/ui/tabs/index.ts'
 import type Plan from '#zenith-backup/shared/entities/plan.entity.ts'
-import Meta from '#shared/entities/meta.entity.ts'
+import PlanTriggers from '#zenith-backup/client/components/PlanTriggers.vue'
+import PlanResticSnapshots from '#zenith-backup/client/components/PlanResticSnapshots.vue'
+import PlanDumpSectionDetails from '#zenith-backup/client/components/PlanDumpSectionDetails.vue'
+import { useRouteQuery } from '@sidekick-coder/zenith-kit/components'
 
-interface Props {
-    plan: Plan
-}
-
-const props = defineProps<Props>()
-
-const saving = ref(false)
-const loading = ref(false)
-const showPassword = ref(false)
-
-const schema = toTypedSchema(
-    v.object({
-        repository_type: v.pipe(v.string()),
-        repository: v.optional(v.string()),
-        drive_id: v.optional(v.string()),
-        folder: v.optional(v.string()),
-        password: v.pipe(v.string()),
-        backup_flags: v.optional(v.string()),
-        forget_enabled: v.optional(v.boolean()),
-        forget_flags: v.optional(v.string())
-    })
-)
-
-const { handleSubmit, setValues, values } = useForm({ validationSchema: schema, })
-
-const loadMetas = async () => {
-    loading.value = true
-
-    const [error, response] = await tryCatch(() => 
-        $fetch<{ data: Meta[] }>(`/api/backup/plans/${props.plan.id}/metas`)
-    )
-
-    if (error) {
-        loading.value = false
-        return
-    }
-
-    const metas: Record<string, any> = {}
-
-    response.data.forEach((meta: Meta) => {
-        if (meta.name === 'forget_enabled') {
-            metas[meta.name] = meta.value === 'true'
-        } else {
-            metas[meta.name] = meta.value
-        }
-    })
-
-    setValues(metas)
-
-    loading.value = false
-}
-
-const updateMeta = async (name: string, value: string) => {
-    return $fetch(`/api/backup/plans/${props.plan.id}/metas`, {
-        method: 'PUT',
-        data: { 
-            name, 
-            value 
-        }
-    })
-}
-
-const onSubmit = handleSubmit(async (payload) => {
-    saving.value = true
-
-    await Promise.all([
-        updateMeta('repository_type', payload.repository_type),
-        updateMeta('repository', payload.repository || ''),
-        updateMeta('drive_id', payload.drive_id || ''),
-        updateMeta('folder', payload.folder || ''),
-        updateMeta('password', payload.password),
-        updateMeta('backup_flags', payload.backup_flags || ''),
-        updateMeta('forget_enabled', payload.forget_enabled ? 'true' : 'false'),
-        updateMeta('forget_flags', payload.forget_flags || '')
-    ])
-
-    setTimeout(() => {
-        toast.success($t('Updated successfully'))
-        saving.value = false
-    }, 800)
+const plan = defineModel('plan', {
+    type: Object as () => Plan,
+    required: true,
 })
 
-onMounted(() => {
-    loadMetas()
-})
+const tab = useRouteQuery('tab', 'details')
 </script>
 
 <template>
-    <form @submit.prevent="onSubmit">
-        <Card>
-            <CardHeader>
-                <CardTitle>{{ $t('Restic config') }}</CardTitle>
-                <CardDescription>
-                    {{ $t('Configure the Restic repository and credentials for the backup plan.') }}
-                </CardDescription>
-            </CardHeader>
-            <CardContent class="space-y-6">
-                <FormSelect
-                    name="repository_type"
-                    :label="$t('Repository Type')"
-                    :hint="$t('Choose how to configure the repository')"
-                    :loading="loading"
-                    :options="[
-                        { label: $t('Raw Repository'), value: 'raw' },
-                        { label: $t('Drive'), value: 'drive' }
-                    ]"
-                    label-key="label"
-                    value-key="value"
-                />
-                
-                <FormTextField
-                    v-if="values?.repository_type === 'raw'"
-                    name="repository"
-                    :label="$t('Repository')"
-                    :placeholder="$t('/path/to/repo or sftp:user@host:/path/to/repo')"
-                    :hint="$t('Restic repository location (local path, SFTP, S3, etc.)')"
-                    :loading="loading"
-                />
+    <Tabs v-model="tab" class="w-full" :unmount-on-hide="false">
+        <TabsList>
+            <TabsTrigger value="details" class="min-w-60">
+                {{ $t('Details') }}
+            </TabsTrigger>
+            <TabsTrigger value="repository" class="min-w-60">
+                {{ $t('Repository') }}
+            </TabsTrigger>
+            <TabsTrigger value="backup" class="min-w-60">
+                {{ $t('Backup') }}
+            </TabsTrigger>
+            <TabsTrigger value="cleanup" class="min-w-60">
+                {{ $t('Cleanup') }}
+            </TabsTrigger>
+            <TabsTrigger value="docker" class="min-w-60">
+                {{ $t('Docker') }}
+            </TabsTrigger>
+            <TabsTrigger value="triggers" class="min-w-60">
+                {{ $t('Triggers') }}
+            </TabsTrigger>
+            <TabsTrigger value="snapshots" class="min-w-60">
+                {{ $t('Snapshots') }}
+            </TabsTrigger>
+        </TabsList>
 
-                <template v-if="values?.repository_type === 'drive'">
-                    <FormSelect
-                        name="drive_id"
-                        label-key="name"
-                        value-key="id"
-                        fetch="/api/drives"
-                        fetch-key="data"
-                        :label="$t('Drive')"
-                        :hint="$t('Select the drive where the repository will be stored')"
-                        :loading="loading"
+        <TabsContent value="details">
+            <PlanDumpSectionDetails />
+        </TabsContent>
+
+        <TabsContent value="repository">
+            <Card>
+                <CardHeader>
+                    <CardTitle>{{ $t('Repository Configuration') }}</CardTitle>
+                    <CardDescription>
+                        {{ $t('Settings related to the Restic repository where backups will be stored.') }}
+                    </CardDescription>
+                </CardHeader>
+                <CardContent class="space-y-6">
+                    <FormTextField
+                        name="config.restic_repository"
+                        :label="$t('Repository')"
+                        :placeholder="$t('/path/to/repo or s3:bucket/path')"
+                        :hint="$t('File path or URL to the Restic repository.')"
                     />
                     <FormTextField
-                        v-if="values?.drive_id"
-                        name="folder"
-                        :label="$t('Folder')"
-                        :placeholder="$t('repository')"
-                        :hint="$t('Folder path within the drive where the repository will be stored')"
+                        name="config.restic_password"
+                        type="password"
+                        :label="$t('Repository Password')"
+                        :hint="$t('Password for encrypting/decrypting the Restic repository.')"
                     />
-                </template>
+                </CardContent>
+            </Card>
+        </TabsContent>
 
-                <FormTextField
-                    name="password"
-                    :type="showPassword ? 'text' : 'password'"
-                    :label="$t('Password')"
-                    :placeholder="$t('Enter repository password')"
-                    :hint="$t('Password to encrypt/decrypt the repository')"
-                    :loading="loading"
-                >
-                    <template #append>
-                        <Button
-                            variant="outline"
-                            class="h-10"
-                            @click="showPassword = !showPassword"
-                        >
-                            <Eye 
-                                v-if="!showPassword" 
-                                class="h-4 w-4" 
-                            />
-                            <EyeOff 
-                                v-else 
-                                class="h-4 w-4" 
-                            />
-                        </Button>
-                    </template>
-                </FormTextField>
-            </CardContent>
-            <CardHeader>
-                <CardTitle>{{ $t('Backup Config') }}</CardTitle>
-                <CardDescription>
-                    {{ $t('Configure backup.') }}
-                </CardDescription>
-            </CardHeader>
-            <CardContent class="space-y-6">
-                <FormTextarea
-                    name="backup_flags"
-                    :label="$t('Backup Flags')"
-                    :placeholder="$t('Enter additional restic backup flags here...')"
-                />
-            </CardContent>
-            <CardHeader>
-                <CardTitle>{{ $t('Forget Config') }}</CardTitle>
-                <CardDescription>
-                    {{ $t('Configure forgetting policies.') }}
-                </CardDescription>
-            </CardHeader>
-            <CardContent class="space-y-6">
-                <FormSwitch
-                    name="forget_enabled"
-                    :label="$t('Enable Forget Command')"
-                    :hint="$t('Automatically run forget command after backup to clean up old snapshots')"
-                />
-                <FormTextarea
-                    name="forget_flags"
-                    :label="$t('Forget Flags')"
-                    :placeholder="$t('Enter restic forget flags here (e.g., --keep-daily 7 --keep-weekly 4)...')"
-                />
-            </CardContent>
-            <CardFooter class="flex justify-end gap-4">
-                <Button
-                    type="submit"
-                    :loading="saving"
-                >
-                    {{ $t('Save') }}
-                </Button>
-            </CardFooter>
-        </Card>
-    </form>
+        <TabsContent value="backup">
+            <Card>
+                <CardHeader>
+                    <CardTitle>{{ $t('Backup') }}</CardTitle>
+                    <CardDescription>
+                        {{ $t('Settings related to the files and directories to be backed up.') }}
+                    </CardDescription>
+                </CardHeader>
+                <CardContent class="space-y-6">
+                    <FormStringListInput
+                        name="config.source_paths"
+                        :label="$t('Paths')"
+                        :placeholder="$t('Absolute path to file or directory (e.g., /var/www/html)')"
+                        :hint="$t('List of file and directory paths to include in the backup.')"
+                    />
+                    <FormTextarea
+                        name="config.backup_flags"
+                        :label="$t('Backup Flags')"
+                        :placeholder="$t('--exclude /path/to/exclude')"
+                        :hint="$t('Additional Restic backup command flags, one per line.')"
+                    />
+                </CardContent>
+            </Card>
+        </TabsContent>
+
+        <TabsContent value="cleanup">
+            <Card>
+                <CardHeader>
+                    <CardTitle>{{ $t('Cleanup') }}</CardTitle>
+                    <CardDescription>
+                        {{ $t('Settings related to automatic cleanup of old snapshots.') }}
+                    </CardDescription>
+                </CardHeader>
+                <CardContent class="space-y-6">
+                    <FormSelect
+                        name="config.forget_enabled"
+                        :label="$t('Enable Forget')"
+                        :hint="$t('Enable automatic cleanup of old snapshots after backup.')"
+                        :clearable="true"
+                        :options="[
+                            { value: true, label: $t('Yes') },
+                            { value: false, label: $t('No') },
+                        ]"
+                    />
+                    <FormTextarea
+                        name="config.forget_flags"
+                        :label="$t('Forget Flags')"
+                        :placeholder="$t('--keep-daily 7 --keep-weekly 4')"
+                        :hint="$t('Restic forget command flags for controlling snapshot retention.')"
+                    />
+                </CardContent>
+            </Card>
+        </TabsContent>
+
+        <TabsContent value="docker">
+            <Card>
+                <CardHeader>
+                    <CardTitle>{{ $t('Docker') }}</CardTitle>
+                    <CardDescription>
+                        {{ $t('Configure the Docker image used to run Restic commands.') }}
+                    </CardDescription>
+                </CardHeader>
+                <CardContent class="space-y-6">
+                    <FormTextField
+                        name="config.docker_image"
+                        :label="$t('Docker Image')"
+                        :placeholder="$t('restic/restic:latest')"
+                        :hint="$t('Docker image used to run Restic commands. Defaults to restic/restic:latest.')"
+                    />
+                </CardContent>
+            </Card>
+        </TabsContent>
+
+        <TabsContent value="triggers">
+            <PlanTriggers v-model:plan="plan" />
+        </TabsContent>
+
+        <TabsContent value="snapshots">
+            <PlanResticSnapshots :plan-id="plan.id" />
+        </TabsContent>
+    </Tabs>
 </template>
-
-<style>
-/* Add any custom styles if needed */
-</style>

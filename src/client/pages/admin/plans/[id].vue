@@ -1,11 +1,8 @@
 <script setup lang="ts">
 import {
-    ref, onMounted, computed, watch,
-    defineAsyncComponent,
+    ref, onMounted, computed,
     onServerPrefetch,
 } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { Field } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/valibot'
 import * as v from 'valibot'
 import { toast } from 'vue-sonner'
@@ -24,9 +21,9 @@ import {
 
 import Plan from '#zenith-backup/shared/entities/plan.entity.ts'
 import PlanDumpConnectionForm from '#zenith-backup/client/components/PlanDumpConnectionForm.vue'
-import { FormTextField } from '@sidekick-coder/zenith-kit/components'
 import PlanDumpSQLiteForm from '#zenith-backup/client/components/PlanDumpSQLiteForm.vue'
 import PlanDumpPostgresForm from '#zenith-backup/client/components/PlanDumpPostgresForm.vue'
+import PlanResticForm from '#zenith-backup/client/components/PlanResticForm.vue'
 
 const planId = computed(() => String(route.params.id))
 const plan = ref<Plan>()
@@ -220,6 +217,7 @@ onServerPrefetch(loadIfNotDefined)
             <PlanDumpConnectionForm v-if="plan.strategy === 'dump_connection'" v-model:plan="plan" />
             <PlanDumpPostgresForm v-else-if="plan.strategy === 'dump_postgres'" v-model:plan="plan" />
             <PlanDumpSQLiteForm v-else-if="plan.strategy === 'dump_sqlite'" v-model:plan="plan" />
+            <PlanResticForm v-else-if="plan.strategy === 'restic'" v-model:plan="plan" />
 
             <Alert v-else variant="destructive">
                 <AlertTitle>{{ $t('Unsupported strategy') }}</AlertTitle>
