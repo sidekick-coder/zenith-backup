@@ -10,9 +10,6 @@ arte.command('zbackups:dumps-restore')
     .description('Restore a dump for a plan that uses the DumpStrategy')
     .helpGroup('zbackups')
     .action(async (options: { planId: string, dumpId: string }) => {
-        let planId = options.planId
-        let dumpId = options.dumpId
-
         const plans = await Plan.list()
         let plan: Plan | undefined = undefined
 
@@ -23,7 +20,7 @@ arte.command('zbackups:dumps-restore')
         if (!plan) {
             const id = await arte.inquirer.select({
                 message: 'Select a plan to restore a dump for:',
-                choices: plans.map(p => ({ name: p.name, value: p.id }))
+                choices: plans.map(p => ({ name: `${p.name} (${p.id})`, value: p.id }))
             })
 
             plan = plans.find(p => p.id === id)
