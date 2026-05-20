@@ -10,9 +10,7 @@ export default class extends PluginEntity {
 
         await backup.strategies.load()
 
-        emmitter.on('http:booted', async () => {
-            await backup.load()
-        })
+        emmitter.on('http:booted', async () => await backup.load())
 
         emmitter.on('scheduler:booted', async () => triggerService.load())
     }
