@@ -10,7 +10,30 @@ arte.command('zbackups:dumps-restore')
     .description('Restore a dump for a plan that uses the DumpStrategy')
     .helpGroup('zbackups')
     .action(async (options: { planId: string, dumpId: string }) => {
-        const plan = await Plan.findOrFail(options.planId)
+        let planId = options.planId
+        let dumpId = options.dumpId
+
+        const plans = await Plan.list()
+        let plan: Plan | undefined = undefined
+
+        if (options.planId) {
+            plan = plans.find(p => p.id === options.planId)
+        }
+
+        if (!plan) {
+            const id = await arte.inquirer.select({
+                message: 'Select a plan to restore a dump for:',
+                choices: plans.map(p => ({ name: p.name, value: p.id }))
+            })
+
+            plan = plans.find(p => p.id === id)
+        }
+
+        if (!plan) {
+            console.error('No plan selected.')
+            process.exit(1)
+        }
+
 
         const strategyDef = await backup.strategies.find(plan.strategy)
         const instance = new strategyDef.ctor({ plan })
@@ -21,7 +44,29 @@ arte.command('zbackups:dumps-restore')
         }
 
         const dumps = await instance.list()
-        const dump = dumps.find(d => d.id === options.dumpId)
+
+        let dump: any = undefined
+
+        if (options.dumpId) {
+             dump = dumps.find(d => d.id === options.dumpId)
+        }
+
+        if (!dump) {
+             const dumpId = await arte.inquirer.select({
+                message: 'Select a dump to restore:',
+                choices: dumps.map(d => ({ 
+                    name: `${d.id} - ${new Date(d.created_at).toLocaleString()} (${d.size} bytes) ${d.metadata.description ? '- ' + d.metadata.description : ''}`,
+                    value: d.id, 
+                }))
+            })
+
+             dump = dumps.find(d => d.id === dumpId)
+        }
+
+        if (!dump) {
+            console.error('No dump selected.')
+            process.exit(1)
+        }
 
         if (!dump) {
             console.error(`Dump "${options.dumpId}" not found.`)
