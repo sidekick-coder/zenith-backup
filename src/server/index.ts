@@ -5,6 +5,7 @@ import backup from './facades/backup.facade.ts'
 export default class extends PluginEntity {
     public async load() {
         this.addRouterFolder(path.resolve(import.meta.dirname, 'routes'))
+        this.addApiFolder(path.resolve(import.meta.dirname, 'api'))
 
         await backup.strategies.load()
 
