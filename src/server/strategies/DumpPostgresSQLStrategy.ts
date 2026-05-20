@@ -20,9 +20,9 @@ export default class extends DumpStrategy {
             `--port=${this.config.postgres_port || 5432}`,
             `--username=${this.config.postgres_username || 'postgres'}`,
             `--dbname=${this.config.postgres_database || 'postgres'}`,
-            `--file={{output}}`,
         ]
 
-        this.backup_command = `pg_dump ${args.join(' ')}`
+        this.backup_command = `pg_dump ${args.join(' ')} --file={{output}} --clean`
+        this.restore_command = `psql ${args.join(' ')} -f {{input}}`
     }
 }

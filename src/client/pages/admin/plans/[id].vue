@@ -26,6 +26,7 @@ import Plan from '#zenith-backup/shared/entities/plan.entity.ts'
 import PlanDumpConnectionForm from '#zenith-backup/client/components/PlanDumpConnectionForm.vue'
 import { FormTextField } from '@sidekick-coder/zenith-kit/components'
 import PlanDumpSQLiteForm from '#zenith-backup/client/components/PlanDumpSQLiteForm.vue'
+import PlanDumpPostgresForm from '#zenith-backup/client/components/PlanDumpPostgresForm.vue'
 
 const planId = computed(() => String(route.params.id))
 const plan = ref<Plan>()
@@ -217,6 +218,7 @@ onServerPrefetch(loadIfNotDefined)
             </Alert>
 
             <PlanDumpConnectionForm v-if="plan.strategy === 'dump_connection'" v-model:plan="plan" />
+            <PlanDumpPostgresForm v-else-if="plan.strategy === 'dump_postgres'" v-model:plan="plan" />
             <PlanDumpSQLiteForm v-else-if="plan.strategy === 'dump_sqlite'" v-model:plan="plan" />
 
             <Alert v-else variant="destructive">

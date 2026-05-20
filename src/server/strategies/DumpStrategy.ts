@@ -19,7 +19,6 @@ export default class DumpStrategy extends BaseStrategy {
     public static description = 'This strategy generates dumps by running a Docker container with the specified backup command, and stores them in a drive.'
 
     private static readonly VOLUME = 'zenith-backup-volume'
-    private static readonly CONTAINER_HOST_TMP_DIR = '/dumps'
 
     /** Drive options */
     public drive_id: string
@@ -75,7 +74,7 @@ export default class DumpStrategy extends BaseStrategy {
         await shell.command('docker', [
             'run', '--rm',
             '-u', `${uid}:${uid}`,
-            '-v', `${DumpStrategy.VOLUME}:/${DumpStrategy.VOLUME}:ro`,
+            '-v', `${DumpStrategy.VOLUME}:/${DumpStrategy.VOLUME}:rw`,
             '-v', `${hostDir}:/hostDir:rw`,
             'alpine', 'cp',
             path.join('/', DumpStrategy.VOLUME, path.basename(source)),
@@ -83,18 +82,18 @@ export default class DumpStrategy extends BaseStrategy {
         ])
     }
 
-    private async copyHostToVolume(hostFile: string): Promise<void> {
+    private async copyFromHostToVolume(source: string, target: string): Promise<void> {
         const uid = process.getuid ? process.getuid() : 1000
-        const hostDir = path.dirname(hostFile)
+        const hostDir = path.dirname(source)
 
         await shell.command('docker', [
             'run', '--rm',
-            '-u', `${uid}:${uid}`,
-            '-v', `${hostDir}:/backup:rw`,
-            '-v', `${DumpStrategy.VOLUME}:/data:rw`,
+            // '-u', `${uid}:${uid}`,
+            '-v', `${DumpStrategy.VOLUME}:/${DumpStrategy.VOLUME}:rw`,
+            '-v', `${hostDir}:/hostDir:rw`,
             'alpine', 'cp',
-            `/backup/${path.basename(hostFile)}`,
-            '/data/dump',
+            path.join('/hostDir', path.basename(source)),
+            path.join('/', DumpStrategy.VOLUME, path.basename(target)),
         ])
     }
 
@@ -167,18 +166,21 @@ export default class DumpStrategy extends BaseStrategy {
             ? path.join(this.drive_prefix, snapshot.id)
             : snapshot.id
 
-        const tmpFile = path.join(os.tmpdir(), `restore_${snapshot.id}`)
+        const filename  = `restore_${snapshot.id}`
+        const tmpFile = path.join(os.tmpdir(), filename)
 
-        await this.drive.download(path.join(folder, 'dump'), tmpFile)
+        await this.drive.download(path.join(folder, this.backup_filename), tmpFile)
 
         await this.ensureVolume()
-        await this.copyHostToVolume(tmpFile)
+        await this.copyFromHostToVolume(tmpFile, filename)
 
-        const command = this.restore_command.replace('{input}', DumpStrategy.CONTAINER_TMP_DIR)
-        const dockerArgs = this.buildDockerArgs(this.docker_volumes)
-        dockerArgs.push('sh', '-c', command)
+        const command = this.restore_command.replace(/{{input}}/g, path.join('/', DumpStrategy.VOLUME, filename))
 
-        await shell.command('docker', dockerArgs, { env: this.docker_env, shell: false })
+        const dockerArgs = this.buildDockerArgs()
+
+        dockerArgs.push(command)
+
+        await shell.command('docker', dockerArgs, { env: this.docker_env  })
 
         await fs.promises.unlink(tmpFile)
     }
