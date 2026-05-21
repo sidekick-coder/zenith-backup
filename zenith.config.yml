@@ -4,3 +4,6 @@ description: Backup plugin for zenith
 aliases:
     - zenith-backups
     - zb
+version_branches:
+    - main
+    - build
