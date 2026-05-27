@@ -79,7 +79,7 @@ async function load() {
     loading.value = true
 
     const [error, response] = await fetcher.try<{ items: Trigger[] }>(
-        '/api/triggers',
+        '/api/zbackup/triggers',
         { method: 'GET' }
     )
 
@@ -98,7 +98,7 @@ async function load() {
 async function toggle(row: Trigger) {
     toggling.value.push(row.id)
 
-    await fetcher.fetch(`/api/triggers/${row.id}`, {
+    await fetcher.fetch(`/api/zbackup/triggers/${row.id}`, {
         method: 'PATCH',
         data: { active: !row.active },
     })
@@ -132,7 +132,7 @@ onMounted(load)
                         <DialogForm
                             :title="$t('Add Trigger')"
                             :fields="fields"
-                            fetch="/api/triggers"
+                            fetch="/api/zbackup/triggers"
                             fetch-method="POST"
                             @submit="load"
                         >
@@ -168,7 +168,7 @@ onMounted(load)
                                 :title="$t('Edit Trigger')"
                                 :fields="fields"
                                 :values="row"
-                                :fetch="`/api/triggers/${row.id}`"
+                                :fetch="`/api/zbackup/triggers/${row.id}`"
                                 fetch-method="PATCH"
                                 @submit="load"
                             >
@@ -181,7 +181,7 @@ onMounted(load)
                                 variant="ghost"
                                 size="sm"
                                 fetch-method="DELETE"
-                                :fetch="`/api/triggers/${row.id}`"
+                                :fetch="`/api/zbackup/triggers/${row.id}`"
                                 :tooltip="$t('Delete this trigger')"
                                 :description="$t('Are you sure you want to delete this trigger? This action cannot be undone.')"
                                 :toast-on-success="$t('Trigger deleted.')"

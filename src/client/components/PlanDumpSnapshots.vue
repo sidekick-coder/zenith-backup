@@ -73,7 +73,7 @@ async function load() {
     loading.value = true
 
     const [error, response] = await fetcher.try<{ items: DumpSnapshot[] }>(
-        `/api/plans/${props.planId}/dumps`,
+        `/api/zbackup/plans/${props.planId}/dumps`,
         { method: 'GET' }
     )
 
@@ -103,7 +103,7 @@ onMounted(load)
                     </CardDescription>
                 </div>
                 <div class="flex items-center gap-2">
-                    <AlertButton variant="outline" fetch-method="POST" :fetch="`/api/plans/${planId}/dumps/cleanup`"
+                    <AlertButton variant="outline" fetch-method="POST" :fetch="`/api/zbackup/plans/${planId}/dumps/cleanup`"
                         :tooltip="$t('Remove old dumps based on retention settings')"
                         :description="$t('Are you sure you want to run cleanup? Old dumps exceeding the retention limit will be deleted.')"
                         :toast-on-success="$t('Cleanup completed.')" @fetched="load">
@@ -127,14 +127,14 @@ onMounted(load)
                 <template #row-actions="{ row }">
                     <div class="flex items-center gap-2 justify-end">
                         <AlertButton variant="ghost" size="sm" fetch-method="POST"
-                            :fetch="`/api/plans/${planId}/dumps/${row.id}/restore`" :tooltip="$t('Restore this dump')"
+                            :fetch="`/api/zbackup/plans/${planId}/dumps/${row.id}/restore`" :tooltip="$t('Restore this dump')"
                             :description="$t('Are you sure you want to restore this dump? This action cannot be undone.')"
                             :toast-on-success="$t('Restore started successfully.')" @fetched="load">
                             <Icon name="TimerReset" />
                         </AlertButton>
 
                         <AlertButton variant="ghost" size="sm" fetch-method="DELETE"
-                            :fetch="`/api/plans/${planId}/dumps/${row.id}`" :tooltip="$t('Delete this dump')"
+                            :fetch="`/api/zbackup/plans/${planId}/dumps/${row.id}`" :tooltip="$t('Delete this dump')"
                             :description="$t('Are you sure you want to delete this dump? This action cannot be undone.')"
                             :toast-on-success="$t('Dump deleted.')" @fetched="load">
                             <Icon name="trash" />

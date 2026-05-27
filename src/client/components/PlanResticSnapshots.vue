@@ -69,7 +69,7 @@ async function load() {
     loading.value = true
 
     const [error, response] = await fetcher.try<{ items: ResticSnapshot[] }>(
-        `/api/plans/${props.planId}/restic`,
+        `/api/zbackup/plans/${props.planId}/restic`,
         { method: 'GET' }
     )
 
@@ -115,7 +115,7 @@ onMounted(load)
                 <template #row-actions="{ row }">
                     <div class="flex items-center gap-2 justify-end">
                         <AlertButton variant="ghost" size="sm" fetch-method="POST"
-                            :fetch="`/api/plans/${planId}/restic/${row.id}/restore`"
+                            :fetch="`/api/zbackup/plans/${planId}/restic/${row.id}/restore`"
                             :tooltip="$t('Restore this snapshot')"
                             :description="$t('Are you sure you want to restore this snapshot? This action cannot be undone.')"
                             :toast-on-success="$t('Restore started successfully.')" @fetched="load">
@@ -123,7 +123,7 @@ onMounted(load)
                         </AlertButton>
 
                         <AlertButton variant="ghost" size="sm" fetch-method="DELETE"
-                            :fetch="`/api/plans/${planId}/restic/${row.id}`"
+                            :fetch="`/api/zbackup/plans/${planId}/restic/${row.id}`"
                             :tooltip="$t('Delete this snapshot')"
                             :description="$t('Are you sure you want to delete this snapshot? This action cannot be undone.')"
                             :toast-on-success="$t('Snapshot deleted.')" @fetched="load">

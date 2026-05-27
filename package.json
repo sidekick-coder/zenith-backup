@@ -18,7 +18,9 @@
     },
     "homepage": "https://github.com/sidekick-coder/zenith-backup#readme",
     "scripts": {
-        "dev": "zenith serve"
+        "start": "NODE_PRODUCTION=true zenith serve",
+        "dev": "zenith serve",
+        "build": "zkit build"
     },
     "dependencies": {
         "@sidekick-coder/zenith-kit": "^0.0.17",

@@ -6,7 +6,10 @@ import triggerService from './facades/triggerService.ts'
 export default class extends PluginEntity {
     public async load() {
         this.addRouterFolder(path.resolve(import.meta.dirname, 'routes'))
-        this.addApiFolder(path.resolve(import.meta.dirname, 'api'))
+
+        this.addApiFolder(path.resolve(import.meta.dirname, 'api'), {
+            prefix: '/api/zbackup',
+        })
 
         await backup.strategies.load()
         await triggerService.loadEventTriggers()
