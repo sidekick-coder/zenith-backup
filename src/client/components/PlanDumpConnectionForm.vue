@@ -12,7 +12,7 @@ import {
     TabsContent,
     TabsList,
     TabsTrigger,
-} from '#client/components/ui/tabs/index.ts'
+} from '@sidekick-coder/zenith-kit/components'
 import type Plan from '#zenith-backup/shared/entities/PlanEntity.ts'
 import PlanDumpSnapshots from '#zenith-backup/client/components/PlanDumpSnapshots.vue'
 import PlanDumpSectionDetails from '#zenith-backup/client/components/PlanDumpSectionDetails.vue'
@@ -66,11 +66,11 @@ const tab = useRouteQuery('tab', 'details')
                 </CardHeader>
                 <CardContent class="space-y-6">
                     <FormSelect
-                        name="config.name"
+                        name="config.connection_id"
                         fetch="/api/database-connections"
                         value-key="id"
                         label-key="name"
-                        :label="$t('Connection Name')"
+                        :label="$t('Connection ID')"
                         :hint="$t('Select the database connection to back up')"
                     />
                 </CardContent>
