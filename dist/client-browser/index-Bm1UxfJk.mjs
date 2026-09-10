@@ -13215,7 +13215,7 @@ class OE extends Po {
     zi.addRoute({
       path: "/admin/zbackup",
       redirect: "/admin/zbackup/plans"
-    }), zi.auto(/* @__PURE__ */ Object.assign({ "../pages/plans/[id].vue": () => import("./_id_-BvtvdShi.mjs"), "../pages/plans/index.vue": () => import("./index-BCg3_2pk.mjs"), "../pages/triggers/index.vue": () => import("./index-uVgkdpC6.mjs") }), {
+    }), zi.auto(/* @__PURE__ */ Object.assign({ "../pages/plans/[id].vue": () => import("./_id_-BxGPbmr4.mjs"), "../pages/plans/index.vue": () => import("./index-BS4IzoEO.mjs"), "../pages/triggers/index.vue": () => import("./index-BvofX2AL.mjs") }), {
       strip: ["pages"],
       prefix: "/admin/zbackup",
       guards: [a0],

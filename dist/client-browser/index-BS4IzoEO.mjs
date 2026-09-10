@@ -1,8 +1,8 @@
 import { defineComponent as v, ref as p, openBlock as i, createElementBlock as k, Fragment as h, createVNode as o, unref as t, withCtx as l, createElementVNode as u, toDisplayString as $, createBlock as d } from "vue";
 import { H as z } from "./components-CbgjsZpt.mjs";
-import { h as _, e as C, a as r, Y as x } from "./index.es-CkLm2C0q.mjs";
-import { g as N, Z as P, b as B } from "./index-B9rv2bDL.mjs";
-class D {
+import { l as _, e as C, M as r, W as x } from "./index.es-DEDvEmxx.mjs";
+import { g as M, Z as N, b as P } from "./index-Bm1UxfJk.mjs";
+class B {
   id;
   name;
   strategy;
@@ -11,10 +11,10 @@ class D {
     Object.assign(this, n);
   }
 }
-const E = ["content"], H = /* @__PURE__ */ v({
+const D = ["content"], H = /* @__PURE__ */ v({
   __name: "index",
   setup(f) {
-    const n = p(), s = p([]), c = N({
+    const n = p(), s = p([]), c = M({
       id: {
         component: "text-field",
         label: "ID"
@@ -31,7 +31,7 @@ const E = ["content"], H = /* @__PURE__ */ v({
         descriptionKey: "description",
         fetch: "/api/zbackup/plans/strategies"
       }
-    }), y = P([
+    }), y = N([
       {
         id: "active",
         label: $t("Active"),
@@ -59,7 +59,7 @@ const E = ["content"], H = /* @__PURE__ */ v({
       n.value?.load();
     }
     async function b(e) {
-      s.value.push(e.id), await B(`/api/zbackup/plans/${e.id}`, {
+      s.value.push(e.id), await P(`/api/zbackup/plans/${e.id}`, {
         method: "PUT",
         data: {
           active: !e.active
@@ -84,7 +84,7 @@ const E = ["content"], H = /* @__PURE__ */ v({
             u("meta", {
               name: "description",
               content: e.$t("Manage your backup plans")
-            }, null, 8, E)
+            }, null, 8, D)
           ]),
           _: 1
           /* STABLE */
@@ -103,7 +103,7 @@ const E = ["content"], H = /* @__PURE__ */ v({
           columns: t(y),
           title: e.$t("Plans"),
           description: e.$t("Manage your backup plans"),
-          serialize: (a) => new (t(D))(a),
+          serialize: (a) => new (t(B))(a),
           actions: ["create", "destroy"]
         }, {
           "row-active": l(({ row: a }) => [
@@ -114,7 +114,7 @@ const E = ["content"], H = /* @__PURE__ */ v({
             })) : (i(), d(x, {
               key: 1,
               "model-value": !!a.active,
-              onClick: (K) => b(a)
+              onClick: (E) => b(a)
             }, null, 8, ["model-value", "onClick"]))
           ]),
           "row-valid": l(({ row: a }) => [

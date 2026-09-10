@@ -1,11 +1,11 @@
-import { defineComponent as k, ref as p, onMounted as z, openBlock as f, createElementBlock as C, Fragment as E, createVNode as t, unref as l, withCtx as a, createElementVNode as s, toDisplayString as c, createTextVNode as m, normalizeClass as P, createBlock as y } from "vue";
+import { defineComponent as k, ref as f, onMounted as z, openBlock as p, createElementBlock as C, Fragment as E, createVNode as t, unref as l, withCtx as a, createElementVNode as s, toDisplayString as c, createTextVNode as m, normalizeClass as P, createBlock as $ } from "vue";
 import { H as w } from "./components-CbgjsZpt.mjs";
-import { x as A, T as M, R as S, M as Y, Z as $, e as g, a as d, S as D, P as H, y as N, Y as V } from "./index.es-CkLm2C0q.mjs";
-import { Z, g as B, z as b } from "./index-B9rv2bDL.mjs";
-const K = ["content"], j = { class: "flex items-center justify-between" }, x = { class: "flex items-center gap-2" }, F = { class: "flex items-center gap-2 justify-end" }, q = /* @__PURE__ */ k({
+import { x as A, I as S, T as B, q as M, f as b, e as g, M as d, S as D, B as H, v as N, W as V } from "./index.es-DEDvEmxx.mjs";
+import { Z as I, g as K, z as y } from "./index-Bm1UxfJk.mjs";
+const Y = ["content"], Z = { class: "flex items-center justify-between" }, j = { class: "flex items-center gap-2" }, q = { class: "flex items-center gap-2 justify-end" }, Q = /* @__PURE__ */ k({
   __name: "index",
-  setup(L) {
-    const v = p([]), o = p(!1), u = p([]), _ = Z([
+  setup(x) {
+    const v = f([]), o = f(!1), u = f([]), _ = I([
       {
         id: "active",
         label: $t("Active"),
@@ -33,7 +33,7 @@ const K = ["content"], j = { class: "flex items-center justify-between" }, x = {
         field: "value"
       },
       { id: "actions" }
-    ]), h = B({
+    ]), h = K({
       plan_id: {
         component: "select",
         label: $t("Plan"),
@@ -57,7 +57,7 @@ const K = ["content"], j = { class: "flex items-center justify-between" }, x = {
     });
     async function n() {
       o.value = !0;
-      const [e, r] = await b.try(
+      const [e, r] = await y.try(
         "/api/zbackup/triggers",
         { method: "GET" }
       );
@@ -68,14 +68,14 @@ const K = ["content"], j = { class: "flex items-center justify-between" }, x = {
       v.value = r.items || [], await new Promise((i) => setTimeout(i, 300)), o.value = !1;
     }
     async function T(e) {
-      u.value.push(e.id), await b.fetch(`/api/zbackup/triggers/${e.id}`, {
+      u.value.push(e.id), await y.fetch(`/api/zbackup/triggers/${e.id}`, {
         method: "PATCH",
         data: { active: !e.active }
       }), setTimeout(() => {
         n(), u.value = u.value.filter((r) => r !== e.id);
       }, 500);
     }
-    return z(n), (e, r) => (f(), C(
+    return z(n), (e, r) => (p(), C(
       E,
       null,
       [
@@ -91,18 +91,18 @@ const K = ["content"], j = { class: "flex items-center justify-between" }, x = {
             s("meta", {
               name: "description",
               content: e.$t("Manage your backup triggers")
-            }, null, 8, K)
+            }, null, 8, Y)
           ]),
           _: 1
           /* STABLE */
         }),
         t(l(A), null, {
           default: a(() => [
-            t(l(M), null, {
+            t(l(S), null, {
               default: a(() => [
-                s("div", j, [
+                s("div", Z, [
                   s("div", null, [
-                    t(l(S), null, {
+                    t(l(B), null, {
                       default: a(() => [
                         m(
                           c(e.$t("Triggers")),
@@ -113,7 +113,7 @@ const K = ["content"], j = { class: "flex items-center justify-between" }, x = {
                       _: 1
                       /* STABLE */
                     }),
-                    t(l(Y), null, {
+                    t(l(M), null, {
                       default: a(() => [
                         m(
                           c(e.$t("Manage your backup triggers")),
@@ -125,8 +125,8 @@ const K = ["content"], j = { class: "flex items-center justify-between" }, x = {
                       /* STABLE */
                     })
                   ]),
-                  s("div", x, [
-                    t($, {
+                  s("div", j, [
+                    t(b, {
                       title: e.$t("Add Trigger"),
                       fields: l(h),
                       fetch: "/api/zbackup/triggers",
@@ -177,19 +177,19 @@ const K = ["content"], j = { class: "flex items-center justify-between" }, x = {
                   loading: o.value
                 }, {
                   "row-active": a(({ row: i }) => [
-                    u.value.includes(i.id) ? (f(), y(d, {
+                    u.value.includes(i.id) ? (p(), $(d, {
                       key: 0,
                       name: "Loader2",
                       class: "animate-spin"
-                    })) : (f(), y(V, {
+                    })) : (p(), $(V, {
                       key: 1,
                       "model-value": !!i.active,
-                      onClick: (R) => T(i)
+                      onClick: (F) => T(i)
                     }, null, 8, ["model-value", "onClick"]))
                   ]),
                   "row-actions": a(({ row: i }) => [
-                    s("div", F, [
-                      t($, {
+                    s("div", q, [
+                      t(b, {
                         title: e.$t("Edit Trigger"),
                         fields: l(h),
                         values: i,
@@ -248,5 +248,5 @@ const K = ["content"], j = { class: "flex items-center justify-between" }, x = {
   }
 });
 export {
-  q as default
+  Q as default
 };

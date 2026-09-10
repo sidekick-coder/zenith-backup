@@ -1,45 +1,45 @@
-import { useSSRContext as H, defineComponent as oe, ref as re, onMounted as Ae, unref as a, withCtx as t, createTextVNode as s, toDisplayString as n, createVNode as e, openBlock as me, createBlock as pe, createCommentVNode as Re, useModel as Pe, mergeProps as Fe, isRef as Me, computed as ct, onServerPrefetch as mt, Fragment as Ue, renderList as Oe } from "vue";
-import { ssrRenderComponent as o, ssrInterpolate as D, ssrRenderList as pt } from "vue/server-renderer";
+import { useSSRContext as q, defineComponent as oe, ref as re, onMounted as Ae, unref as a, withCtx as t, createTextVNode as s, toDisplayString as n, createVNode as e, openBlock as pe, createBlock as me, createCommentVNode as Re, useModel as Pe, mergeProps as Fe, isRef as Me, computed as ct, onServerPrefetch as pt, Fragment as Ue, renderList as Oe } from "vue";
+import { ssrRenderComponent as o, ssrInterpolate as D, ssrRenderList as mt } from "vue/server-renderer";
 import * as le from "valibot";
 import { toast as De } from "vue-sonner";
 import { defineColumns as ut, fetcher as dt, route as ht, useForm as vt, $fetch as Ee, router as bt } from "@sidekick-coder/zenith-kit/client";
 import "./Icon-Bds3_RR7.mjs";
 import "./AlertButton-Xlj1Nojp.mjs";
-import { FormSelect as _, DataTable as $e, ObjectInspect as he, DropdownMenu as ue, DropdownMenuTrigger as x, DropdownMenuItem as Y, DropdownMenuContent as ee, Card as N, CardHeader as B, CardTitle as T, CardDescription as L, ZAlertButton as G, Icon as E, ZButton as q, CardContent as V, FormTextField as C, FormSwitch as ye, FormTextarea as J, useRouteQuery as Te, Tabs as Le, TabsList as be, TabsTrigger as k, TabsContent as z, FormStringListInput as ge, DialogForm as gt, Alert as je, AlertTitle as Ce, AlertDescription as Se } from "@sidekick-coder/zenith-kit/components";
+import { FormSelect as _, DataTable as $e, ObjectInspect as he, DropdownMenu as ue, DropdownMenuTrigger as x, DropdownMenuItem as Y, DropdownMenuContent as ee, Card as N, CardHeader as B, CardTitle as T, CardDescription as L, ZAlertButton as G, Icon as E, ZButton as I, CardContent as V, FormTextField as C, FormSwitch as ye, FormTextarea as J, useRouteQuery as Te, Tabs as Le, TabsList as be, TabsTrigger as k, TabsContent as z, FormStringListInput as ge, DialogForm as gt, Alert as je, AlertTitle as Ce, AlertDescription as Se } from "@sidekick-coder/zenith-kit/components";
 import { format as wt } from "date-fns";
 const Ne = _.setup;
 _.setup = (b, r) => {
-  const d = H();
+  const d = q();
   return (d.modules || (d.modules = /* @__PURE__ */ new Set())).add("src/legacy/client/components/FormSelect.vue"), Ne ? Ne(b, r) : void 0;
 };
-const qe = $e.setup;
+const Ie = $e.setup;
 $e.setup = (b, r) => {
-  const d = H();
-  return (d.modules || (d.modules = /* @__PURE__ */ new Set())).add("src/legacy/client/components/DataTable.vue"), qe ? qe(b, r) : void 0;
+  const d = q();
+  return (d.modules || (d.modules = /* @__PURE__ */ new Set())).add("src/legacy/client/components/DataTable.vue"), Ie ? Ie(b, r) : void 0;
 };
-const He = he.setup;
+const qe = he.setup;
 he.setup = (b, r) => {
-  const d = H();
-  return (d.modules || (d.modules = /* @__PURE__ */ new Set())).add("src/legacy/client/components/ObjectInspect.vue"), He ? He(b, r) : void 0;
+  const d = q();
+  return (d.modules || (d.modules = /* @__PURE__ */ new Set())).add("src/legacy/client/components/ObjectInspect.vue"), qe ? qe(b, r) : void 0;
 };
-const Ie = ue.setup;
+const He = ue.setup;
 ue.setup = (b, r) => {
-  const d = H();
-  return (d.modules || (d.modules = /* @__PURE__ */ new Set())).add("src/legacy/client/components/ui/dropdown-menu/DropdownMenu.vue"), Ie ? Ie(b, r) : void 0;
+  const d = q();
+  return (d.modules || (d.modules = /* @__PURE__ */ new Set())).add("src/legacy/client/components/ui/dropdown-menu/DropdownMenu.vue"), He ? He(b, r) : void 0;
 };
 const Ye = x.setup;
 x.setup = (b, r) => {
-  const d = H();
+  const d = q();
   return (d.modules || (d.modules = /* @__PURE__ */ new Set())).add("src/legacy/client/components/ui/dropdown-menu/DropdownMenuTrigger.vue"), Ye ? Ye(b, r) : void 0;
 };
 const Ge = Y.setup;
 Y.setup = (b, r) => {
-  const d = H();
+  const d = q();
   return (d.modules || (d.modules = /* @__PURE__ */ new Set())).add("src/legacy/client/components/ui/dropdown-menu/DropdownMenuItem.vue"), Ge ? Ge(b, r) : void 0;
 };
 const Ke = ee.setup;
 ee.setup = (b, r) => {
-  const d = H();
+  const d = q();
   return (d.modules || (d.modules = /* @__PURE__ */ new Set())).add("src/legacy/client/components/ui/dropdown-menu/DropdownMenuContent.vue"), Ke ? Ke(b, r) : void 0;
 };
 const ae = /* @__PURE__ */ oe({
@@ -51,7 +51,7 @@ const ae = /* @__PURE__ */ oe({
   },
   setup(b) {
     const r = b, d = re([]), l = re(!1), R = re();
-    function I(i) {
+    function H(i) {
       if (!i) return "0 B";
       const M = Math.floor(Math.log(i) / Math.log(1024)), g = ["B", "KB", "MB", "GB", "TB"];
       return (i / Math.pow(1024, M)).toFixed(2) + " " + g[M];
@@ -70,7 +70,7 @@ const ae = /* @__PURE__ */ oe({
       {
         id: "size",
         label: $t("Size"),
-        field: (i) => I(i.size)
+        field: (i) => H(i.size)
       },
       {
         id: "created_at",
@@ -93,15 +93,15 @@ const ae = /* @__PURE__ */ oe({
     }
     return Ae(F), (i, M, g, P) => {
       M(o(a(N), P, {
-        default: t((f, $, m, v) => {
+        default: t((f, $, p, v) => {
           if ($)
             $(o(a(B), null, {
               default: t((u, h, S, A) => {
                 if (h)
                   h(`<div class="flex items-center justify-between"${A}><div${A}>`), h(o(a(T), null, {
-                    default: t((c, p, w, Q) => {
-                      if (p)
-                        p(`${D(i.$t("Dumps"))}`);
+                    default: t((c, m, w, Q) => {
+                      if (m)
+                        m(`${D(i.$t("Dumps"))}`);
                       else
                         return [
                           s(
@@ -114,9 +114,9 @@ const ae = /* @__PURE__ */ oe({
                     _: 1
                     /* STABLE */
                   }, S, A)), h(o(a(L), null, {
-                    default: t((c, p, w, Q) => {
-                      if (p)
-                        p(`${D(i.$t("View and manage dump snapshots for this plan."))}`);
+                    default: t((c, m, w, Q) => {
+                      if (m)
+                        m(`${D(i.$t("View and manage dump snapshots for this plan."))}`);
                       else
                         return [
                           s(
@@ -137,9 +137,9 @@ const ae = /* @__PURE__ */ oe({
                     "toast-on-success": i.$t("Cleanup completed."),
                     onFetched: F
                   }, {
-                    default: t((c, p, w, Q) => {
-                      if (p)
-                        p(o(E, { name: "Eraser" }, null, w, Q)), p(` ${D(i.$t("Cleanup"))}`);
+                    default: t((c, m, w, Q) => {
+                      if (m)
+                        m(o(E, { name: "Eraser" }, null, w, Q)), m(` ${D(i.$t("Cleanup"))}`);
                       else
                         return [
                           e(E, { name: "Eraser" }),
@@ -152,13 +152,13 @@ const ae = /* @__PURE__ */ oe({
                     }),
                     _: 1
                     /* STABLE */
-                  }, S, A)), h(o(q, {
+                  }, S, A)), h(o(I, {
                     variant: "outline",
                     onClick: F
                   }, {
-                    default: t((c, p, w, Q) => {
-                      if (p)
-                        p(o(E, {
+                    default: t((c, m, w, Q) => {
+                      if (m)
+                        m(o(E, {
                           name: "refreshCw",
                           class: { "animate-spin": l.value }
                         }, null, w, Q));
@@ -221,7 +221,7 @@ const ae = /* @__PURE__ */ oe({
                           _: 1
                           /* STABLE */
                         }, 8, ["fetch", "tooltip", "description", "toast-on-success"]),
-                        e(q, {
+                        e(I, {
                           variant: "outline",
                           onClick: F
                         }, {
@@ -240,7 +240,7 @@ const ae = /* @__PURE__ */ oe({
               }),
               _: 1
               /* STABLE */
-            }, m, v)), $(o(a(V), null, {
+            }, p, v)), $(o(a(V), null, {
               default: t((u, h, S, A) => {
                 if (h)
                   R.value ? h(o(he, {
@@ -250,9 +250,9 @@ const ae = /* @__PURE__ */ oe({
                       c || (R.value = void 0);
                     }
                   }, {
-                    default: t((c, p, w, Q) => {
-                      if (p)
-                        p(`<div class="hidden"${Q}></div>`);
+                    default: t((c, m, w, Q) => {
+                      if (m)
+                        m(`<div class="hidden"${Q}></div>`);
                       else
                         return [
                           e("div", { class: "hidden" })
@@ -266,9 +266,9 @@ const ae = /* @__PURE__ */ oe({
                     loading: l.value,
                     "hide-pagination": ""
                   }, {
-                    "row-actions": t(({ row: c }, p, w, Q) => {
-                      if (p)
-                        p(`<div class="flex items-center gap-2 justify-end"${Q}>`), p(o(G, {
+                    "row-actions": t(({ row: c }, m, w, Q) => {
+                      if (m)
+                        m(`<div class="flex items-center gap-2 justify-end"${Q}>`), m(o(G, {
                           variant: "ghost",
                           size: "sm",
                           "fetch-method": "POST",
@@ -288,7 +288,7 @@ const ae = /* @__PURE__ */ oe({
                           }),
                           _: 2
                           /* DYNAMIC */
-                        }, w, Q)), p(o(G, {
+                        }, w, Q)), m(o(G, {
                           variant: "ghost",
                           size: "sm",
                           "fetch-method": "DELETE",
@@ -308,13 +308,13 @@ const ae = /* @__PURE__ */ oe({
                           }),
                           _: 2
                           /* DYNAMIC */
-                        }, w, Q)), p(o(ue, null, {
+                        }, w, Q)), m(o(ue, null, {
                           default: t((y, U, O, K) => {
                             if (U)
                               U(o(x, { "as-child": "" }, {
                                 default: t((te, X, de, fe) => {
                                   if (X)
-                                    X(o(q, {
+                                    X(o(I, {
                                       variant: "ghost",
                                       class: "w-8 h-8 p-0"
                                     }, {
@@ -344,7 +344,7 @@ const ae = /* @__PURE__ */ oe({
                                     }, de, fe));
                                   else
                                     return [
-                                      e(q, {
+                                      e(I, {
                                         variant: "ghost",
                                         class: "w-8 h-8 p-0"
                                       }, {
@@ -415,7 +415,7 @@ const ae = /* @__PURE__ */ oe({
                               return [
                                 e(x, { "as-child": "" }, {
                                   default: t(() => [
-                                    e(q, {
+                                    e(I, {
                                       variant: "ghost",
                                       class: "w-8 h-8 p-0"
                                     }, {
@@ -469,7 +469,7 @@ const ae = /* @__PURE__ */ oe({
                           }),
                           _: 2
                           /* DYNAMIC */
-                        }, w, Q)), p("</div>");
+                        }, w, Q)), m("</div>");
                       else
                         return [
                           e("div", { class: "flex items-center gap-2 justify-end" }, [
@@ -512,7 +512,7 @@ const ae = /* @__PURE__ */ oe({
                                 default: t(() => [
                                   e(x, { "as-child": "" }, {
                                     default: t(() => [
-                                      e(q, {
+                                      e(I, {
                                         variant: "ghost",
                                         class: "w-8 h-8 p-0"
                                       }, {
@@ -577,7 +577,7 @@ const ae = /* @__PURE__ */ oe({
                   }, S, A));
                 else
                   return [
-                    R.value ? (me(), pe(he, {
+                    R.value ? (pe(), me(he, {
                       key: 0,
                       "model-value": R.value,
                       open: !0,
@@ -638,7 +638,7 @@ const ae = /* @__PURE__ */ oe({
                               default: t(() => [
                                 e(x, { "as-child": "" }, {
                                   default: t(() => [
-                                    e(q, {
+                                    e(I, {
                                       variant: "ghost",
                                       class: "w-8 h-8 p-0"
                                     }, {
@@ -669,7 +669,7 @@ const ae = /* @__PURE__ */ oe({
                                     default: t(() => [
                                       e(Y, {
                                         class: "cursor-pointer",
-                                        onClick: (p) => R.value = c.metadata
+                                        onClick: (m) => R.value = c.metadata
                                       }, {
                                         default: t(() => [
                                           s(
@@ -704,7 +704,7 @@ const ae = /* @__PURE__ */ oe({
               }),
               _: 1
               /* STABLE */
-            }, m, v));
+            }, p, v));
           else
             return [
               e(a(B), null, {
@@ -755,7 +755,7 @@ const ae = /* @__PURE__ */ oe({
                         _: 1
                         /* STABLE */
                       }, 8, ["fetch", "tooltip", "description", "toast-on-success"]),
-                      e(q, {
+                      e(I, {
                         variant: "outline",
                         onClick: F
                       }, {
@@ -776,7 +776,7 @@ const ae = /* @__PURE__ */ oe({
               }),
               e(a(V), null, {
                 default: t(() => [
-                  R.value ? (me(), pe(he, {
+                  R.value ? (pe(), me(he, {
                     key: 0,
                     "model-value": R.value,
                     open: !0,
@@ -837,7 +837,7 @@ const ae = /* @__PURE__ */ oe({
                             default: t(() => [
                               e(x, { "as-child": "" }, {
                                 default: t(() => [
-                                  e(q, {
+                                  e(I, {
                                     variant: "ghost",
                                     class: "w-8 h-8 p-0"
                                   }, {
@@ -912,22 +912,22 @@ const ae = /* @__PURE__ */ oe({
   }
 }), Ze = ae.setup;
 ae.setup = (b, r) => {
-  const d = H();
+  const d = q();
   return (d.modules || (d.modules = /* @__PURE__ */ new Set())).add("src/client/components/PlanDumpSnapshots.vue"), Ze ? Ze(b, r) : void 0;
 };
 const Je = C.setup;
 C.setup = (b, r) => {
-  const d = H();
+  const d = q();
   return (d.modules || (d.modules = /* @__PURE__ */ new Set())).add("src/legacy/client/components/FormTextField.vue"), Je ? Je(b, r) : void 0;
 };
 const We = ye.setup;
 ye.setup = (b, r) => {
-  const d = H();
+  const d = q();
   return (d.modules || (d.modules = /* @__PURE__ */ new Set())).add("src/legacy/client/components/FormSwitch.vue"), We ? We(b, r) : void 0;
 };
 const Xe = J.setup;
 J.setup = (b, r) => {
-  const d = H();
+  const d = q();
   return (d.modules || (d.modules = /* @__PURE__ */ new Set())).add("src/legacy/client/components/FormTextarea.vue"), Xe ? Xe(b, r) : void 0;
 };
 const W = /* @__PURE__ */ oe({
@@ -936,15 +936,15 @@ const W = /* @__PURE__ */ oe({
   setup(b) {
     return (r, d, l, R) => {
       d(o(a(N), R, {
-        default: t((I, j, F, i) => {
+        default: t((H, j, F, i) => {
           if (j)
             j(o(a(B), null, {
               default: t((M, g, P, f) => {
                 if (g)
                   g(o(a(T), null, {
-                    default: t(($, m, v, u) => {
-                      if (m)
-                        m(`${D(r.$t("Plan details"))}`);
+                    default: t(($, p, v, u) => {
+                      if (p)
+                        p(`${D(r.$t("Plan details"))}`);
                       else
                         return [
                           s(
@@ -957,9 +957,9 @@ const W = /* @__PURE__ */ oe({
                     _: 1
                     /* STABLE */
                   }, P, f)), g(o(a(L), null, {
-                    default: t(($, m, v, u) => {
-                      if (m)
-                        m(`${D(r.$t("Edit the name, status and description of this plan."))}`);
+                    default: t(($, p, v, u) => {
+                      if (p)
+                        p(`${D(r.$t("Edit the name, status and description of this plan."))}`);
                       else
                         return [
                           s(
@@ -1101,7 +1101,7 @@ const W = /* @__PURE__ */ oe({
   }
 }), _e = W.setup;
 W.setup = (b, r) => {
-  const d = H();
+  const d = q();
   return (d.modules || (d.modules = /* @__PURE__ */ new Set())).add("src/client/components/PlanDumpSectionDetails.vue"), _e ? _e(b, r) : void 0;
 };
 const ne = /* @__PURE__ */ oe({
@@ -1110,15 +1110,15 @@ const ne = /* @__PURE__ */ oe({
   setup(b) {
     return (r, d, l, R) => {
       d(o(a(N), R, {
-        default: t((I, j, F, i) => {
+        default: t((H, j, F, i) => {
           if (j)
             j(o(a(B), null, {
               default: t((M, g, P, f) => {
                 if (g)
                   g(o(a(T), null, {
-                    default: t(($, m, v, u) => {
-                      if (m)
-                        m(`${D(r.$t("Drive"))}`);
+                    default: t(($, p, v, u) => {
+                      if (p)
+                        p(`${D(r.$t("Drive"))}`);
                       else
                         return [
                           s(
@@ -1131,9 +1131,9 @@ const ne = /* @__PURE__ */ oe({
                     _: 1
                     /* STABLE */
                   }, P, f)), g(o(a(L), null, {
-                    default: t(($, m, v, u) => {
-                      if (m)
-                        m(`${D(r.$t("Configure where backups will be stored."))}`);
+                    default: t(($, p, v, u) => {
+                      if (p)
+                        p(`${D(r.$t("Configure where backups will be stored."))}`);
                       else
                         return [
                           s(
@@ -1261,7 +1261,7 @@ const ne = /* @__PURE__ */ oe({
   }
 }), xe = ne.setup;
 ne.setup = (b, r) => {
-  const d = H();
+  const d = q();
   return (d.modules || (d.modules = /* @__PURE__ */ new Set())).add("src/client/components/PlanDumpSectionDrive.vue"), xe ? xe(b, r) : void 0;
 };
 const ve = /* @__PURE__ */ oe({
@@ -1270,15 +1270,15 @@ const ve = /* @__PURE__ */ oe({
   setup(b) {
     return (r, d, l, R) => {
       d(o(a(N), R, {
-        default: t((I, j, F, i) => {
+        default: t((H, j, F, i) => {
           if (j)
             j(o(a(B), null, {
               default: t((M, g, P, f) => {
                 if (g)
                   g(o(a(T), null, {
-                    default: t(($, m, v, u) => {
-                      if (m)
-                        m(`${D(r.$t("Docker"))}`);
+                    default: t(($, p, v, u) => {
+                      if (p)
+                        p(`${D(r.$t("Docker"))}`);
                       else
                         return [
                           s(
@@ -1291,9 +1291,9 @@ const ve = /* @__PURE__ */ oe({
                     _: 1
                     /* STABLE */
                   }, P, f)), g(o(a(L), null, {
-                    default: t(($, m, v, u) => {
-                      if (m)
-                        m(`${D(r.$t("Configure the Docker image used to run the dump command."))}`);
+                    default: t(($, p, v, u) => {
+                      if (p)
+                        p(`${D(r.$t("Configure the Docker image used to run the dump command."))}`);
                       else
                         return [
                           s(
@@ -1407,7 +1407,7 @@ const ve = /* @__PURE__ */ oe({
   }
 }), et = ve.setup;
 ve.setup = (b, r) => {
-  const d = H();
+  const d = q();
   return (d.modules || (d.modules = /* @__PURE__ */ new Set())).add("src/client/components/PlanDumpSectionDocker.vue"), et ? et(b, r) : void 0;
 };
 const se = /* @__PURE__ */ oe({
@@ -1416,15 +1416,15 @@ const se = /* @__PURE__ */ oe({
   setup(b) {
     return (r, d, l, R) => {
       d(o(a(N), R, {
-        default: t((I, j, F, i) => {
+        default: t((H, j, F, i) => {
           if (j)
             j(o(a(B), null, {
               default: t((M, g, P, f) => {
                 if (g)
                   g(o(a(T), null, {
-                    default: t(($, m, v, u) => {
-                      if (m)
-                        m(`${D(r.$t("Retention"))}`);
+                    default: t(($, p, v, u) => {
+                      if (p)
+                        p(`${D(r.$t("Retention"))}`);
                       else
                         return [
                           s(
@@ -1437,9 +1437,9 @@ const se = /* @__PURE__ */ oe({
                     _: 1
                     /* STABLE */
                   }, P, f)), g(o(a(L), null, {
-                    default: t(($, m, v, u) => {
-                      if (m)
-                        m(`${D(r.$t("Control how many backups are kept before older ones are removed."))}`);
+                    default: t(($, p, v, u) => {
+                      if (p)
+                        p(`${D(r.$t("Control how many backups are kept before older ones are removed."))}`);
                       else
                         return [
                           s(
@@ -1553,7 +1553,7 @@ const se = /* @__PURE__ */ oe({
   }
 }), tt = se.setup;
 se.setup = (b, r) => {
-  const d = H();
+  const d = q();
   return (d.modules || (d.modules = /* @__PURE__ */ new Set())).add("src/client/components/PlanDumpSectionRetention.vue"), tt ? tt(b, r) : void 0;
 };
 const ze = /* @__PURE__ */ oe({
@@ -1569,7 +1569,7 @@ const ze = /* @__PURE__ */ oe({
   emits: ["update:plan"],
   setup(b) {
     const r = Pe(b, "plan"), d = Te("tab", "details");
-    return (l, R, I, j) => {
+    return (l, R, H, j) => {
       R(o(a(Le), Fe({
         modelValue: a(d),
         "onUpdate:modelValue": (F) => Me(d) ? d.value = F : null,
@@ -1579,7 +1579,7 @@ const ze = /* @__PURE__ */ oe({
         default: t((F, i, M, g) => {
           if (i)
             i(o(a(be), null, {
-              default: t((P, f, $, m) => {
+              default: t((P, f, $, p) => {
                 if (f)
                   f(o(a(k), {
                     value: "details",
@@ -1599,7 +1599,7 @@ const ze = /* @__PURE__ */ oe({
                     }),
                     _: 1
                     /* STABLE */
-                  }, $, m)), f(o(a(k), {
+                  }, $, p)), f(o(a(k), {
                     value: "connection",
                     class: "min-w-60"
                   }, {
@@ -1617,7 +1617,7 @@ const ze = /* @__PURE__ */ oe({
                     }),
                     _: 1
                     /* STABLE */
-                  }, $, m)), f(o(a(k), {
+                  }, $, p)), f(o(a(k), {
                     value: "drive",
                     class: "min-w-60"
                   }, {
@@ -1635,7 +1635,7 @@ const ze = /* @__PURE__ */ oe({
                     }),
                     _: 1
                     /* STABLE */
-                  }, $, m)), f(o(a(k), {
+                  }, $, p)), f(o(a(k), {
                     value: "docker",
                     class: "min-w-60"
                   }, {
@@ -1653,7 +1653,7 @@ const ze = /* @__PURE__ */ oe({
                     }),
                     _: 1
                     /* STABLE */
-                  }, $, m)), f(o(a(k), {
+                  }, $, p)), f(o(a(k), {
                     value: "retention",
                     class: "min-w-60"
                   }, {
@@ -1671,7 +1671,7 @@ const ze = /* @__PURE__ */ oe({
                     }),
                     _: 1
                     /* STABLE */
-                  }, $, m)), f(o(a(k), {
+                  }, $, p)), f(o(a(k), {
                     value: "snapshots",
                     class: "min-w-60"
                   }, {
@@ -1689,7 +1689,7 @@ const ze = /* @__PURE__ */ oe({
                     }),
                     _: 1
                     /* STABLE */
-                  }, $, m));
+                  }, $, p));
                 else
                   return [
                     e(a(k), {
@@ -1781,9 +1781,9 @@ const ze = /* @__PURE__ */ oe({
               _: 1
               /* STABLE */
             }, M, g)), i(o(a(z), { value: "details" }, {
-              default: t((P, f, $, m) => {
+              default: t((P, f, $, p) => {
                 if (f)
-                  f(o(W, null, null, $, m));
+                  f(o(W, null, null, $, p));
                 else
                   return [
                     e(W)
@@ -1792,13 +1792,13 @@ const ze = /* @__PURE__ */ oe({
               _: 1
               /* STABLE */
             }, M, g)), i(o(a(z), { value: "connection" }, {
-              default: t((P, f, $, m) => {
+              default: t((P, f, $, p) => {
                 if (f)
                   f(o(a(N), null, {
                     default: t((v, u, h, S) => {
                       if (u)
                         u(o(a(B), null, {
-                          default: t((A, c, p, w) => {
+                          default: t((A, c, m, w) => {
                             if (c)
                               c(o(a(T), null, {
                                 default: t((Q, y, U, O) => {
@@ -1815,7 +1815,7 @@ const ze = /* @__PURE__ */ oe({
                                 }),
                                 _: 1
                                 /* STABLE */
-                              }, p, w)), c(o(a(L), null, {
+                              }, m, w)), c(o(a(L), null, {
                                 default: t((Q, y, U, O) => {
                                   if (y)
                                     y(`${D(l.$t("Select the database connection for this backup plan."))}`);
@@ -1830,7 +1830,7 @@ const ze = /* @__PURE__ */ oe({
                                 }),
                                 _: 1
                                 /* STABLE */
-                              }, p, w));
+                              }, m, w));
                             else
                               return [
                                 e(a(T), null, {
@@ -1860,24 +1860,24 @@ const ze = /* @__PURE__ */ oe({
                           _: 1
                           /* STABLE */
                         }, h, S)), u(o(a(V), { class: "space-y-6" }, {
-                          default: t((A, c, p, w) => {
+                          default: t((A, c, m, w) => {
                             if (c)
                               c(o(_, {
-                                name: "config.name",
+                                name: "config.connection_id",
                                 fetch: "/api/database-connections",
                                 "value-key": "id",
                                 "label-key": "name",
-                                label: l.$t("Connection Name"),
+                                label: l.$t("Connection ID"),
                                 hint: l.$t("Select the database connection to back up")
-                              }, null, p, w));
+                              }, null, m, w));
                             else
                               return [
                                 e(_, {
-                                  name: "config.name",
+                                  name: "config.connection_id",
                                   fetch: "/api/database-connections",
                                   "value-key": "id",
                                   "label-key": "name",
-                                  label: l.$t("Connection Name"),
+                                  label: l.$t("Connection ID"),
                                   hint: l.$t("Select the database connection to back up")
                                 }, null, 8, ["label", "hint"])
                               ];
@@ -1918,11 +1918,11 @@ const ze = /* @__PURE__ */ oe({
                           e(a(V), { class: "space-y-6" }, {
                             default: t(() => [
                               e(_, {
-                                name: "config.name",
+                                name: "config.connection_id",
                                 fetch: "/api/database-connections",
                                 "value-key": "id",
                                 "label-key": "name",
-                                label: l.$t("Connection Name"),
+                                label: l.$t("Connection ID"),
                                 hint: l.$t("Select the database connection to back up")
                               }, null, 8, ["label", "hint"])
                             ]),
@@ -1933,7 +1933,7 @@ const ze = /* @__PURE__ */ oe({
                     }),
                     _: 1
                     /* STABLE */
-                  }, $, m));
+                  }, $, p));
                 else
                   return [
                     e(a(N), null, {
@@ -1969,11 +1969,11 @@ const ze = /* @__PURE__ */ oe({
                         e(a(V), { class: "space-y-6" }, {
                           default: t(() => [
                             e(_, {
-                              name: "config.name",
+                              name: "config.connection_id",
                               fetch: "/api/database-connections",
                               "value-key": "id",
                               "label-key": "name",
-                              label: l.$t("Connection Name"),
+                              label: l.$t("Connection ID"),
                               hint: l.$t("Select the database connection to back up")
                             }, null, 8, ["label", "hint"])
                           ]),
@@ -1989,9 +1989,9 @@ const ze = /* @__PURE__ */ oe({
               _: 1
               /* STABLE */
             }, M, g)), i(o(a(z), { value: "drive" }, {
-              default: t((P, f, $, m) => {
+              default: t((P, f, $, p) => {
                 if (f)
-                  f(o(ne, null, null, $, m));
+                  f(o(ne, null, null, $, p));
                 else
                   return [
                     e(ne)
@@ -2000,9 +2000,9 @@ const ze = /* @__PURE__ */ oe({
               _: 1
               /* STABLE */
             }, M, g)), i(o(a(z), { value: "docker" }, {
-              default: t((P, f, $, m) => {
+              default: t((P, f, $, p) => {
                 if (f)
-                  f(o(ve, null, null, $, m));
+                  f(o(ve, null, null, $, p));
                 else
                   return [
                     e(ve)
@@ -2011,9 +2011,9 @@ const ze = /* @__PURE__ */ oe({
               _: 1
               /* STABLE */
             }, M, g)), i(o(a(z), { value: "retention" }, {
-              default: t((P, f, $, m) => {
+              default: t((P, f, $, p) => {
                 if (f)
-                  f(o(se, null, null, $, m));
+                  f(o(se, null, null, $, p));
                 else
                   return [
                     e(se)
@@ -2022,11 +2022,11 @@ const ze = /* @__PURE__ */ oe({
               _: 1
               /* STABLE */
             }, M, g)), i(o(a(z), { value: "snapshots" }, {
-              default: t((P, f, $, m) => {
+              default: t((P, f, $, p) => {
                 if (f)
                   f(o(ae, {
                     "plan-id": r.value.id
-                  }, null, $, m));
+                  }, null, $, p));
                 else
                   return [
                     e(ae, {
@@ -2171,11 +2171,11 @@ const ze = /* @__PURE__ */ oe({
                       e(a(V), { class: "space-y-6" }, {
                         default: t(() => [
                           e(_, {
-                            name: "config.name",
+                            name: "config.connection_id",
                             fetch: "/api/database-connections",
                             "value-key": "id",
                             "label-key": "name",
-                            label: l.$t("Connection Name"),
+                            label: l.$t("Connection ID"),
                             hint: l.$t("Select the database connection to back up")
                           }, null, 8, ["label", "hint"])
                         ]),
@@ -2224,12 +2224,12 @@ const ze = /* @__PURE__ */ oe({
         }),
         _: 1
         /* STABLE */
-      }, I));
+      }, H));
     };
   }
 }), lt = ze.setup;
 ze.setup = (b, r) => {
-  const d = H();
+  const d = q();
   return (d.modules || (d.modules = /* @__PURE__ */ new Set())).add("src/client/components/PlanDumpConnectionForm.vue"), lt ? lt(b, r) : void 0;
 };
 const Qe = /* @__PURE__ */ oe({
@@ -2245,7 +2245,7 @@ const Qe = /* @__PURE__ */ oe({
   emits: ["update:plan"],
   setup(b) {
     const r = Pe(b, "plan"), d = Te("tab", "details");
-    return (l, R, I, j) => {
+    return (l, R, H, j) => {
       R(o(a(Le), Fe({
         modelValue: a(d),
         "onUpdate:modelValue": (F) => Me(d) ? d.value = F : null,
@@ -2255,7 +2255,7 @@ const Qe = /* @__PURE__ */ oe({
         default: t((F, i, M, g) => {
           if (i)
             i(o(a(be), null, {
-              default: t((P, f, $, m) => {
+              default: t((P, f, $, p) => {
                 if (f)
                   f(o(a(k), {
                     value: "details",
@@ -2275,7 +2275,7 @@ const Qe = /* @__PURE__ */ oe({
                     }),
                     _: 1
                     /* STABLE */
-                  }, $, m)), f(o(a(k), {
+                  }, $, p)), f(o(a(k), {
                     value: "database",
                     class: "min-w-60"
                   }, {
@@ -2293,7 +2293,7 @@ const Qe = /* @__PURE__ */ oe({
                     }),
                     _: 1
                     /* STABLE */
-                  }, $, m)), f(o(a(k), {
+                  }, $, p)), f(o(a(k), {
                     value: "drive",
                     class: "min-w-60"
                   }, {
@@ -2311,7 +2311,7 @@ const Qe = /* @__PURE__ */ oe({
                     }),
                     _: 1
                     /* STABLE */
-                  }, $, m)), f(o(a(k), {
+                  }, $, p)), f(o(a(k), {
                     value: "retention",
                     class: "min-w-60"
                   }, {
@@ -2329,7 +2329,7 @@ const Qe = /* @__PURE__ */ oe({
                     }),
                     _: 1
                     /* STABLE */
-                  }, $, m)), f(o(a(k), {
+                  }, $, p)), f(o(a(k), {
                     value: "dumps",
                     class: "min-w-60"
                   }, {
@@ -2347,7 +2347,7 @@ const Qe = /* @__PURE__ */ oe({
                     }),
                     _: 1
                     /* STABLE */
-                  }, $, m));
+                  }, $, p));
                 else
                   return [
                     e(a(k), {
@@ -2425,9 +2425,9 @@ const Qe = /* @__PURE__ */ oe({
               _: 1
               /* STABLE */
             }, M, g)), i(o(a(z), { value: "details" }, {
-              default: t((P, f, $, m) => {
+              default: t((P, f, $, p) => {
                 if (f)
-                  f(o(W, null, null, $, m));
+                  f(o(W, null, null, $, p));
                 else
                   return [
                     e(W)
@@ -2436,13 +2436,13 @@ const Qe = /* @__PURE__ */ oe({
               _: 1
               /* STABLE */
             }, M, g)), i(o(a(z), { value: "database" }, {
-              default: t((P, f, $, m) => {
+              default: t((P, f, $, p) => {
                 if (f)
                   f(o(a(N), null, {
                     default: t((v, u, h, S) => {
                       if (u)
                         u(o(a(B), null, {
-                          default: t((A, c, p, w) => {
+                          default: t((A, c, m, w) => {
                             if (c)
                               c(o(a(T), null, {
                                 default: t((Q, y, U, O) => {
@@ -2459,7 +2459,7 @@ const Qe = /* @__PURE__ */ oe({
                                 }),
                                 _: 1
                                 /* STABLE */
-                              }, p, w)), c(o(a(L), null, {
+                              }, m, w)), c(o(a(L), null, {
                                 default: t((Q, y, U, O) => {
                                   if (y)
                                     y(`${D(l.$t("Configure the SQLite database file to back up."))}`);
@@ -2474,7 +2474,7 @@ const Qe = /* @__PURE__ */ oe({
                                 }),
                                 _: 1
                                 /* STABLE */
-                              }, p, w));
+                              }, m, w));
                             else
                               return [
                                 e(a(T), null, {
@@ -2504,14 +2504,14 @@ const Qe = /* @__PURE__ */ oe({
                           _: 1
                           /* STABLE */
                         }, h, S)), u(o(a(V), { class: "space-y-6" }, {
-                          default: t((A, c, p, w) => {
+                          default: t((A, c, m, w) => {
                             if (c)
                               c(o(C, {
                                 name: "config.sqlite_filename",
                                 label: l.$t("Database File Path"),
                                 placeholder: l.$t("/var/data/app.sqlite"),
                                 hint: l.$t("Absolute path to the SQLite database file on the host machine.")
-                              }, null, p, w));
+                              }, null, m, w));
                             else
                               return [
                                 e(C, {
@@ -2571,7 +2571,7 @@ const Qe = /* @__PURE__ */ oe({
                     }),
                     _: 1
                     /* STABLE */
-                  }, $, m));
+                  }, $, p));
                 else
                   return [
                     e(a(N), null, {
@@ -2625,9 +2625,9 @@ const Qe = /* @__PURE__ */ oe({
               _: 1
               /* STABLE */
             }, M, g)), i(o(a(z), { value: "drive" }, {
-              default: t((P, f, $, m) => {
+              default: t((P, f, $, p) => {
                 if (f)
-                  f(o(ne, null, null, $, m));
+                  f(o(ne, null, null, $, p));
                 else
                   return [
                     e(ne)
@@ -2636,9 +2636,9 @@ const Qe = /* @__PURE__ */ oe({
               _: 1
               /* STABLE */
             }, M, g)), i(o(a(z), { value: "retention" }, {
-              default: t((P, f, $, m) => {
+              default: t((P, f, $, p) => {
                 if (f)
-                  f(o(se, null, null, $, m));
+                  f(o(se, null, null, $, p));
                 else
                   return [
                     e(se)
@@ -2647,11 +2647,11 @@ const Qe = /* @__PURE__ */ oe({
               _: 1
               /* STABLE */
             }, M, g)), i(o(a(z), { value: "dumps" }, {
-              default: t((P, f, $, m) => {
+              default: t((P, f, $, p) => {
                 if (f)
                   f(o(ae, {
                     "plan-id": r.value.id
-                  }, null, $, m));
+                  }, null, $, p));
                 else
                   return [
                     e(ae, {
@@ -2826,12 +2826,12 @@ const Qe = /* @__PURE__ */ oe({
         }),
         _: 1
         /* STABLE */
-      }, I));
+      }, H));
     };
   }
 }), at = Qe.setup;
 Qe.setup = (b, r) => {
-  const d = H();
+  const d = q();
   return (d.modules || (d.modules = /* @__PURE__ */ new Set())).add("src/client/components/PlanDumpSQLiteForm.vue"), at ? at(b, r) : void 0;
 };
 const Be = /* @__PURE__ */ oe({
@@ -2847,7 +2847,7 @@ const Be = /* @__PURE__ */ oe({
   emits: ["update:plan"],
   setup(b) {
     const r = Pe(b, "plan"), d = Te("tab", "details");
-    return (l, R, I, j) => {
+    return (l, R, H, j) => {
       R(o(a(Le), Fe({
         modelValue: a(d),
         "onUpdate:modelValue": (F) => Me(d) ? d.value = F : null,
@@ -2857,7 +2857,7 @@ const Be = /* @__PURE__ */ oe({
         default: t((F, i, M, g) => {
           if (i)
             i(o(a(be), null, {
-              default: t((P, f, $, m) => {
+              default: t((P, f, $, p) => {
                 if (f)
                   f(o(a(k), {
                     value: "details",
@@ -2877,7 +2877,7 @@ const Be = /* @__PURE__ */ oe({
                     }),
                     _: 1
                     /* STABLE */
-                  }, $, m)), f(o(a(k), {
+                  }, $, p)), f(o(a(k), {
                     value: "connection",
                     class: "min-w-60"
                   }, {
@@ -2895,7 +2895,7 @@ const Be = /* @__PURE__ */ oe({
                     }),
                     _: 1
                     /* STABLE */
-                  }, $, m)), f(o(a(k), {
+                  }, $, p)), f(o(a(k), {
                     value: "drive",
                     class: "min-w-60"
                   }, {
@@ -2913,7 +2913,7 @@ const Be = /* @__PURE__ */ oe({
                     }),
                     _: 1
                     /* STABLE */
-                  }, $, m)), f(o(a(k), {
+                  }, $, p)), f(o(a(k), {
                     value: "docker",
                     class: "min-w-60"
                   }, {
@@ -2931,7 +2931,7 @@ const Be = /* @__PURE__ */ oe({
                     }),
                     _: 1
                     /* STABLE */
-                  }, $, m)), f(o(a(k), {
+                  }, $, p)), f(o(a(k), {
                     value: "retention",
                     class: "min-w-60"
                   }, {
@@ -2949,7 +2949,7 @@ const Be = /* @__PURE__ */ oe({
                     }),
                     _: 1
                     /* STABLE */
-                  }, $, m)), f(o(a(k), {
+                  }, $, p)), f(o(a(k), {
                     value: "dumps",
                     class: "min-w-60"
                   }, {
@@ -2967,7 +2967,7 @@ const Be = /* @__PURE__ */ oe({
                     }),
                     _: 1
                     /* STABLE */
-                  }, $, m));
+                  }, $, p));
                 else
                   return [
                     e(a(k), {
@@ -3059,9 +3059,9 @@ const Be = /* @__PURE__ */ oe({
               _: 1
               /* STABLE */
             }, M, g)), i(o(a(z), { value: "details" }, {
-              default: t((P, f, $, m) => {
+              default: t((P, f, $, p) => {
                 if (f)
-                  f(o(W, null, null, $, m));
+                  f(o(W, null, null, $, p));
                 else
                   return [
                     e(W)
@@ -3070,13 +3070,13 @@ const Be = /* @__PURE__ */ oe({
               _: 1
               /* STABLE */
             }, M, g)), i(o(a(z), { value: "connection" }, {
-              default: t((P, f, $, m) => {
+              default: t((P, f, $, p) => {
                 if (f)
                   f(o(a(N), null, {
                     default: t((v, u, h, S) => {
                       if (u)
                         u(o(a(B), null, {
-                          default: t((A, c, p, w) => {
+                          default: t((A, c, m, w) => {
                             if (c)
                               c(o(a(T), null, {
                                 default: t((Q, y, U, O) => {
@@ -3093,7 +3093,7 @@ const Be = /* @__PURE__ */ oe({
                                 }),
                                 _: 1
                                 /* STABLE */
-                              }, p, w)), c(o(a(L), null, {
+                              }, m, w)), c(o(a(L), null, {
                                 default: t((Q, y, U, O) => {
                                   if (y)
                                     y(`${D(l.$t("Configure the PostgreSQL database connection settings."))}`);
@@ -3108,7 +3108,7 @@ const Be = /* @__PURE__ */ oe({
                                 }),
                                 _: 1
                                 /* STABLE */
-                              }, p, w));
+                              }, m, w));
                             else
                               return [
                                 e(a(T), null, {
@@ -3138,35 +3138,35 @@ const Be = /* @__PURE__ */ oe({
                           _: 1
                           /* STABLE */
                         }, h, S)), u(o(a(V), { class: "space-y-6" }, {
-                          default: t((A, c, p, w) => {
+                          default: t((A, c, m, w) => {
                             if (c)
                               c(o(C, {
                                 name: "config.postgres_host",
                                 label: l.$t("Host"),
                                 placeholder: l.$t("localhost"),
                                 hint: l.$t("Hostname or IP address of the PostgreSQL server.")
-                              }, null, p, w)), c(o(C, {
+                              }, null, m, w)), c(o(C, {
                                 name: "config.postgres_port",
                                 type: "number",
                                 label: l.$t("Port"),
                                 placeholder: l.$t("5432"),
                                 hint: l.$t("Port number of the PostgreSQL server.")
-                              }, null, p, w)), c(o(C, {
+                              }, null, m, w)), c(o(C, {
                                 name: "config.postgres_username",
                                 label: l.$t("Username"),
                                 placeholder: l.$t("postgres"),
                                 hint: l.$t("PostgreSQL user with read access to the target database.")
-                              }, null, p, w)), c(o(C, {
+                              }, null, m, w)), c(o(C, {
                                 name: "config.postgres_password",
                                 type: "password",
                                 label: l.$t("Password"),
                                 hint: l.$t("Password for the PostgreSQL user.")
-                              }, null, p, w)), c(o(C, {
+                              }, null, m, w)), c(o(C, {
                                 name: "config.postgres_database",
                                 label: l.$t("Database"),
                                 placeholder: l.$t("postgres"),
                                 hint: l.$t("Name of the database to back up.")
-                              }, null, p, w));
+                              }, null, m, w));
                             else
                               return [
                                 e(C, {
@@ -3276,7 +3276,7 @@ const Be = /* @__PURE__ */ oe({
                     }),
                     _: 1
                     /* STABLE */
-                  }, $, m));
+                  }, $, p));
                 else
                   return [
                     e(a(N), null, {
@@ -3355,9 +3355,9 @@ const Be = /* @__PURE__ */ oe({
               _: 1
               /* STABLE */
             }, M, g)), i(o(a(z), { value: "drive" }, {
-              default: t((P, f, $, m) => {
+              default: t((P, f, $, p) => {
                 if (f)
-                  f(o(ne, null, null, $, m));
+                  f(o(ne, null, null, $, p));
                 else
                   return [
                     e(ne)
@@ -3366,9 +3366,9 @@ const Be = /* @__PURE__ */ oe({
               _: 1
               /* STABLE */
             }, M, g)), i(o(a(z), { value: "docker" }, {
-              default: t((P, f, $, m) => {
+              default: t((P, f, $, p) => {
                 if (f)
-                  f(o(ve, null, null, $, m));
+                  f(o(ve, null, null, $, p));
                 else
                   return [
                     e(ve)
@@ -3377,9 +3377,9 @@ const Be = /* @__PURE__ */ oe({
               _: 1
               /* STABLE */
             }, M, g)), i(o(a(z), { value: "retention" }, {
-              default: t((P, f, $, m) => {
+              default: t((P, f, $, p) => {
                 if (f)
-                  f(o(se, null, null, $, m));
+                  f(o(se, null, null, $, p));
                 else
                   return [
                     e(se)
@@ -3388,11 +3388,11 @@ const Be = /* @__PURE__ */ oe({
               _: 1
               /* STABLE */
             }, M, g)), i(o(a(z), { value: "dumps" }, {
-              default: t((P, f, $, m) => {
+              default: t((P, f, $, p) => {
                 if (f)
                   f(o(ae, {
                     "plan-id": r.value.id
-                  }, null, $, m));
+                  }, null, $, p));
                 else
                   return [
                     e(ae, {
@@ -3613,17 +3613,17 @@ const Be = /* @__PURE__ */ oe({
         }),
         _: 1
         /* STABLE */
-      }, I));
+      }, H));
     };
   }
 }), nt = Be.setup;
 Be.setup = (b, r) => {
-  const d = H();
+  const d = q();
   return (d.modules || (d.modules = /* @__PURE__ */ new Set())).add("src/client/components/PlanDumpPostgresForm.vue"), nt ? nt(b, r) : void 0;
 };
 const st = ge.setup;
 ge.setup = (b, r) => {
-  const d = H();
+  const d = q();
   return (d.modules || (d.modules = /* @__PURE__ */ new Set())).add("src/legacy/client/components/FormStringListInput.vue"), st ? st(b, r) : void 0;
 };
 const ke = /* @__PURE__ */ oe({
@@ -3635,7 +3635,7 @@ const ke = /* @__PURE__ */ oe({
   },
   setup(b) {
     const r = b, d = re([]), l = re(!1), R = re();
-    function I(i) {
+    function H(i) {
       if (!i) return "0 B";
       const M = Math.floor(Math.log(i) / Math.log(1024)), g = ["B", "KB", "MB", "GB", "TB"];
       return (i / Math.pow(1024, M)).toFixed(2) + " " + g[M];
@@ -3649,7 +3649,7 @@ const ke = /* @__PURE__ */ oe({
       {
         id: "size",
         label: $t("Size"),
-        field: (i) => I(i.metadata.size)
+        field: (i) => H(i.metadata.size)
       },
       {
         id: "created_at",
@@ -3672,15 +3672,15 @@ const ke = /* @__PURE__ */ oe({
     }
     return Ae(F), (i, M, g, P) => {
       M(o(a(N), P, {
-        default: t((f, $, m, v) => {
+        default: t((f, $, p, v) => {
           if ($)
             $(o(a(B), null, {
               default: t((u, h, S, A) => {
                 if (h)
                   h(`<div class="flex items-center justify-between"${A}><div${A}>`), h(o(a(T), null, {
-                    default: t((c, p, w, Q) => {
-                      if (p)
-                        p(`${D(i.$t("Snapshots"))}`);
+                    default: t((c, m, w, Q) => {
+                      if (m)
+                        m(`${D(i.$t("Snapshots"))}`);
                       else
                         return [
                           s(
@@ -3693,9 +3693,9 @@ const ke = /* @__PURE__ */ oe({
                     _: 1
                     /* STABLE */
                   }, S, A)), h(o(a(L), null, {
-                    default: t((c, p, w, Q) => {
-                      if (p)
-                        p(`${D(i.$t("View and manage Restic snapshots for this plan."))}`);
+                    default: t((c, m, w, Q) => {
+                      if (m)
+                        m(`${D(i.$t("View and manage Restic snapshots for this plan."))}`);
                       else
                         return [
                           s(
@@ -3707,13 +3707,13 @@ const ke = /* @__PURE__ */ oe({
                     }),
                     _: 1
                     /* STABLE */
-                  }, S, A)), h(`</div><div class="flex items-center gap-2"${A}>`), h(o(q, {
+                  }, S, A)), h(`</div><div class="flex items-center gap-2"${A}>`), h(o(I, {
                     variant: "outline",
                     onClick: F
                   }, {
-                    default: t((c, p, w, Q) => {
-                      if (p)
-                        p(o(E, {
+                    default: t((c, m, w, Q) => {
+                      if (m)
+                        m(o(E, {
                           name: "refreshCw",
                           class: { "animate-spin": l.value }
                         }, null, w, Q));
@@ -3756,7 +3756,7 @@ const ke = /* @__PURE__ */ oe({
                         })
                       ]),
                       e("div", { class: "flex items-center gap-2" }, [
-                        e(q, {
+                        e(I, {
                           variant: "outline",
                           onClick: F
                         }, {
@@ -3775,7 +3775,7 @@ const ke = /* @__PURE__ */ oe({
               }),
               _: 1
               /* STABLE */
-            }, m, v)), $(o(a(V), null, {
+            }, p, v)), $(o(a(V), null, {
               default: t((u, h, S, A) => {
                 if (h)
                   R.value ? h(o(he, {
@@ -3785,9 +3785,9 @@ const ke = /* @__PURE__ */ oe({
                       c || (R.value = void 0);
                     }
                   }, {
-                    default: t((c, p, w, Q) => {
-                      if (p)
-                        p(`<div class="hidden"${Q}></div>`);
+                    default: t((c, m, w, Q) => {
+                      if (m)
+                        m(`<div class="hidden"${Q}></div>`);
                       else
                         return [
                           e("div", { class: "hidden" })
@@ -3800,9 +3800,9 @@ const ke = /* @__PURE__ */ oe({
                     columns: a(j),
                     loading: l.value
                   }, {
-                    "row-actions": t(({ row: c }, p, w, Q) => {
-                      if (p)
-                        p(`<div class="flex items-center gap-2 justify-end"${Q}>`), p(o(G, {
+                    "row-actions": t(({ row: c }, m, w, Q) => {
+                      if (m)
+                        m(`<div class="flex items-center gap-2 justify-end"${Q}>`), m(o(G, {
                           variant: "ghost",
                           size: "sm",
                           "fetch-method": "POST",
@@ -3822,7 +3822,7 @@ const ke = /* @__PURE__ */ oe({
                           }),
                           _: 2
                           /* DYNAMIC */
-                        }, w, Q)), p(o(G, {
+                        }, w, Q)), m(o(G, {
                           variant: "ghost",
                           size: "sm",
                           "fetch-method": "DELETE",
@@ -3842,13 +3842,13 @@ const ke = /* @__PURE__ */ oe({
                           }),
                           _: 2
                           /* DYNAMIC */
-                        }, w, Q)), p(o(ue, null, {
+                        }, w, Q)), m(o(ue, null, {
                           default: t((y, U, O, K) => {
                             if (U)
                               U(o(x, { "as-child": "" }, {
                                 default: t((te, X, de, fe) => {
                                   if (X)
-                                    X(o(q, {
+                                    X(o(I, {
                                       variant: "ghost",
                                       class: "w-8 h-8 p-0"
                                     }, {
@@ -3878,7 +3878,7 @@ const ke = /* @__PURE__ */ oe({
                                     }, de, fe));
                                   else
                                     return [
-                                      e(q, {
+                                      e(I, {
                                         variant: "ghost",
                                         class: "w-8 h-8 p-0"
                                       }, {
@@ -3981,7 +3981,7 @@ const ke = /* @__PURE__ */ oe({
                               return [
                                 e(x, { "as-child": "" }, {
                                   default: t(() => [
-                                    e(q, {
+                                    e(I, {
                                       variant: "ghost",
                                       class: "w-8 h-8 p-0"
                                     }, {
@@ -4049,7 +4049,7 @@ const ke = /* @__PURE__ */ oe({
                           }),
                           _: 2
                           /* DYNAMIC */
-                        }, w, Q)), p("</div>");
+                        }, w, Q)), m("</div>");
                       else
                         return [
                           e("div", { class: "flex items-center gap-2 justify-end" }, [
@@ -4092,7 +4092,7 @@ const ke = /* @__PURE__ */ oe({
                                 default: t(() => [
                                   e(x, { "as-child": "" }, {
                                     default: t(() => [
-                                      e(q, {
+                                      e(I, {
                                         variant: "ghost",
                                         class: "w-8 h-8 p-0"
                                       }, {
@@ -4171,7 +4171,7 @@ const ke = /* @__PURE__ */ oe({
                   }, S, A));
                 else
                   return [
-                    R.value ? (me(), pe(he, {
+                    R.value ? (pe(), me(he, {
                       key: 0,
                       "model-value": R.value,
                       open: !0,
@@ -4231,7 +4231,7 @@ const ke = /* @__PURE__ */ oe({
                               default: t(() => [
                                 e(x, { "as-child": "" }, {
                                   default: t(() => [
-                                    e(q, {
+                                    e(I, {
                                       variant: "ghost",
                                       class: "w-8 h-8 p-0"
                                     }, {
@@ -4262,7 +4262,7 @@ const ke = /* @__PURE__ */ oe({
                                     default: t(() => [
                                       e(Y, {
                                         class: "cursor-pointer",
-                                        onClick: (p) => R.value = c.metadata
+                                        onClick: (m) => R.value = c.metadata
                                       }, {
                                         default: t(() => [
                                           s(
@@ -4276,7 +4276,7 @@ const ke = /* @__PURE__ */ oe({
                                       }, 8, ["onClick"]),
                                       e(Y, {
                                         class: "cursor-pointer",
-                                        onClick: (p) => R.value = c.data
+                                        onClick: (m) => R.value = c.data
                                       }, {
                                         default: t(() => [
                                           s(
@@ -4311,7 +4311,7 @@ const ke = /* @__PURE__ */ oe({
               }),
               _: 1
               /* STABLE */
-            }, m, v));
+            }, p, v));
           else
             return [
               e(a(B), null, {
@@ -4342,7 +4342,7 @@ const ke = /* @__PURE__ */ oe({
                       })
                     ]),
                     e("div", { class: "flex items-center gap-2" }, [
-                      e(q, {
+                      e(I, {
                         variant: "outline",
                         onClick: F
                       }, {
@@ -4363,7 +4363,7 @@ const ke = /* @__PURE__ */ oe({
               }),
               e(a(V), null, {
                 default: t(() => [
-                  R.value ? (me(), pe(he, {
+                  R.value ? (pe(), me(he, {
                     key: 0,
                     "model-value": R.value,
                     open: !0,
@@ -4423,7 +4423,7 @@ const ke = /* @__PURE__ */ oe({
                             default: t(() => [
                               e(x, { "as-child": "" }, {
                                 default: t(() => [
-                                  e(q, {
+                                  e(I, {
                                     variant: "ghost",
                                     class: "w-8 h-8 p-0"
                                   }, {
@@ -4512,7 +4512,7 @@ const ke = /* @__PURE__ */ oe({
   }
 }), ot = ke.setup;
 ke.setup = (b, r) => {
-  const d = H();
+  const d = q();
   return (d.modules || (d.modules = /* @__PURE__ */ new Set())).add("src/client/components/PlanResticSnapshots.vue"), ot ? ot(b, r) : void 0;
 };
 const Ve = /* @__PURE__ */ oe({
@@ -4528,7 +4528,7 @@ const Ve = /* @__PURE__ */ oe({
   emits: ["update:plan"],
   setup(b) {
     const r = Pe(b, "plan"), d = Te("tab", "details");
-    return (l, R, I, j) => {
+    return (l, R, H, j) => {
       R(o(a(Le), Fe({
         modelValue: a(d),
         "onUpdate:modelValue": (F) => Me(d) ? d.value = F : null,
@@ -4538,7 +4538,7 @@ const Ve = /* @__PURE__ */ oe({
         default: t((F, i, M, g) => {
           if (i)
             i(o(a(be), null, {
-              default: t((P, f, $, m) => {
+              default: t((P, f, $, p) => {
                 if (f)
                   f(o(a(k), {
                     value: "details",
@@ -4558,7 +4558,7 @@ const Ve = /* @__PURE__ */ oe({
                     }),
                     _: 1
                     /* STABLE */
-                  }, $, m)), f(o(a(k), {
+                  }, $, p)), f(o(a(k), {
                     value: "repository",
                     class: "min-w-60"
                   }, {
@@ -4576,7 +4576,7 @@ const Ve = /* @__PURE__ */ oe({
                     }),
                     _: 1
                     /* STABLE */
-                  }, $, m)), f(o(a(k), {
+                  }, $, p)), f(o(a(k), {
                     value: "backup",
                     class: "min-w-60"
                   }, {
@@ -4594,7 +4594,7 @@ const Ve = /* @__PURE__ */ oe({
                     }),
                     _: 1
                     /* STABLE */
-                  }, $, m)), f(o(a(k), {
+                  }, $, p)), f(o(a(k), {
                     value: "cleanup",
                     class: "min-w-60"
                   }, {
@@ -4612,7 +4612,7 @@ const Ve = /* @__PURE__ */ oe({
                     }),
                     _: 1
                     /* STABLE */
-                  }, $, m)), f(o(a(k), {
+                  }, $, p)), f(o(a(k), {
                     value: "docker",
                     class: "min-w-60"
                   }, {
@@ -4630,7 +4630,7 @@ const Ve = /* @__PURE__ */ oe({
                     }),
                     _: 1
                     /* STABLE */
-                  }, $, m)), f(o(a(k), {
+                  }, $, p)), f(o(a(k), {
                     value: "snapshots",
                     class: "min-w-60"
                   }, {
@@ -4648,7 +4648,7 @@ const Ve = /* @__PURE__ */ oe({
                     }),
                     _: 1
                     /* STABLE */
-                  }, $, m));
+                  }, $, p));
                 else
                   return [
                     e(a(k), {
@@ -4740,9 +4740,9 @@ const Ve = /* @__PURE__ */ oe({
               _: 1
               /* STABLE */
             }, M, g)), i(o(a(z), { value: "details" }, {
-              default: t((P, f, $, m) => {
+              default: t((P, f, $, p) => {
                 if (f)
-                  f(o(W, null, null, $, m));
+                  f(o(W, null, null, $, p));
                 else
                   return [
                     e(W)
@@ -4751,13 +4751,13 @@ const Ve = /* @__PURE__ */ oe({
               _: 1
               /* STABLE */
             }, M, g)), i(o(a(z), { value: "repository" }, {
-              default: t((P, f, $, m) => {
+              default: t((P, f, $, p) => {
                 if (f)
                   f(o(a(N), null, {
                     default: t((v, u, h, S) => {
                       if (u)
                         u(o(a(B), null, {
-                          default: t((A, c, p, w) => {
+                          default: t((A, c, m, w) => {
                             if (c)
                               c(o(a(T), null, {
                                 default: t((Q, y, U, O) => {
@@ -4774,7 +4774,7 @@ const Ve = /* @__PURE__ */ oe({
                                 }),
                                 _: 1
                                 /* STABLE */
-                              }, p, w)), c(o(a(L), null, {
+                              }, m, w)), c(o(a(L), null, {
                                 default: t((Q, y, U, O) => {
                                   if (y)
                                     y(`${D(l.$t("Settings related to the Restic repository where backups will be stored."))}`);
@@ -4789,7 +4789,7 @@ const Ve = /* @__PURE__ */ oe({
                                 }),
                                 _: 1
                                 /* STABLE */
-                              }, p, w));
+                              }, m, w));
                             else
                               return [
                                 e(a(T), null, {
@@ -4819,19 +4819,19 @@ const Ve = /* @__PURE__ */ oe({
                           _: 1
                           /* STABLE */
                         }, h, S)), u(o(a(V), { class: "space-y-6" }, {
-                          default: t((A, c, p, w) => {
+                          default: t((A, c, m, w) => {
                             if (c)
                               c(o(C, {
                                 name: "config.restic_repository",
                                 label: l.$t("Repository"),
                                 placeholder: l.$t("/path/to/repo or s3:bucket/path"),
                                 hint: l.$t("File path or URL to the Restic repository.")
-                              }, null, p, w)), c(o(C, {
+                              }, null, m, w)), c(o(C, {
                                 name: "config.restic_password",
                                 type: "password",
                                 label: l.$t("Repository Password"),
                                 hint: l.$t("Password for encrypting/decrypting the Restic repository.")
-                              }, null, p, w));
+                              }, null, m, w));
                             else
                               return [
                                 e(C, {
@@ -4903,7 +4903,7 @@ const Ve = /* @__PURE__ */ oe({
                     }),
                     _: 1
                     /* STABLE */
-                  }, $, m));
+                  }, $, p));
                 else
                   return [
                     e(a(N), null, {
@@ -4963,13 +4963,13 @@ const Ve = /* @__PURE__ */ oe({
               _: 1
               /* STABLE */
             }, M, g)), i(o(a(z), { value: "backup" }, {
-              default: t((P, f, $, m) => {
+              default: t((P, f, $, p) => {
                 if (f)
                   f(o(a(N), null, {
                     default: t((v, u, h, S) => {
                       if (u)
                         u(o(a(B), null, {
-                          default: t((A, c, p, w) => {
+                          default: t((A, c, m, w) => {
                             if (c)
                               c(o(a(T), null, {
                                 default: t((Q, y, U, O) => {
@@ -4986,7 +4986,7 @@ const Ve = /* @__PURE__ */ oe({
                                 }),
                                 _: 1
                                 /* STABLE */
-                              }, p, w)), c(o(a(L), null, {
+                              }, m, w)), c(o(a(L), null, {
                                 default: t((Q, y, U, O) => {
                                   if (y)
                                     y(`${D(l.$t("Settings related to the files and directories to be backed up."))}`);
@@ -5001,7 +5001,7 @@ const Ve = /* @__PURE__ */ oe({
                                 }),
                                 _: 1
                                 /* STABLE */
-                              }, p, w));
+                              }, m, w));
                             else
                               return [
                                 e(a(T), null, {
@@ -5031,19 +5031,19 @@ const Ve = /* @__PURE__ */ oe({
                           _: 1
                           /* STABLE */
                         }, h, S)), u(o(a(V), { class: "space-y-6" }, {
-                          default: t((A, c, p, w) => {
+                          default: t((A, c, m, w) => {
                             if (c)
                               c(o(ge, {
                                 name: "config.source_paths",
                                 label: l.$t("Paths"),
                                 placeholder: l.$t("Absolute path to file or directory (e.g., /var/www/html)"),
                                 hint: l.$t("List of file and directory paths to include in the backup.")
-                              }, null, p, w)), c(o(J, {
+                              }, null, m, w)), c(o(J, {
                                 name: "config.backup_flags",
                                 label: l.$t("Backup Flags"),
                                 placeholder: l.$t("--exclude /path/to/exclude"),
                                 hint: l.$t("Additional Restic backup command flags, one per line.")
-                              }, null, p, w));
+                              }, null, m, w));
                             else
                               return [
                                 e(ge, {
@@ -5115,7 +5115,7 @@ const Ve = /* @__PURE__ */ oe({
                     }),
                     _: 1
                     /* STABLE */
-                  }, $, m));
+                  }, $, p));
                 else
                   return [
                     e(a(N), null, {
@@ -5175,13 +5175,13 @@ const Ve = /* @__PURE__ */ oe({
               _: 1
               /* STABLE */
             }, M, g)), i(o(a(z), { value: "cleanup" }, {
-              default: t((P, f, $, m) => {
+              default: t((P, f, $, p) => {
                 if (f)
                   f(o(a(N), null, {
                     default: t((v, u, h, S) => {
                       if (u)
                         u(o(a(B), null, {
-                          default: t((A, c, p, w) => {
+                          default: t((A, c, m, w) => {
                             if (c)
                               c(o(a(T), null, {
                                 default: t((Q, y, U, O) => {
@@ -5198,7 +5198,7 @@ const Ve = /* @__PURE__ */ oe({
                                 }),
                                 _: 1
                                 /* STABLE */
-                              }, p, w)), c(o(a(L), null, {
+                              }, m, w)), c(o(a(L), null, {
                                 default: t((Q, y, U, O) => {
                                   if (y)
                                     y(`${D(l.$t("Settings related to automatic cleanup of old snapshots."))}`);
@@ -5213,7 +5213,7 @@ const Ve = /* @__PURE__ */ oe({
                                 }),
                                 _: 1
                                 /* STABLE */
-                              }, p, w));
+                              }, m, w));
                             else
                               return [
                                 e(a(T), null, {
@@ -5243,7 +5243,7 @@ const Ve = /* @__PURE__ */ oe({
                           _: 1
                           /* STABLE */
                         }, h, S)), u(o(a(V), { class: "space-y-6" }, {
-                          default: t((A, c, p, w) => {
+                          default: t((A, c, m, w) => {
                             if (c)
                               c(o(_, {
                                 name: "config.forget_enabled",
@@ -5254,12 +5254,12 @@ const Ve = /* @__PURE__ */ oe({
                                   { value: !0, label: l.$t("Yes") },
                                   { value: !1, label: l.$t("No") }
                                 ]
-                              }, null, p, w)), c(o(J, {
+                              }, null, m, w)), c(o(J, {
                                 name: "config.forget_flags",
                                 label: l.$t("Forget Flags"),
                                 placeholder: l.$t("--keep-daily 7 --keep-weekly 4"),
                                 hint: l.$t("Restic forget command flags for controlling snapshot retention.")
-                              }, null, p, w));
+                              }, null, m, w));
                             else
                               return [
                                 e(_, {
@@ -5339,7 +5339,7 @@ const Ve = /* @__PURE__ */ oe({
                     }),
                     _: 1
                     /* STABLE */
-                  }, $, m));
+                  }, $, p));
                 else
                   return [
                     e(a(N), null, {
@@ -5403,13 +5403,13 @@ const Ve = /* @__PURE__ */ oe({
               _: 1
               /* STABLE */
             }, M, g)), i(o(a(z), { value: "docker" }, {
-              default: t((P, f, $, m) => {
+              default: t((P, f, $, p) => {
                 if (f)
                   f(o(a(N), null, {
                     default: t((v, u, h, S) => {
                       if (u)
                         u(o(a(B), null, {
-                          default: t((A, c, p, w) => {
+                          default: t((A, c, m, w) => {
                             if (c)
                               c(o(a(T), null, {
                                 default: t((Q, y, U, O) => {
@@ -5426,7 +5426,7 @@ const Ve = /* @__PURE__ */ oe({
                                 }),
                                 _: 1
                                 /* STABLE */
-                              }, p, w)), c(o(a(L), null, {
+                              }, m, w)), c(o(a(L), null, {
                                 default: t((Q, y, U, O) => {
                                   if (y)
                                     y(`${D(l.$t("Configure the Docker image used to run Restic commands."))}`);
@@ -5441,7 +5441,7 @@ const Ve = /* @__PURE__ */ oe({
                                 }),
                                 _: 1
                                 /* STABLE */
-                              }, p, w));
+                              }, m, w));
                             else
                               return [
                                 e(a(T), null, {
@@ -5471,14 +5471,14 @@ const Ve = /* @__PURE__ */ oe({
                           _: 1
                           /* STABLE */
                         }, h, S)), u(o(a(V), { class: "space-y-6" }, {
-                          default: t((A, c, p, w) => {
+                          default: t((A, c, m, w) => {
                             if (c)
                               c(o(C, {
                                 name: "config.docker_image",
                                 label: l.$t("Docker Image"),
                                 placeholder: l.$t("restic/restic:latest"),
                                 hint: l.$t("Docker image used to run Restic commands. Defaults to restic/restic:latest.")
-                              }, null, p, w));
+                              }, null, m, w));
                             else
                               return [
                                 e(C, {
@@ -5538,7 +5538,7 @@ const Ve = /* @__PURE__ */ oe({
                     }),
                     _: 1
                     /* STABLE */
-                  }, $, m));
+                  }, $, p));
                 else
                   return [
                     e(a(N), null, {
@@ -5592,11 +5592,11 @@ const Ve = /* @__PURE__ */ oe({
               _: 1
               /* STABLE */
             }, M, g)), i(o(a(z), { value: "snapshots" }, {
-              default: t((P, f, $, m) => {
+              default: t((P, f, $, p) => {
                 if (f)
                   f(o(ke, {
                     "plan-id": r.value.id
-                  }, null, $, m));
+                  }, null, $, p));
                 else
                   return [
                     e(ke, {
@@ -5949,19 +5949,19 @@ const Ve = /* @__PURE__ */ oe({
         }),
         _: 1
         /* STABLE */
-      }, I));
+      }, H));
     };
   }
 }), it = Ve.setup;
 Ve.setup = (b, r) => {
-  const d = H();
+  const d = q();
   return (d.modules || (d.modules = /* @__PURE__ */ new Set())).add("src/client/components/PlanResticForm.vue"), it ? it(b, r) : void 0;
 };
 const ft = /* @__PURE__ */ oe({
   __name: "[id]",
   __ssrInlineRender: !0,
   setup(b) {
-    const r = ct(() => String(ht.params.id)), d = re(), l = re(!1), R = re(!1), I = re(!1), j = le.partial(le.object({
+    const r = ct(() => String(ht.params.id)), d = re(), l = re(!1), R = re(!1), H = re(!1), j = le.partial(le.object({
       name: le.string(),
       description: le.optional(le.string(), ""),
       active: le.boolean(),
@@ -6007,17 +6007,17 @@ const ft = /* @__PURE__ */ oe({
       d.value && i({ values: v });
     }
     async function f(v) {
-      I.value = !0;
+      H.value = !0;
       const [u] = await Ee.try(`/api/zbackup/plans/${r.value}/backup`, {
         method: "POST",
         data: v
       });
       if (u) {
-        I.value = !1;
+        H.value = !1;
         return;
       }
       setTimeout(() => {
-        De.success($t("Executed")), I.value = !1;
+        De.success($t("Executed")), H.value = !1;
       }, 800);
     }
     async function $() {
@@ -6037,18 +6037,18 @@ const ft = /* @__PURE__ */ oe({
         }
       });
     }
-    async function m() {
+    async function p() {
       d.value || await $();
     }
-    return Ae(m), mt(m), (v, u, h, S) => {
-      u("<!--[-->"), l.value ? u(`<div class="flex justify-center items-center h-64"><div class="text-lg">${D(v.$t("Loading..."))}</div></div>`) : u("<!---->"), !l.value && d.value ? (u(`<form><div class="mb-6 flex items-start justify-between gap-4"><div><h1 class="text-2xl font-bold">${D(v.$t("Plan"))}</h1><p class="text-muted-foreground">${D(v.$t("Edit plan details and configuration."))}</p></div><div class="flex shrink-0 items-center gap-2">`), u(o(q, {
+    return Ae(p), pt(p), (v, u, h, S) => {
+      u("<!--[-->"), l.value ? u(`<div class="flex justify-center items-center h-64"><div class="text-lg">${D(v.$t("Loading..."))}</div></div>`) : u("<!---->"), !l.value && d.value ? (u(`<form><div class="mb-6 flex items-start justify-between gap-4"><div><h1 class="text-2xl font-bold">${D(v.$t("Plan"))}</h1><p class="text-muted-foreground">${D(v.$t("Edit plan details and configuration."))}</p></div><div class="flex shrink-0 items-center gap-2">`), u(o(I, {
         type: "button",
         variant: "outline",
         onClick: P
       }, {
-        default: t((A, c, p, w) => {
+        default: t((A, c, m, w) => {
           if (c)
-            c(o(E, { name: "RotateCcw" }, null, p, w)), c(` ${D(v.$t("Reset"))}`);
+            c(o(E, { name: "RotateCcw" }, null, m, w)), c(` ${D(v.$t("Reset"))}`);
           else
             return [
               e(E, { name: "RotateCcw" }),
@@ -6073,12 +6073,12 @@ const ft = /* @__PURE__ */ oe({
           }
         }
       }, {
-        default: t((A, c, p, w) => {
+        default: t((A, c, m, w) => {
           if (c)
-            c(o(q, {
+            c(o(I, {
               type: "button",
               variant: "outline",
-              loading: I.value
+              loading: H.value
             }, {
               default: t((Q, y, U, O) => {
                 if (y)
@@ -6095,13 +6095,13 @@ const ft = /* @__PURE__ */ oe({
               }),
               _: 1
               /* STABLE */
-            }, p, w));
+            }, m, w));
           else
             return [
-              e(q, {
+              e(I, {
                 type: "button",
                 variant: "outline",
-                loading: I.value
+                loading: H.value
               }, {
                 default: t(() => [
                   e(E, { name: "play" }),
@@ -6118,11 +6118,11 @@ const ft = /* @__PURE__ */ oe({
         }),
         _: 1
         /* STABLE */
-      }, h)), u(o(q, {
+      }, h)), u(o(I, {
         type: "submit",
         loading: R.value
       }, {
-        default: t((A, c, p, w) => {
+        default: t((A, c, m, w) => {
           if (c)
             c(`${D(v.$t("Save"))}`);
           else
@@ -6140,7 +6140,7 @@ const ft = /* @__PURE__ */ oe({
         variant: "destructive",
         class: "mb-6"
       }, {
-        default: t((A, c, p, w) => {
+        default: t((A, c, m, w) => {
           if (c)
             c(o(a(Ce), null, {
               default: t((Q, y, U, O) => {
@@ -6157,19 +6157,19 @@ const ft = /* @__PURE__ */ oe({
               }),
               _: 1
               /* STABLE */
-            }, p, w)), c(o(a(Se), null, {
+            }, m, w)), c(o(a(Se), null, {
               default: t((Q, y, U, O) => {
                 if (y)
-                  y(`<ul class="mt-1 list-disc list-inside space-y-1"${O}><!--[-->`), pt(a(g), (K, te) => {
+                  y(`<ul class="mt-1 list-disc list-inside space-y-1"${O}><!--[-->`), mt(a(g), (K, te) => {
                     y(`<li${O}><span class="font-medium"${O}>${D(te)}</span>: ${D(K)}</li>`);
                   }), y("<!--]--></ul>");
                 else
                   return [
                     e("ul", { class: "mt-1 list-disc list-inside space-y-1" }, [
-                      (me(!0), pe(
+                      (pe(!0), me(
                         Ue,
                         null,
-                        Oe(a(g), (K, te) => (me(), pe("li", { key: te }, [
+                        Oe(a(g), (K, te) => (pe(), me("li", { key: te }, [
                           e(
                             "span",
                             { class: "font-medium" },
@@ -6191,7 +6191,7 @@ const ft = /* @__PURE__ */ oe({
               }),
               _: 1
               /* STABLE */
-            }, p, w));
+            }, m, w));
           else
             return [
               e(a(Ce), null, {
@@ -6208,10 +6208,10 @@ const ft = /* @__PURE__ */ oe({
               e(a(Se), null, {
                 default: t(() => [
                   e("ul", { class: "mt-1 list-disc list-inside space-y-1" }, [
-                    (me(!0), pe(
+                    (pe(!0), me(
                       Ue,
                       null,
-                      Oe(a(g), (Q, y) => (me(), pe("li", { key: y }, [
+                      Oe(a(g), (Q, y) => (pe(), me("li", { key: y }, [
                         e(
                           "span",
                           { class: "font-medium" },
@@ -6250,7 +6250,7 @@ const ft = /* @__PURE__ */ oe({
         plan: d.value,
         "onUpdate:plan": (A) => d.value = A
       }, null, h)) : u(o(a(je), { variant: "destructive" }, {
-        default: t((A, c, p, w) => {
+        default: t((A, c, m, w) => {
           if (c)
             c(o(a(Ce), null, {
               default: t((Q, y, U, O) => {
@@ -6267,7 +6267,7 @@ const ft = /* @__PURE__ */ oe({
               }),
               _: 1
               /* STABLE */
-            }, p, w)), c(o(a(Se), null, {
+            }, m, w)), c(o(a(Se), null, {
               default: t((Q, y, U, O) => {
                 if (y)
                   y(`${D(v.$t('No form is available for strategy ":strategy".', { strategy: d.value.strategy }))}`);
@@ -6282,7 +6282,7 @@ const ft = /* @__PURE__ */ oe({
               }),
               _: 1
               /* STABLE */
-            }, p, w));
+            }, m, w));
           else
             return [
               e(a(Ce), null, {
@@ -6316,7 +6316,7 @@ const ft = /* @__PURE__ */ oe({
   }
 }), rt = ft.setup;
 ft.setup = (b, r) => {
-  const d = H();
+  const d = q();
   return (d.modules || (d.modules = /* @__PURE__ */ new Set())).add("src/client/pages/plans/[id].vue"), rt ? rt(b, r) : void 0;
 };
 export {

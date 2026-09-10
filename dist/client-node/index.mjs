@@ -26,7 +26,7 @@ class p extends n {
     o.addRoute({
       path: "/admin/zbackup",
       redirect: "/admin/zbackup/plans"
-    }), o.auto(/* @__PURE__ */ Object.assign({ "../pages/plans/[id].vue": () => import("./_id_-RyQflKUt.mjs"), "../pages/plans/index.vue": () => import("./index-BnFTU2tV.mjs"), "../pages/triggers/index.vue": () => import("./index-D9OJ2yXe.mjs") }), {
+    }), o.auto(/* @__PURE__ */ Object.assign({ "../pages/plans/[id].vue": () => import("./_id_-BriKuaRN.mjs"), "../pages/plans/index.vue": () => import("./index-BnFTU2tV.mjs"), "../pages/triggers/index.vue": () => import("./index-D9OJ2yXe.mjs") }), {
       strip: ["pages"],
       prefix: "/admin/zbackup",
       guards: [i],

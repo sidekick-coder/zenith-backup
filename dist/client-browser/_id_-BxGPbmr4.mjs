@@ -1,8 +1,8 @@
-import { isVNode as O, defineComponent as z, ref as B, onMounted as ee, openBlock as h, createBlock as y, unref as s, withCtx as t, createVNode as e, createElementVNode as $, createTextVNode as r, toDisplayString as u, normalizeClass as ce, createCommentVNode as U, useModel as Q, isRef as H, computed as we, onServerPrefetch as ke, createElementBlock as I, Fragment as ie, withModifiers as De, renderList as Se } from "vue";
-import { Z as pe, z as fe, f as Te, U as Ce, C as Re, b as Z, p as Pe, o as Ee, a as Me, c as oe, r as Ve, s as W, d as ze, e as Be, G as Fe } from "./index-B9rv2bDL.mjs";
-import { x as D, T as S, R as T, M as C, y as L, a as V, e as j, S as R, C as me, t as he, b as ve, O as be, $ as ge, _ as J, c as k, d as je, B as X, w as q, r as G, i as Y, s as v, o as b, N as $e, m as Ae, Z as Oe, f as ue, g as re, A as de } from "./index.es-CkLm2C0q.mjs";
+import { isVNode as I, defineComponent as V, ref as z, onMounted as ee, openBlock as h, createBlock as y, unref as s, withCtx as t, createVNode as e, createElementVNode as $, createTextVNode as r, toDisplayString as u, normalizeClass as ce, createCommentVNode as U, useModel as q, isRef as N, computed as we, onServerPrefetch as ke, createElementBlock as O, Fragment as ie, withModifiers as De, renderList as Se } from "vue";
+import { Z as pe, z as fe, f as Te, U as Ce, C as Pe, b as K, p as Re, o as Ee, a as Me, c as oe, r as Fe, s as W, d as Ve, e as ze, G as je } from "./index-Bm1UxfJk.mjs";
+import { x as D, I as S, T, q as C, v as L, M as F, e as A, S as P, a as me, b as he, C as ve, O as be, $ as ge, _ as J, c as k, Z as Ae, A as X, k as H, d as G, o as Y, i as v, r as b, F as $e, p as Be, f as Ie, g as ue, h as re, j as de } from "./index.es-DEDvEmxx.mjs";
 let x = 1;
-var Ie = class {
+var Oe = class {
   subscribers;
   toasts;
   dismissedToasts;
@@ -91,7 +91,7 @@ var Ie = class {
     const l = Promise.resolve(i instanceof Function ? i() : i);
     let d = n !== void 0, p;
     const w = l.then(async (o) => {
-      if (p = ["resolve", o], O(o))
+      if (p = ["resolve", o], I(o))
         d = !1, this.create({
           id: n,
           type: "default",
@@ -99,45 +99,45 @@ var Ie = class {
         });
       else if (Le(o) && !o.ok) {
         d = !1;
-        const c = typeof a.error == "function" ? await a.error(`HTTP error! status: ${o.status}`) : a.error, P = typeof a.description == "function" ? await a.description(`HTTP error! status: ${o.status}`) : a.description, F = typeof c == "object" && !O(c) ? c : {
+        const c = typeof a.error == "function" ? await a.error(`HTTP error! status: ${o.status}`) : a.error, R = typeof a.description == "function" ? await a.description(`HTTP error! status: ${o.status}`) : a.description, j = typeof c == "object" && !I(c) ? c : {
           message: c || "",
           id: n || ""
         };
         this.create({
           id: n,
           type: "error",
-          description: P,
-          ...F
+          description: R,
+          ...j
         });
       } else if (o instanceof Error) {
         d = !1;
-        const c = typeof a.error == "function" ? await a.error(o) : a.error, P = typeof a.description == "function" ? await a.description(o) : a.description, F = typeof c == "object" && !O(c) ? c : {
+        const c = typeof a.error == "function" ? await a.error(o) : a.error, R = typeof a.description == "function" ? await a.description(o) : a.description, j = typeof c == "object" && !I(c) ? c : {
           message: c || "",
           id: n || ""
         };
         this.create({
           id: n,
           type: "error",
-          description: P,
-          ...F
+          description: R,
+          ...j
         });
       } else if (a.success !== void 0) {
         d = !1;
-        const c = typeof a.success == "function" ? await a.success(o) : a.success, P = typeof a.description == "function" ? await a.description(o) : a.description, F = typeof c == "object" && !O(c) ? c : {
+        const c = typeof a.success == "function" ? await a.success(o) : a.success, R = typeof a.description == "function" ? await a.description(o) : a.description, j = typeof c == "object" && !I(c) ? c : {
           message: c || "",
           id: n || ""
         };
         this.create({
           id: n,
           type: "success",
-          description: P,
-          ...F
+          description: R,
+          ...j
         });
       }
     }).catch(async (o) => {
       if (p = ["reject", o], a.error !== void 0) {
         d = !1;
-        const f = typeof a.error == "function" ? await a.error(o) : a.error, c = typeof a.description == "function" ? await a.description(o) : a.description, A = typeof f == "object" && !O(f) ? f : {
+        const f = typeof a.error == "function" ? await a.error(o) : a.error, c = typeof a.description == "function" ? await a.description(o) : a.description, B = typeof f == "object" && !I(f) ? f : {
           message: f || "",
           id: n || ""
         };
@@ -145,7 +145,7 @@ var Ie = class {
           id: n,
           type: "error",
           description: c,
-          ...A
+          ...B
         });
       }
     }).finally(() => {
@@ -176,7 +176,7 @@ var Ie = class {
   };
   getActiveToasts = () => this.toasts.filter((i) => !this.dismissedToasts.has(i.id));
 };
-const E = new Ie();
+const E = new Oe();
 function Ue(i, a) {
   const n = a?.id || x++;
   return E.create({
@@ -186,7 +186,7 @@ function Ue(i, a) {
     ...a
   }), n;
 }
-const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "boolean" && "status" in i && typeof i.status == "number", Ne = Ue, Qe = () => E.toasts, He = () => E.getActiveToasts(), N = Object.assign(Ne, {
+const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "boolean" && "status" in i && typeof i.status == "number", Qe = Ue, qe = () => E.toasts, Ne = () => E.getActiveToasts(), Q = Object.assign(Qe, {
   success: E.success,
   info: E.info,
   warning: E.warning,
@@ -197,16 +197,16 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
   dismiss: E.dismiss,
   loading: E.loading
 }, {
-  getHistory: Qe,
-  getToasts: He
-}), qe = { class: "flex items-center justify-between" }, Ge = { class: "flex items-center gap-2" }, Ye = { class: "flex items-center gap-2 justify-end" }, Ke = { class: "sr-only" }, te = /* @__PURE__ */ z({
+  getHistory: qe,
+  getToasts: Ne
+}), He = { class: "flex items-center justify-between" }, Ge = { class: "flex items-center gap-2" }, Ye = { class: "flex items-center gap-2 justify-end" }, Ze = { class: "sr-only" }, te = /* @__PURE__ */ V({
   inheritAttrs: !1,
   __name: "PlanDumpSnapshots",
   props: {
     planId: {}
   },
   setup(i) {
-    const a = i, n = B([]), l = B(!1), d = B();
+    const a = i, n = z([]), l = z(!1), d = z();
     function p(o) {
       if (!o) return "0 B";
       const f = Math.floor(Math.log(o) / Math.log(1024)), c = ["B", "KB", "MB", "GB", "TB"];
@@ -251,7 +251,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
       default: t(() => [
         e(s(S), null, {
           default: t(() => [
-            $("div", qe, [
+            $("div", He, [
               $("div", null, [
                 e(s(T), null, {
                   default: t(() => [
@@ -287,7 +287,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
                   onFetched: _
                 }, {
                   default: t(() => [
-                    e(V, { name: "Eraser" }),
+                    e(F, { name: "Eraser" }),
                     r(
                       " " + u(o.$t("Cleanup")),
                       1
@@ -297,12 +297,12 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
                   _: 1
                   /* STABLE */
                 }, 8, ["fetch", "tooltip", "description", "toast-on-success"]),
-                e(j, {
+                e(A, {
                   variant: "outline",
                   onClick: _
                 }, {
                   default: t(() => [
-                    e(V, {
+                    e(F, {
                       name: "refreshCw",
                       class: ce({ "animate-spin": l.value })
                     }, null, 8, ["class"])
@@ -316,7 +316,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
           _: 1
           /* STABLE */
         }),
-        e(s(R), null, {
+        e(s(P), null, {
           default: t(() => [
             d.value ? (h(), y(me, {
               key: 0,
@@ -357,7 +357,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
                     onFetched: _
                   }, {
                     default: t(() => [
-                      e(V, { name: "TimerReset" })
+                      e(F, { name: "TimerReset" })
                     ]),
                     _: 1
                     /* STABLE */
@@ -373,7 +373,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
                     onFetched: _
                   }, {
                     default: t(() => [
-                      e(V, { name: "trash" })
+                      e(F, { name: "trash" })
                     ]),
                     _: 1
                     /* STABLE */
@@ -385,19 +385,19 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
                       default: t(() => [
                         e(be, { "as-child": "" }, {
                           default: t(() => [
-                            e(j, {
+                            e(A, {
                               variant: "ghost",
                               class: "w-8 h-8 p-0"
                             }, {
                               default: t(() => [
                                 $(
                                   "span",
-                                  Ke,
+                                  Ze,
                                   u(o.$t("More")),
                                   1
                                   /* TEXT */
                                 ),
-                                e(V, {
+                                e(F, {
                                   name: "MoreVertical",
                                   class: "w-3 h-3 sm:w-4 sm:h-4"
                                 })
@@ -416,7 +416,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
                             default: t(() => [
                               e(J, {
                                 class: "cursor-pointer",
-                                onClick: (P) => d.value = c.metadata
+                                onClick: (R) => d.value = c.metadata
                               }, {
                                 default: t(() => [
                                   r(
@@ -456,7 +456,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
       /* STABLE */
     }));
   }
-}), K = /* @__PURE__ */ z({
+}), Z = /* @__PURE__ */ V({
   __name: "PlanDumpSectionDetails",
   setup(i) {
     return (a, n) => (h(), y(s(D), null, {
@@ -489,14 +489,14 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
           _: 1
           /* STABLE */
         }),
-        e(s(R), { class: "space-y-6" }, {
+        e(s(P), { class: "space-y-6" }, {
           default: t(() => [
             e(k, {
               name: "name",
               label: a.$t("Name"),
               placeholder: a.$t("Enter plan name")
             }, null, 8, ["label", "placeholder"]),
-            e(je, {
+            e(Ae, {
               name: "active",
               label: a.$t("Active"),
               hint: a.$t("Activate or deactivate this backup plan")
@@ -516,7 +516,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
       /* STABLE */
     }));
   }
-}), se = /* @__PURE__ */ z({
+}), se = /* @__PURE__ */ V({
   __name: "PlanDumpSectionDrive",
   setup(i) {
     return (a, n) => (h(), y(s(D), null, {
@@ -549,7 +549,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
           _: 1
           /* STABLE */
         }),
-        e(s(R), { class: "space-y-6" }, {
+        e(s(P), { class: "space-y-6" }, {
           default: t(() => [
             e(k, {
               name: "config.drive_id",
@@ -571,7 +571,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
       /* STABLE */
     }));
   }
-}), ye = /* @__PURE__ */ z({
+}), ye = /* @__PURE__ */ V({
   __name: "PlanDumpSectionDocker",
   setup(i) {
     return (a, n) => (h(), y(s(D), null, {
@@ -604,7 +604,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
           _: 1
           /* STABLE */
         }),
-        e(s(R), { class: "space-y-6" }, {
+        e(s(P), { class: "space-y-6" }, {
           default: t(() => [
             e(k, {
               name: "config.docker_image",
@@ -621,7 +621,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
       /* STABLE */
     }));
   }
-}), ae = /* @__PURE__ */ z({
+}), ae = /* @__PURE__ */ V({
   __name: "PlanDumpSectionRetention",
   setup(i) {
     return (a, n) => (h(), y(s(D), null, {
@@ -654,7 +654,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
           _: 1
           /* STABLE */
         }),
-        e(s(R), { class: "space-y-6" }, {
+        e(s(P), { class: "space-y-6" }, {
           default: t(() => [
             e(k, {
               name: "config.retention_max_items",
@@ -671,7 +671,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
       /* STABLE */
     }));
   }
-}), Ze = /* @__PURE__ */ z({
+}), Ke = /* @__PURE__ */ V({
   __name: "PlanDumpConnectionForm",
   props: {
     plan: {
@@ -682,10 +682,10 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
   },
   emits: ["update:plan"],
   setup(i) {
-    const a = Q(i, "plan"), n = q("tab", "details");
+    const a = q(i, "plan"), n = H("tab", "details");
     return (l, d) => (h(), y(s(G), {
       modelValue: s(n),
-      "onUpdate:modelValue": d[0] || (d[0] = (p) => H(n) ? n.value = p : null),
+      "onUpdate:modelValue": d[0] || (d[0] = (p) => N(n) ? n.value = p : null),
       class: "w-full",
       "unmount-on-hide": !1
     }, {
@@ -782,7 +782,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
         }),
         e(s(b), { value: "details" }, {
           default: t(() => [
-            e(K)
+            e(Z)
           ]),
           _: 1
           /* STABLE */
@@ -819,14 +819,14 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
                   _: 1
                   /* STABLE */
                 }),
-                e(s(R), { class: "space-y-6" }, {
+                e(s(P), { class: "space-y-6" }, {
                   default: t(() => [
                     e($e, {
-                      name: "config.name",
+                      name: "config.connection_id",
                       fetch: "/api/database-connections",
                       "value-key": "id",
                       "label-key": "name",
-                      label: l.$t("Connection Name"),
+                      label: l.$t("Connection ID"),
                       hint: l.$t("Select the database connection to back up")
                     }, null, 8, ["label", "hint"])
                   ]),
@@ -876,7 +876,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
       /* STABLE */
     }, 8, ["modelValue"]));
   }
-}), We = /* @__PURE__ */ z({
+}), We = /* @__PURE__ */ V({
   __name: "PlanDumpSQLiteForm",
   props: {
     plan: {
@@ -887,10 +887,10 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
   },
   emits: ["update:plan"],
   setup(i) {
-    const a = Q(i, "plan"), n = q("tab", "details");
+    const a = q(i, "plan"), n = H("tab", "details");
     return (l, d) => (h(), y(s(G), {
       modelValue: s(n),
-      "onUpdate:modelValue": d[0] || (d[0] = (p) => H(n) ? n.value = p : null),
+      "onUpdate:modelValue": d[0] || (d[0] = (p) => N(n) ? n.value = p : null),
       class: "w-full",
       "unmount-on-hide": !1
     }, {
@@ -973,7 +973,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
         }),
         e(s(b), { value: "details" }, {
           default: t(() => [
-            e(K)
+            e(Z)
           ]),
           _: 1
           /* STABLE */
@@ -1010,7 +1010,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
                   _: 1
                   /* STABLE */
                 }),
-                e(s(R), { class: "space-y-6" }, {
+                e(s(P), { class: "space-y-6" }, {
                   default: t(() => [
                     e(k, {
                       name: "config.sqlite_filename",
@@ -1058,7 +1058,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
       /* STABLE */
     }, 8, ["modelValue"]));
   }
-}), Je = /* @__PURE__ */ z({
+}), Je = /* @__PURE__ */ V({
   __name: "PlanDumpPostgresForm",
   props: {
     plan: {
@@ -1069,10 +1069,10 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
   },
   emits: ["update:plan"],
   setup(i) {
-    const a = Q(i, "plan"), n = q("tab", "details");
+    const a = q(i, "plan"), n = H("tab", "details");
     return (l, d) => (h(), y(s(G), {
       modelValue: s(n),
-      "onUpdate:modelValue": d[0] || (d[0] = (p) => H(n) ? n.value = p : null),
+      "onUpdate:modelValue": d[0] || (d[0] = (p) => N(n) ? n.value = p : null),
       class: "w-full",
       "unmount-on-hide": !1
     }, {
@@ -1169,7 +1169,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
         }),
         e(s(b), { value: "details" }, {
           default: t(() => [
-            e(K)
+            e(Z)
           ]),
           _: 1
           /* STABLE */
@@ -1206,7 +1206,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
                   _: 1
                   /* STABLE */
                 }),
-                e(s(R), { class: "space-y-6" }, {
+                e(s(P), { class: "space-y-6" }, {
                   default: t(() => [
                     e(k, {
                       name: "config.postgres_host",
@@ -1286,14 +1286,14 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
       /* STABLE */
     }, 8, ["modelValue"]));
   }
-}), Xe = { class: "flex items-center justify-between" }, xe = { class: "flex items-center gap-2" }, et = { class: "flex items-center gap-2 justify-end" }, tt = { class: "sr-only" }, st = /* @__PURE__ */ z({
+}), Xe = { class: "flex items-center justify-between" }, xe = { class: "flex items-center gap-2" }, et = { class: "flex items-center gap-2 justify-end" }, tt = { class: "sr-only" }, st = /* @__PURE__ */ V({
   inheritAttrs: !1,
   __name: "PlanResticSnapshots",
   props: {
     planId: {}
   },
   setup(i) {
-    const a = i, n = B([]), l = B(!1), d = B();
+    const a = i, n = z([]), l = z(!1), d = z();
     function p(o) {
       if (!o) return "0 B";
       const f = Math.floor(Math.log(o) / Math.log(1024)), c = ["B", "KB", "MB", "GB", "TB"];
@@ -1359,12 +1359,12 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
                 })
               ]),
               $("div", xe, [
-                e(j, {
+                e(A, {
                   variant: "outline",
                   onClick: _
                 }, {
                   default: t(() => [
-                    e(V, {
+                    e(F, {
                       name: "refreshCw",
                       class: ce({ "animate-spin": l.value })
                     }, null, 8, ["class"])
@@ -1378,7 +1378,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
           _: 1
           /* STABLE */
         }),
-        e(s(R), null, {
+        e(s(P), null, {
           default: t(() => [
             d.value ? (h(), y(me, {
               key: 0,
@@ -1418,7 +1418,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
                     onFetched: _
                   }, {
                     default: t(() => [
-                      e(V, { name: "TimerReset" })
+                      e(F, { name: "TimerReset" })
                     ]),
                     _: 1
                     /* STABLE */
@@ -1434,7 +1434,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
                     onFetched: _
                   }, {
                     default: t(() => [
-                      e(V, { name: "trash" })
+                      e(F, { name: "trash" })
                     ]),
                     _: 1
                     /* STABLE */
@@ -1446,7 +1446,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
                       default: t(() => [
                         e(be, { "as-child": "" }, {
                           default: t(() => [
-                            e(j, {
+                            e(A, {
                               variant: "ghost",
                               class: "w-8 h-8 p-0"
                             }, {
@@ -1458,7 +1458,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
                                   1
                                   /* TEXT */
                                 ),
-                                e(V, {
+                                e(F, {
                                   name: "MoreVertical",
                                   class: "w-3 h-3 sm:w-4 sm:h-4"
                                 })
@@ -1477,7 +1477,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
                             default: t(() => [
                               e(J, {
                                 class: "cursor-pointer",
-                                onClick: (P) => d.value = c.metadata
+                                onClick: (R) => d.value = c.metadata
                               }, {
                                 default: t(() => [
                                   r(
@@ -1491,7 +1491,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
                               }, 8, ["onClick"]),
                               e(J, {
                                 class: "cursor-pointer",
-                                onClick: (P) => d.value = c.data
+                                onClick: (R) => d.value = c.data
                               }, {
                                 default: t(() => [
                                   r(
@@ -1531,7 +1531,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
       /* STABLE */
     }));
   }
-}), at = /* @__PURE__ */ z({
+}), at = /* @__PURE__ */ V({
   __name: "PlanResticForm",
   props: {
     plan: {
@@ -1542,10 +1542,10 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
   },
   emits: ["update:plan"],
   setup(i) {
-    const a = Q(i, "plan"), n = q("tab", "details");
+    const a = q(i, "plan"), n = H("tab", "details");
     return (l, d) => (h(), y(s(G), {
       modelValue: s(n),
-      "onUpdate:modelValue": d[0] || (d[0] = (p) => H(n) ? n.value = p : null),
+      "onUpdate:modelValue": d[0] || (d[0] = (p) => N(n) ? n.value = p : null),
       class: "w-full",
       "unmount-on-hide": !1
     }, {
@@ -1642,7 +1642,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
         }),
         e(s(b), { value: "details" }, {
           default: t(() => [
-            e(K)
+            e(Z)
           ]),
           _: 1
           /* STABLE */
@@ -1679,7 +1679,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
                   _: 1
                   /* STABLE */
                 }),
-                e(s(R), { class: "space-y-6" }, {
+                e(s(P), { class: "space-y-6" }, {
                   default: t(() => [
                     e(k, {
                       name: "config.restic_repository",
@@ -1737,9 +1737,9 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
                   _: 1
                   /* STABLE */
                 }),
-                e(s(R), { class: "space-y-6" }, {
+                e(s(P), { class: "space-y-6" }, {
                   default: t(() => [
-                    e(Ae, {
+                    e(Be, {
                       name: "config.source_paths",
                       label: l.$t("Paths"),
                       placeholder: l.$t("Absolute path to file or directory (e.g., /var/www/html)"),
@@ -1795,7 +1795,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
                   _: 1
                   /* STABLE */
                 }),
-                e(s(R), { class: "space-y-6" }, {
+                e(s(P), { class: "space-y-6" }, {
                   default: t(() => [
                     e($e, {
                       name: "config.forget_enabled",
@@ -1857,7 +1857,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
                   _: 1
                   /* STABLE */
                 }),
-                e(s(R), { class: "space-y-6" }, {
+                e(s(P), { class: "space-y-6" }, {
                   default: t(() => [
                     e(k, {
                       name: "config.docker_image",
@@ -1894,16 +1894,16 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
 }), lt = {
   key: 0,
   class: "flex justify-center items-center h-64"
-}, nt = { class: "text-lg" }, it = { class: "mb-6 flex items-start justify-between gap-4" }, ot = { class: "text-2xl font-bold" }, ut = { class: "text-muted-foreground" }, rt = { class: "flex shrink-0 items-center gap-2" }, dt = { class: "mt-1 list-disc list-inside space-y-1" }, ct = { class: "font-medium" }, ht = /* @__PURE__ */ z({
+}, nt = { class: "text-lg" }, it = { class: "mb-6 flex items-start justify-between gap-4" }, ot = { class: "text-2xl font-bold" }, ut = { class: "text-muted-foreground" }, rt = { class: "flex shrink-0 items-center gap-2" }, dt = { class: "mt-1 list-disc list-inside space-y-1" }, ct = { class: "font-medium" }, ht = /* @__PURE__ */ V({
   __name: "[id]",
   setup(i) {
-    const a = we(() => String(Ce.params.id)), n = B(), l = B(!1), d = B(!1), p = B(!1), w = Pe(Ee({
+    const a = we(() => String(Ce.params.id)), n = z(), l = z(!1), d = z(!1), p = z(!1), w = Re(Ee({
       name: W(),
-      description: Be(W(), ""),
-      active: ze(),
-      config: Ve(W(), oe()),
+      description: ze(W(), ""),
+      active: Ve(),
+      config: Fe(W(), oe()),
       triggers: Me(oe())
-    })), { handleSubmit: _, resetForm: o, values: f, errors: c } = Re(w, {
+    })), { handleSubmit: _, resetForm: o, values: f, errors: c } = Pe(w, {
       initialValues: {
         name: "hello",
         description: "",
@@ -1911,9 +1911,9 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
         config: {},
         triggers: []
       }
-    }), P = _(async (m) => {
+    }), R = _(async (m) => {
       d.value = !0;
-      const [g] = await Z.try(`/api/zbackup/plans/${a.value}`, {
+      const [g] = await K.try(`/api/zbackup/plans/${a.value}`, {
         method: "PATCH",
         data: {
           name: m.name,
@@ -1924,14 +1924,14 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
         }
       });
       if (g) {
-        d.value = !1, N.error($t("Failed to update."));
+        d.value = !1, Q.error($t("Failed to update."));
         return;
       }
       n.value && (n.value.name = m.name, n.value.description = m.description, n.value.active = m.active, n.value.config = m.config, n.value.triggers = n.value.triggers || []), setTimeout(() => {
-        d.value = !1, N.success($t("Updated successfully."));
+        d.value = !1, Q.success($t("Updated successfully."));
       }, 800);
     });
-    function A() {
+    function B() {
       const m = {
         name: "",
         description: "",
@@ -1941,9 +1941,9 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
       };
       n.value && o({ values: m });
     }
-    async function F(m) {
+    async function j(m) {
       p.value = !0;
-      const [g] = await Z.try(`/api/zbackup/plans/${a.value}/backup`, {
+      const [g] = await K.try(`/api/zbackup/plans/${a.value}/backup`, {
         method: "POST",
         data: m
       });
@@ -1952,14 +1952,14 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
         return;
       }
       setTimeout(() => {
-        N.success($t("Executed")), p.value = !1;
+        Q.success($t("Executed")), p.value = !1;
       }, 800);
     }
     async function _e() {
       l.value = !0;
-      const [m, g] = await Z.try(`/api/zbackup/plans/${a.value}`);
+      const [m, g] = await K.try(`/api/zbackup/plans/${a.value}`);
       if (m) {
-        l.value = !1, N.error($t("Failed to load plan details.")), Fe.push("/admin/zbackup/plans");
+        l.value = !1, Q.error($t("Failed to load plan details.")), je.push("/admin/zbackup/plans");
         return;
       }
       n.value = g, l.value = !1, o({
@@ -1975,11 +1975,11 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
     async function le() {
       n.value || await _e();
     }
-    return ee(le), ke(le), (m, g) => (h(), I(
+    return ee(le), ke(le), (m, g) => (h(), O(
       ie,
       null,
       [
-        l.value ? (h(), I("div", lt, [
+        l.value ? (h(), O("div", lt, [
           $(
             "div",
             nt,
@@ -1988,13 +1988,13 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
             /* TEXT */
           )
         ])) : U("v-if", !0),
-        !l.value && n.value ? (h(), I(
+        !l.value && n.value ? (h(), O(
           "form",
           {
             key: 1,
             onSubmit: g[4] || (g[4] = De(
               //@ts-ignore
-              (...M) => s(P) && s(P)(...M),
+              (...M) => s(R) && s(R)(...M),
               ["prevent"]
             ))
           },
@@ -2017,13 +2017,13 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
                 )
               ]),
               $("div", rt, [
-                e(j, {
+                e(A, {
                   type: "button",
                   variant: "outline",
-                  onClick: A
+                  onClick: B
                 }, {
                   default: t(() => [
-                    e(V, { name: "RotateCcw" }),
+                    e(F, { name: "RotateCcw" }),
                     r(
                       " " + u(m.$t("Reset")),
                       1
@@ -2033,11 +2033,11 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
                   _: 1
                   /* STABLE */
                 }),
-                e(Oe, {
+                e(Ie, {
                   title: m.$t("Execute Backup"),
                   description: m.$t("Execute a manual backup for this plan."),
                   "submit-text": m.$t("Run Backup"),
-                  handle: F,
+                  handle: j,
                   fields: {
                     description: {
                       component: "text-field",
@@ -2046,13 +2046,13 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
                   }
                 }, {
                   default: t(() => [
-                    e(j, {
+                    e(A, {
                       type: "button",
                       variant: "outline",
                       loading: p.value
                     }, {
                       default: t(() => [
-                        e(V, { name: "play" }),
+                        e(F, { name: "play" }),
                         r(
                           " " + u(m.$t("Execute")),
                           1
@@ -2066,7 +2066,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
                   _: 1
                   /* STABLE */
                 }, 8, ["title", "description", "submit-text", "fields"]),
-                e(j, {
+                e(A, {
                   type: "submit",
                   loading: d.value
                 }, {
@@ -2102,10 +2102,10 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
                 e(s(de), null, {
                   default: t(() => [
                     $("ul", dt, [
-                      (h(!0), I(
+                      (h(!0), O(
                         ie,
                         null,
-                        Se(s(c), (M, ne) => (h(), I("li", { key: ne }, [
+                        Se(s(c), (M, ne) => (h(), O("li", { key: ne }, [
                           $(
                             "span",
                             ct,
@@ -2131,7 +2131,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
               _: 1
               /* STABLE */
             })) : U("v-if", !0),
-            n.value.strategy === "dump_connection" ? (h(), y(Ze, {
+            n.value.strategy === "dump_connection" ? (h(), y(Ke, {
               key: 1,
               plan: n.value,
               "onUpdate:plan": g[0] || (g[0] = (M) => n.value = M)
