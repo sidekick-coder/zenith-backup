@@ -5,9 +5,9 @@
         "#zenith-backup/server/*": "./src/server/*",
         "#zenith-backup/shared/*": "./src/shared/*",
         "#zenith-backup/client/*": "./src/client/*",
-        "#client/*": "./legacy/client/*",
-        "#server/*": "./legacy/server/*",
-        "#shared/*": "./legacy/shared/*"
+        "#client/*": "./src/legacy/client/*",
+        "#server/*": "./src/legacy/server/*",
+        "#shared/*": "./src/legacy/shared/*"
     },
     "repository": {
         "type": "git",
@@ -18,12 +18,12 @@
     },
     "homepage": "https://github.com/sidekick-coder/zenith-backup#readme",
     "scripts": {
-        "start": "NODE_PRODUCTION=true zenith serve",
+        "start": "NODE_ENV=production zenith serve",
         "dev": "zenith serve",
         "build": "zenith plugin:build"
     },
     "dependencies": {
-        "@sidekick-coder/zenith-kit": "^0.4.7",
+        "@sidekick-coder/zenith-kit": "^0.4.9",
         "@unhead/vue": "^3.1.0",
         "@vee-validate/valibot": "^4.15.1",
         "@vue/tsconfig": "^0.9.1",

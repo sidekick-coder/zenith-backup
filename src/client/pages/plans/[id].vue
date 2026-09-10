@@ -5,7 +5,6 @@ import {
 } from 'vue'
 import * as v from 'valibot'
 import { toast } from 'vue-sonner'
-import AdminLayout from '#client/layouts/AdminLayout.vue'
 import $fetch from '#client/facades/fetch.facade.ts'
 import Button from '#client/components/Button.vue'
 import Icon from '#client/components/Icon.vue'
@@ -151,77 +150,70 @@ onServerPrefetch(loadIfNotDefined)
 </script>
 
 <template>
-    <AdminLayout :breadcrumbs="[
-        { label: $t('Backup'), to: '/admin/backup' },
-        { label: $t('Plans'), to: '/admin/backup/plans' },
-        { label: $t('Plan') },
-    ]">
+    <div v-if="loading" class="flex justify-center items-center h-64">
+        <div class="text-lg">
+            {{ $t('Loading...') }}
+        </div>
+    </div>
 
-        <div v-if="loading" class="flex justify-center items-center h-64">
-            <div class="text-lg">
-                {{ $t('Loading...') }}
+    <form v-if="!loading && plan" @submit.prevent="save">
+        <div class="mb-6 flex items-start justify-between gap-4">
+            <div>
+                <h1 class="text-2xl font-bold">
+                    {{ $t('Plan') }}
+                </h1>
+                <p class="text-muted-foreground">
+                    {{ $t('Edit plan details and configuration.') }}
+                </p>
+            </div>
+
+            <div class="flex shrink-0 items-center gap-2">
+                <Button type="button" variant="outline" @click="reset">
+                    <Icon name="RotateCcw" />
+                    {{ $t('Reset') }}
+                </Button>
+
+                <DialogForm :title="$t('Execute Backup')" :description="$t('Execute a manual backup for this plan.')"
+                    :submit-text="$t('Run Backup')" :handle="execute" :fields="{
+                        description: {
+                            component: 'text-field',
+                            label: $t('Description'),
+                        }
+                    }">
+                    <Button type="button" variant="outline" :loading="executing">
+                        <Icon name="play" />
+                        {{ $t('Execute') }}
+                    </Button>
+                </DialogForm>
+
+                <Button type="submit" :loading="saving">
+                    {{ $t('Save') }}
+                </Button>
             </div>
         </div>
 
-        <form v-if="!loading && plan" @submit.prevent="save">
-            <div class="mb-6 flex items-start justify-between gap-4">
-                <div>
-                    <h1 class="text-2xl font-bold">
-                        {{ $t('Plan') }}
-                    </h1>
-                    <p class="text-muted-foreground">
-                        {{ $t('Edit plan details and configuration.') }}
-                    </p>
-                </div>
+        <Alert v-if="Object.keys(errors).length" variant="destructive" class="mb-6">
+            <AlertTitle>{{ $t('Please fix the following errors before saving') }}</AlertTitle>
+            <AlertDescription>
+                <ul class="mt-1 list-disc list-inside space-y-1">
+                    <li v-for="(msg, field) in errors" :key="field">
+                        <span class="font-medium">{{ field }}</span>: {{ msg }}
+                    </li>
+                </ul>
+            </AlertDescription>
+        </Alert>
 
-                <div class="flex shrink-0 items-center gap-2">
-                    <Button type="button" variant="outline" @click="reset">
-                        <Icon name="RotateCcw" />
-                        {{ $t('Reset') }}
-                    </Button>
+        <PlanDumpConnectionForm v-if="plan.strategy === 'dump_connection'" v-model:plan="plan" />
+        <PlanDumpPostgresForm v-else-if="plan.strategy === 'dump_postgres'" v-model:plan="plan" />
+        <PlanDumpSQLiteForm v-else-if="plan.strategy === 'dump_sqlite'" v-model:plan="plan" />
+        <PlanResticForm v-else-if="plan.strategy === 'restic'" v-model:plan="plan" />
 
-                    <DialogForm :title="$t('Execute Backup')"
-                        :description="$t('Execute a manual backup for this plan.')" :submit-text="$t('Run Backup')"
-                        :handle="execute" :fields="{
-                            description: {
-                                component: 'text-field',
-                                label: $t('Description'),
-                            }
-                        }">
-                        <Button type="button" variant="outline" :loading="executing">
-                            <Icon name="play" />
-                            {{ $t('Execute') }}
-                        </Button>
-                    </DialogForm>
+        <Alert v-else variant="destructive">
+            <AlertTitle>{{ $t('Unsupported strategy') }}</AlertTitle>
+            <AlertDescription>
+                {{ $t('No form is available for strategy ":strategy".', { strategy: plan.strategy }) }}
+            </AlertDescription>
+        </Alert>
+    </form>
 
-                    <Button type="submit" :loading="saving">
-                        {{ $t('Save') }}
-                    </Button>
-                </div>
-            </div>
-
-            <Alert v-if="Object.keys(errors).length" variant="destructive" class="mb-6">
-                <AlertTitle>{{ $t('Please fix the following errors before saving') }}</AlertTitle>
-                <AlertDescription>
-                    <ul class="mt-1 list-disc list-inside space-y-1">
-                        <li v-for="(msg, field) in errors" :key="field">
-                            <span class="font-medium">{{ field }}</span>: {{ msg }}
-                        </li>
-                    </ul>
-                </AlertDescription>
-            </Alert>
-
-            <PlanDumpConnectionForm v-if="plan.strategy === 'dump_connection'" v-model:plan="plan" />
-            <PlanDumpPostgresForm v-else-if="plan.strategy === 'dump_postgres'" v-model:plan="plan" />
-            <PlanDumpSQLiteForm v-else-if="plan.strategy === 'dump_sqlite'" v-model:plan="plan" />
-            <PlanResticForm v-else-if="plan.strategy === 'restic'" v-model:plan="plan" />
-
-            <Alert v-else variant="destructive">
-                <AlertTitle>{{ $t('Unsupported strategy') }}</AlertTitle>
-                <AlertDescription>
-                    {{ $t('No form is available for strategy ":strategy".', { strategy: plan.strategy }) }}
-                </AlertDescription>
-            </Alert>
-        </form>
-    </AdminLayout>
 </template>

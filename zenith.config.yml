@@ -11,3 +11,5 @@ build:
     server:
         entries:
             "api/*": "src/server/api/**/*.ts"
+            "routes/*": "src/server/routes/**/*.ts"
+            "strategies/*": "src/server/strategies/**/*.ts"
