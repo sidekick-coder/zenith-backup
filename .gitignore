@@ -5,4 +5,12 @@ root
 arte
 tmp
 dist
-client-dist
+
+config/*
+!config/.gitkeep
+
+data/*
+!data/*.gitkeep
+
+*.db
+

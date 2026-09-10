@@ -1,0 +1,13 @@
+id: 01KRKSDD5BFHDMCKKD2C53DGBA
+name: zenith-backups
+description: Backup plugin for zenith
+aliases:
+    - zenith-backups
+    - zb
+version_available_channels:
+    - branch:main
+    - branch:build
+build:
+    server:
+        entries:
+            "api/*": "src/server/api/**/*.ts"

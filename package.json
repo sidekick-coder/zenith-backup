@@ -1,32 +1,42 @@
 {
-  "name": "zenith-backup",
-  "version": "1.0.0",
-  "imports": {
-    "#client/*": "./root/client/*",
-    "#server/*": "./root/server/*",
-    "#shared/*": "./root/shared/*",
-    "#config/*": "./root/config/*",
-    "#zenith-backup/server/*": "./server/*",
-    "#zenith-backup/shared/*": "./shared/*",
-    "#zenith-backup/client/*": "./client/*"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/sidekick-coder/zenith-backup.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/sidekick-coder/zenith-backup/issues"
-  },
-  "homepage": "https://github.com/sidekick-coder/zenith-backup#readme",
-  "description": "",
-  "dependencies": {
-    "archiver": "^7.0.1",
-    "tar": "^7.4.3"
-  },
-  "devDependencies": {
-    "@types/archiver": "^6.0.3"
-  }
+    "name": "zenith-backup",
+    "version": "1.0.0",
+    "imports": {
+        "#zenith-backup/server/*": "./src/server/*",
+        "#zenith-backup/shared/*": "./src/shared/*",
+        "#zenith-backup/client/*": "./src/client/*",
+        "#client/*": "./legacy/client/*",
+        "#server/*": "./legacy/server/*",
+        "#shared/*": "./legacy/shared/*"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/sidekick-coder/zenith-backup.git"
+    },
+    "bugs": {
+        "url": "https://github.com/sidekick-coder/zenith-backup/issues"
+    },
+    "homepage": "https://github.com/sidekick-coder/zenith-backup#readme",
+    "scripts": {
+        "start": "NODE_PRODUCTION=true zenith serve",
+        "dev": "zenith serve",
+        "build": "zenith plugin:build"
+    },
+    "dependencies": {
+        "@sidekick-coder/zenith-kit": "^0.4.7",
+        "@unhead/vue": "^3.1.0",
+        "@vee-validate/valibot": "^4.15.1",
+        "@vue/tsconfig": "^0.9.1",
+        "@vueuse/router": "^14.3.0",
+        "archiver": "^7.0.1",
+        "date-fns": "^4.1.0",
+        "lodash-es": "^4.18.1",
+        "tar": "^7.4.3",
+        "vee-validate": "^4.15.1",
+        "vue-router": "^5.0.7",
+        "vue-sonner": "^2.0.9"
+    },
+    "devDependencies": {
+        "@types/archiver": "^6.0.3"
+    }
 }

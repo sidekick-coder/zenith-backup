@@ -1,0 +1,209 @@
+import { format } from 'date-fns'
+import StrategyService from './strategy.service.ts'
+import Plan from '#zenith-backup/server/entities/PlanEntity.ts'
+import type Target from '#zenith-backup/shared/entities/target.entity.ts'
+import emmitter from '#server/facades/emmitter.facade.ts'
+import { LoggerService, tryCatch } from '@sidekick-coder/zenith-kit/shared'
+import { scheduler } from '@sidekick-coder/zenith-kit/server'
+
+export interface BackupServiceOptions {
+    debug?: boolean
+    logger?: LoggerService
+}
+
+export default class BackupService {
+    public strategies: StrategyService
+    public logger: LoggerService
+    public debug = false
+
+    constructor(options: BackupServiceOptions = {}) {
+        this.debug = options.debug || false
+        this.logger = options.logger || new LoggerService()
+
+        this.strategies = new StrategyService({
+            debug: this.debug,
+            logger: this.logger.child({ label: 'strategy-service' }),
+        })
+
+        if (this.debug) {
+            this.logger.debug('initialized in debug mode')
+        }
+    }
+
+    public async load() {
+        let plans = await Plan.list()
+
+        plans = plans.filter(plan => plan.active)
+
+        for (const plan of plans) {
+            if (!plan.triggers) continue
+
+            for (const trigger of plan.triggers) {
+
+
+                if (trigger.type === 'cron' && trigger.cron) {
+                    const id = `${Plan.TRIGGER_PREFIX}:${plan.id}:${trigger.id}`
+
+                    const cb = () => this.execute(plan, {
+                        description: format(new Date(), 'yyyy-MM-dd HH:mm'),
+                        origin: 'automated',
+                        trigger_type: 'cron',
+                        trigger_id: trigger.id,
+                    })
+
+                    scheduler.add(trigger.cron, cb, { id })
+                    scheduler.start(id)
+                }
+
+                if (trigger.type === 'event' && trigger.events) {
+                    const id = `${Plan.TRIGGER_PREFIX}:${plan.id}:${trigger.id}`
+
+
+                    for (const event of trigger.events) {
+                        const cb = (eventPayload: any) => this.backup(plan, {
+                            ...eventPayload,
+                            description: `event:${event}`,
+                            origin: 'automated',
+                            trigger_type: 'event',
+                            trigger_id: trigger.id,
+                        })
+
+                        emmitter.on(event, cb, { id: `${id}:${event}` })
+                    }
+                }
+            }
+        }
+
+        if (this.debug) {
+            this.logger.debug('loaded plans', {
+                count: plans.length,
+            })
+        }
+    }
+
+    public async unload() {
+        const routines = await scheduler.list()
+
+        const routineIds = routines
+            .filter(routine => routine.id.startsWith(Plan.TRIGGER_PREFIX))
+            .map(routine => routine.id)
+
+        if (routineIds.length) {
+            await scheduler.remove(routineIds)
+        }
+
+        const handlers = await emmitter.list()
+
+        const handlerIds = handlers
+            .filter(handler => handler.id.startsWith(Plan.TRIGGER_PREFIX))
+            .map(handler => handler.id)
+
+        if (handlerIds.length) {
+            await emmitter.remove(handlerIds)
+        }
+
+    }
+
+    public async reload() {
+        await this.unload()
+        await this.load()
+    }
+
+    public async execute(plan: Plan, metadata?: Record<string, any>) {
+        const strategy = await this.strategies.find(plan.strategy)
+
+        const instance = new strategy.ctor({
+            plan,
+            debug: this.debug,
+            logger: this.logger.child({ strategy: strategy.id, plan_id: plan.id }),
+        })
+
+        const [error] = await tryCatch(() => instance.execute(metadata))
+
+        if (error) {
+            this.logger.error('backup failed', error)
+
+            throw error
+        }
+
+        this.logger.info('backup completed successfully', {
+            plan_id: plan.id,
+            plan_name: plan.name,
+            metadata
+        })
+    }
+
+    /** @deprecated use execute instead */
+    public async backup(plan: Plan, metadata?: Record<string, unknown>) {
+        return this.execute(plan, metadata)
+    }
+
+    public async restore(planId: Target['plan_id'], snapshotId: string, restore_folder?: string) {
+        // const snapshots = await this.list(planId)
+        // const snapshot = snapshots.find(s => s.id === snapshotId)
+        // const plan = await findPlan(planId)
+        // const targets = await findPlanTargets(planId)
+        // const target = await findTarget(snapshot!.target_id ?? '')
+        // const strategy = this.findStrategy(plan)
+
+        // if (!snapshot) {
+        //     throw new BaseException('Snapshot not found', 404)
+        // }
+
+        // const [error] = await tryCatch(() => strategy.restore({
+        //     plan,
+        //     targets,
+        //     target,
+        //     snapshot,
+        //     restore_folder
+        // }))
+
+        // if (error) {
+        //     logger.error(error)
+
+        //     console.log(error)
+
+        //     throw new BaseException('Restore failed')
+        // }
+
+        // logger.info('Backup completed successfully', {
+        //     plan,
+        //     snapshot
+        // })
+    }
+
+    public async delete(planId: Target['plan_id'], snapshotId: string) {
+        // const snapshots = await this.list(planId)
+        // const snapshot = snapshots.find(s => s.id === snapshotId)
+        // const plan = await findPlan(planId)
+        // const targets = await findPlanTargets(planId)
+        // const target = await findTarget(snapshot!.target_id ?? '')
+
+        // if (!snapshot){
+        //     throw new BaseException('Snapshot not found', 404)
+        // }
+
+        // const strategy = this.findStrategy(plan)
+
+        // const [error] = await tryCatch(() => strategy.delete({
+        //     plan,
+        //     targets,
+        //     snapshot,
+        //     target
+        // }))
+
+        // if (error) {
+        //     logger.error(error)
+
+        //     console.log(error)
+
+        //     throw new BaseException('Delete failed')
+        // }
+
+        // logger.info('Snapshot deleted successfully', {
+        //     plan,
+        //     target,
+        //     snapshotId 
+        // })
+    }
+}
