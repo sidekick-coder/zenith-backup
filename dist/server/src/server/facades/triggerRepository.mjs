@@ -1,0 +1,1 @@
+import e from"../repositories/TriggerRepository.mjs";const t=new e;export{t as default};

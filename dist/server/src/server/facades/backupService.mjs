@@ -1,0 +1,1 @@
+import e from"../services/BackupService.mjs";import{config as t,logger as n}from"@sidekick-coder/zenith-kit/server";const r=new e({debug:t.getOne([`zbackups.debug`,`app.debug`,`debug`],!1),logger:n.child({label:`backup`})});export{r as default};

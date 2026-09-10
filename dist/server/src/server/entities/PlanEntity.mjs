@@ -1,0 +1,1 @@
+import{composeWith as e}from"../../../legacy/shared/utils/compose.mjs";import t from"../../shared/entities/PlanEntity.mjs";import{ModelConfigMixin as n}from"@sidekick-coder/zenith-kit/server";import{HooksStatic as r}from"@sidekick-coder/zenith-kit/shared";var i=class extends e(t,r,n(`zbackups.plans`)){};export{i as default};

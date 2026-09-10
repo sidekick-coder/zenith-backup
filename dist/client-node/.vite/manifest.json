@@ -1,0 +1,56 @@
+{
+  "_AlertButton-8jM3c93z.mjs": {
+    "file": "AlertButton-8jM3c93z.mjs",
+    "name": "AlertButton"
+  },
+  "_Icon-ChfrlFM4.mjs": {
+    "file": "Icon-ChfrlFM4.mjs",
+    "name": "Icon"
+  },
+  "_Switch-Be24nWx0.mjs": {
+    "file": "Switch-Be24nWx0.mjs",
+    "name": "Switch"
+  },
+  "src/client/index.ts": {
+    "file": "index.mjs",
+    "name": "index",
+    "src": "src/client/index.ts",
+    "isEntry": true,
+    "dynamicImports": [
+      "src/client/pages/plans/[id].vue",
+      "src/client/pages/plans/index.vue",
+      "src/client/pages/triggers/index.vue"
+    ]
+  },
+  "src/client/pages/plans/[id].vue": {
+    "file": "_id_-fbsKETgk.mjs",
+    "name": "_id_",
+    "src": "src/client/pages/plans/[id].vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "_Icon-ChfrlFM4.mjs",
+      "_AlertButton-8jM3c93z.mjs"
+    ]
+  },
+  "src/client/pages/plans/index.vue": {
+    "file": "index-51QSpNdn.mjs",
+    "name": "index",
+    "src": "src/client/pages/plans/index.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "_Icon-ChfrlFM4.mjs",
+      "_Switch-Be24nWx0.mjs"
+    ]
+  },
+  "src/client/pages/triggers/index.vue": {
+    "file": "index-D5yTyYbl.mjs",
+    "name": "index",
+    "src": "src/client/pages/triggers/index.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "_Icon-ChfrlFM4.mjs",
+      "_AlertButton-8jM3c93z.mjs",
+      "_Switch-Be24nWx0.mjs"
+    ]
+  }
+}

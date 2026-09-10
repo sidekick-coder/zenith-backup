@@ -1,0 +1,1 @@
+var e=class{id;name;strategy;config;constructor(e){Object.assign(this,e)}};export{e as default};

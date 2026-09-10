@@ -1,0 +1,1 @@
+import e from"../../src/server/facades/triggerRepository.mjs";import{defineHandler as t}from"@sidekick-coder/zenith-kit/server";var n=t(async t=>{t.acl.authorize(`read`,`ZBackupPlan`);let n=await e.findMany();return{page:1,total:n.length,total_pages:1,items:n}});export{n as default};

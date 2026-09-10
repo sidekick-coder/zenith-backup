@@ -1,0 +1,1 @@
+import{ConfigRepository as e,config as t}from"@sidekick-coder/zenith-kit/server";var n=class extends e{constructor(){super(t,`zbackups.triggers`)}async findManyByPlanId(e){return this.getItems().filter(t=>t.plan_id===e)}async deleteManyByPlanId(e){let t=this.getItems().filter(t=>t.plan_id!==e);this.setItems(t)}};export{n as default};

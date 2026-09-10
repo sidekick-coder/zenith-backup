@@ -1,0 +1,1 @@
+import e from"../../../src/server/facades/triggerRepository.mjs";import{defineHandler as t}from"@sidekick-coder/zenith-kit/server";var n=t(async t=>(t.acl.authorize(`read`,`ZBackupPlan`),await e.findByIdOrFail(t.params.triggerId)));export{n as default};

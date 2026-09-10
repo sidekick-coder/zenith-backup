@@ -1,0 +1,66 @@
+{
+  "_components-C9f3-UCt.mjs": {
+    "file": "components-C9f3-UCt.mjs",
+    "name": "components",
+    "imports": [
+      "_index.es-BISz4hkw.mjs"
+    ]
+  },
+  "_index-C4oIW2_2.mjs": {
+    "file": "index-C4oIW2_2.mjs",
+    "name": "index",
+    "dynamicImports": [
+      "src/client/pages/plans/[id].vue",
+      "src/client/pages/plans/index.vue",
+      "src/client/pages/triggers/index.vue"
+    ]
+  },
+  "_index.es-BISz4hkw.mjs": {
+    "file": "index.es-BISz4hkw.mjs",
+    "name": "index.es",
+    "imports": [
+      "_index-C4oIW2_2.mjs"
+    ]
+  },
+  "src/client/index.ts": {
+    "file": "zenith-backup.mjs",
+    "name": "index",
+    "src": "src/client/index.ts",
+    "isEntry": true,
+    "imports": [
+      "_index-C4oIW2_2.mjs"
+    ]
+  },
+  "src/client/pages/plans/[id].vue": {
+    "file": "_id_-B3GAY4q4.mjs",
+    "name": "_id_",
+    "src": "src/client/pages/plans/[id].vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "_index-C4oIW2_2.mjs",
+      "_index.es-BISz4hkw.mjs"
+    ]
+  },
+  "src/client/pages/plans/index.vue": {
+    "file": "index-CaNiQjGa.mjs",
+    "name": "index",
+    "src": "src/client/pages/plans/index.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "_components-C9f3-UCt.mjs",
+      "_index.es-BISz4hkw.mjs",
+      "_index-C4oIW2_2.mjs"
+    ]
+  },
+  "src/client/pages/triggers/index.vue": {
+    "file": "index-IQQUBsia.mjs",
+    "name": "index",
+    "src": "src/client/pages/triggers/index.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "_components-C9f3-UCt.mjs",
+      "_index.es-BISz4hkw.mjs",
+      "_index-C4oIW2_2.mjs"
+    ]
+  }
+}
