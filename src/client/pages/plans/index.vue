@@ -1,19 +1,17 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import type { ComponentExposed } from 'vue-component-type-helpers'
 import { Head } from '@unhead/vue/components'
 import AdminLayout from '#client/layouts/AdminLayout.vue'
 import PageCrud from '#client/components/PageCrud.vue'
-import { defineFormFields } from '#client/components/FormAutoFieldList.vue'
+import { defineFormFields, defineColumns } from '@sidekick-coder/zenith-kit/client'
 
-import { defineColumns } from '#client/components/DataTable.vue'
 import Plan from '#zenith-backup/shared/entities/PlanEntity.ts'
 import Button from '#client/components/Button.vue'
 import Icon from '#client/components/Icon.vue'
 import { $fetch } from '#client/utils/index.ts'
 import Switch from '#client/components/ui/switch/Switch.vue'
 
-const crudRef = ref<ComponentExposed<typeof PageCrud>>()
+const crudRef = ref<InstanceType<typeof PageCrud>>()
 const toggling = ref<string[]>([])
 
 const fields = defineFormFields({

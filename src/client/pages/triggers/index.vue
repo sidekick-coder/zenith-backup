@@ -2,8 +2,7 @@
 import { onMounted, ref } from 'vue'
 import { Head } from '@unhead/vue/components'
 import AdminLayout from '#client/layouts/AdminLayout.vue'
-import DataTable, { defineColumns } from '#client/components/DataTable.vue'
-import DialogForm, { defineFormFields } from '#client/components/DialogForm.vue'
+import DialogForm from '#client/components/DialogForm.vue'
 import Button from '#client/components/Button.vue'
 import Icon from '#client/components/Icon.vue'
 import AlertButton from '#client/components/AlertButton.vue'
@@ -17,6 +16,8 @@ import {
 import { fetcher } from '@sidekick-coder/zenith-kit/client'
 import Switch from '#client/components/ui/switch/Switch.vue'
 import type Trigger from '#zenith-backup/shared/entities/TriggerEntity.ts'
+import { ZDataTable as DataTable } from '@sidekick-coder/zenith-kit/components'
+import { defineColumns, defineFormFields } from '@sidekick-coder/zenith-kit/client'
 
 const triggers = ref<Trigger[]>([])
 const loading = ref(false)

@@ -3,21 +3,19 @@ import {
     ref, onMounted, computed,
     onServerPrefetch,
 } from 'vue'
-import { toTypedSchema } from '@vee-validate/valibot'
 import * as v from 'valibot'
 import { toast } from 'vue-sonner'
 import AdminLayout from '#client/layouts/AdminLayout.vue'
 import $fetch from '#client/facades/fetch.facade.ts'
 import Button from '#client/components/Button.vue'
 import Icon from '#client/components/Icon.vue'
-import { route, router } from '@sidekick-coder/zenith-kit/client'
-import { useForm } from '@sidekick-coder/zenith-kit/components'
+import { route, router, useForm } from '@sidekick-coder/zenith-kit/client'
 import DialogForm from '#client/components/DialogForm.vue'
 import {
     Alert,
     AlertDescription,
     AlertTitle,
-} from '#client/components/ui/alert'
+} from '#client/components/ui/alert/index.ts'
 
 import Plan from '#zenith-backup/shared/entities/PlanEntity.ts'
 import PlanDumpConnectionForm from '#zenith-backup/client/components/PlanDumpConnectionForm.vue'
@@ -31,16 +29,15 @@ const loading = ref(false)
 const saving = ref(false)
 const executing = ref(false)
 
-const schema = toTypedSchema(v.partial(v.object({
+const schema = v.partial(v.object({
     name: v.string(),
     description: v.optional(v.string(), ''),
     active: v.boolean(),
     config: v.record(v.string(), v.any()),
     triggers: v.array(v.any()),
-})))
+}))
 
-const { handleSubmit, resetForm, values, errors } = useForm({
-    validationSchema: schema,
+const { handleSubmit, resetForm, values, errors } = useForm(schema, {
     initialValues: {
         name: 'hello',
         description: '',

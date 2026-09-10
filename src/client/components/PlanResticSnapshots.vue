@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { format } from 'date-fns'
-import DataTable, { defineColumns } from '#client/components/DataTable.vue'
+import DataTable from '#client/components/DataTable.vue'
 import Button from '#client/components/Button.vue'
 import Icon from '#client/components/Icon.vue'
 import AlertButton from '#client/components/AlertButton.vue'
@@ -17,7 +17,7 @@ import DropdownMenu from '#client/components/ui/dropdown-menu/DropdownMenu.vue'
 import DropdownMenuTrigger from '#client/components/ui/dropdown-menu/DropdownMenuTrigger.vue'
 import DropdownMenuItem from '#client/components/ui/dropdown-menu/DropdownMenuItem.vue'
 import DropdownMenuContent from '#client/components/ui/dropdown-menu/DropdownMenuContent.vue'
-import { fetcher } from '@sidekick-coder/zenith-kit/client'
+import { fetcher, defineColumns } from '@sidekick-coder/zenith-kit/client'
 
 interface ResticSnapshot {
     id: string
