@@ -1,7 +1,7 @@
 import path from 'path'
 import type BaseStrategy from '../strategies/BaseStrategy.ts'
 import type Plan from '../entities/PlanEntity.ts'
-import { importAll } from '@sidekick-coder/zenith-kit/server'
+import { env, importAll } from '@sidekick-coder/zenith-kit/server'
 import { LoggerService } from '@sidekick-coder/zenith-kit/shared'
 
 interface StrategyDefinition {
@@ -33,7 +33,9 @@ export default class StrategyService {
     public async load() {
         this.items = []
 
-        const folder = path.resolve(import.meta.dirname, '../strategies')
+        const folder = env.production
+            ? path.resolve(import.meta.dirname, '../../../strategies')
+            : path.resolve(import.meta.dirname, '../strategies')
 
         const imports = await importAll(folder, {
             exclude: ['BaseStrategy'],

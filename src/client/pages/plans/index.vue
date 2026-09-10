@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { Head } from '@unhead/vue/components'
-import AdminLayout from '#client/layouts/AdminLayout.vue'
 import PageCrud from '#client/components/PageCrud.vue'
 import { defineFormFields, defineColumns } from '@sidekick-coder/zenith-kit/client'
 
@@ -53,12 +52,12 @@ const columns = defineColumns<Plan>([
     {
         id: 'strategy',
         label: $t('Strategy'),
-        field: 'strategy_label'
+        field: 'strategy'
     },
     { id: 'actions' }
 ])
 
-async function load(){
+async function load() {
     crudRef.value?.load()
 }
 
@@ -81,66 +80,35 @@ async function toggle(row: Plan) {
 </script>
 
 <template>
+
     <Head>
         <title>{{ $t('Plans') }}</title>
-        <meta
-            name="description"
-            :content="$t('Manage your backup plans')"
-        >
+        <meta name="description" :content="$t('Manage your backup plans')">
     </Head>
-    <AdminLayout>
-        <PageCrud 
-            ref="crudRef"
-            fetch="/api/zbackup/plans"
-            fetch-destroy="/api/zbackup/plans/:id"
-            :fields="fields"
-            :fields-edit="{
-                name: fields.name,
-                cron: fields.cron,
-                max: fields.max,
-            }"
-            :columns="columns"
-            :title="$t('Plans')"
-            :description="$t('Manage your backup plans')"
-            :serialize="row => new Plan(row)"
-            :actions="['create', 'destroy']"
-        >
-            <template #row-active="{ row }">
-                <Icon
-                    v-if="toggling.includes(row.id)"
-                    name="Loader2"
-                    class="animate-spin"
-                />
 
-                <Switch
-                    v-else
-                    :model-value="!!row.active"
-                    @click="toggle(row)"
-                />
-            </template>
-            
-            <template #row-valid="{ row }">
-                <Icon
-                    v-if="row.valid"
-                    name="CheckCircle2"
-                    class="text-green-500 size-5"
-                />
-                <Icon
-                    v-else
-                    name="AlertCircle"
-                    class="text-yellow-500 size-5"
-                />
-            </template>
+    <PageCrud ref="crudRef" fetch="/api/zbackup/plans" fetch-destroy="/api/zbackup/plans/:id" :fields="fields"
+        :fields-edit="{
+            name: fields.name,
+            cron: fields.cron,
+            max: fields.max,
+        }" :columns="columns" :title="$t('Plans')" :description="$t('Manage your backup plans')"
+        :serialize="row => new Plan(row)" :actions="['create', 'destroy']">
+        <template #row-active="{ row }">
+            <Icon v-if="toggling.includes(row.id)" name="Loader2" class="animate-spin" />
 
-            <template #prepend-actions="{ row }">
-                <Button
-                    size="icon"
-                    variant="ghost"
-                    :to="`/admin/zbackup/plans/${row.id}`"
-                >
-                    <Icon name="Edit" />
-                </Button>
-            </template>
-        </PageCrud>
-    </AdminLayout>
+            <Switch v-else :model-value="!!row.active" @click="toggle(row)" />
+        </template>
+
+        <template #row-valid="{ row }">
+            <Icon v-if="row.valid" name="CheckCircle2" class="text-green-500 size-5" />
+            <Icon v-else name="AlertCircle" class="text-yellow-500 size-5" />
+        </template>
+
+        <template #prepend-actions="{ row }">
+            <Button size="icon" variant="ghost" :to="`/admin/zbackup/plans/${row.id}`">
+                <Icon name="Edit" />
+            </Button>
+        </template>
+    </PageCrud>
+
 </template>

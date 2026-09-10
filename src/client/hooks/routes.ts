@@ -13,6 +13,11 @@ export default class extends LifecycleHook {
             strip: ['pages'],
             prefix: '/admin/zbackup',
             guards: [authGuard],
+            refine: (records) => records.map(record => {
+                record.meta = { layout: 'admin', }
+
+                return record
+            })
         })
 
         // router.auto(import.meta.glob<any>('../pages/public/**/*.vue'), {

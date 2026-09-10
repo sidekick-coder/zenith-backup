@@ -1,4 +1,4 @@
-import validator from '#shared/services/validator.service.ts'
+import validator from '@sidekick-coder/zenith-kit/shared/facades/validator'
 
 const schema = validator.create(v => v.object({
     plan_id: v.number(),

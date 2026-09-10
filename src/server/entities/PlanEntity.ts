@@ -1,6 +1,5 @@
 import { ModelConfigMixin } from '@sidekick-coder/zenith-kit/server'
-import { HooksStatic } from '@sidekick-coder/zenith-kit/shared'
-import { composeWith } from '#shared/utils/compose.ts'
+import { HooksStatic, composeWith } from '@sidekick-coder/zenith-kit/shared'
 import Base from '#zenith-backup/shared/entities/PlanEntity.ts'
 
 export default class Plan extends composeWith(
