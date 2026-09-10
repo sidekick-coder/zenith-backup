@@ -1,0 +1,1 @@
+import{AuthorizationMiddleware as e}from"@sidekick-coder/zenith-kit/server";new e;export{e as AuthorizationMiddleware};

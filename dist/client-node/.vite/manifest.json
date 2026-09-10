@@ -1,14 +1,14 @@
 {
-  "_AlertButton-8jM3c93z.mjs": {
-    "file": "AlertButton-8jM3c93z.mjs",
+  "_AlertButton-Xlj1Nojp.mjs": {
+    "file": "AlertButton-Xlj1Nojp.mjs",
     "name": "AlertButton"
   },
-  "_Icon-ChfrlFM4.mjs": {
-    "file": "Icon-ChfrlFM4.mjs",
+  "_Icon-Bds3_RR7.mjs": {
+    "file": "Icon-Bds3_RR7.mjs",
     "name": "Icon"
   },
-  "_Switch-Be24nWx0.mjs": {
-    "file": "Switch-Be24nWx0.mjs",
+  "_Switch-DESO__XK.mjs": {
+    "file": "Switch-DESO__XK.mjs",
     "name": "Switch"
   },
   "src/client/index.ts": {
@@ -23,34 +23,34 @@
     ]
   },
   "src/client/pages/plans/[id].vue": {
-    "file": "_id_-fbsKETgk.mjs",
+    "file": "_id_-RyQflKUt.mjs",
     "name": "_id_",
     "src": "src/client/pages/plans/[id].vue",
     "isDynamicEntry": true,
     "imports": [
-      "_Icon-ChfrlFM4.mjs",
-      "_AlertButton-8jM3c93z.mjs"
+      "_Icon-Bds3_RR7.mjs",
+      "_AlertButton-Xlj1Nojp.mjs"
     ]
   },
   "src/client/pages/plans/index.vue": {
-    "file": "index-51QSpNdn.mjs",
+    "file": "index-BnFTU2tV.mjs",
     "name": "index",
     "src": "src/client/pages/plans/index.vue",
     "isDynamicEntry": true,
     "imports": [
-      "_Icon-ChfrlFM4.mjs",
-      "_Switch-Be24nWx0.mjs"
+      "_Icon-Bds3_RR7.mjs",
+      "_Switch-DESO__XK.mjs"
     ]
   },
   "src/client/pages/triggers/index.vue": {
-    "file": "index-D5yTyYbl.mjs",
+    "file": "index-D9OJ2yXe.mjs",
     "name": "index",
     "src": "src/client/pages/triggers/index.vue",
     "isDynamicEntry": true,
     "imports": [
-      "_Icon-ChfrlFM4.mjs",
-      "_AlertButton-8jM3c93z.mjs",
-      "_Switch-Be24nWx0.mjs"
+      "_AlertButton-Xlj1Nojp.mjs",
+      "_Icon-Bds3_RR7.mjs",
+      "_Switch-DESO__XK.mjs"
     ]
   }
 }

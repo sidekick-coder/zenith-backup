@@ -1,0 +1,1 @@
+import{AuthMiddleware as e}from"@sidekick-coder/zenith-kit/server";const t=new e;export{t as default};

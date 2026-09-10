@@ -1,13 +1,10 @@
 {
-  "_components-C9f3-UCt.mjs": {
-    "file": "components-C9f3-UCt.mjs",
-    "name": "components",
-    "imports": [
-      "_index.es-BISz4hkw.mjs"
-    ]
+  "_components-CbgjsZpt.mjs": {
+    "file": "components-CbgjsZpt.mjs",
+    "name": "components"
   },
-  "_index-C4oIW2_2.mjs": {
-    "file": "index-C4oIW2_2.mjs",
+  "_index-B9rv2bDL.mjs": {
+    "file": "index-B9rv2bDL.mjs",
     "name": "index",
     "dynamicImports": [
       "src/client/pages/plans/[id].vue",
@@ -15,12 +12,9 @@
       "src/client/pages/triggers/index.vue"
     ]
   },
-  "_index.es-BISz4hkw.mjs": {
-    "file": "index.es-BISz4hkw.mjs",
-    "name": "index.es",
-    "imports": [
-      "_index-C4oIW2_2.mjs"
-    ]
+  "_index.es-CkLm2C0q.mjs": {
+    "file": "index.es-CkLm2C0q.mjs",
+    "name": "index.es"
   },
   "src/client/index.ts": {
     "file": "zenith-backup.mjs",
@@ -28,39 +22,39 @@
     "src": "src/client/index.ts",
     "isEntry": true,
     "imports": [
-      "_index-C4oIW2_2.mjs"
+      "_index-B9rv2bDL.mjs"
     ]
   },
   "src/client/pages/plans/[id].vue": {
-    "file": "_id_-B3GAY4q4.mjs",
+    "file": "_id_-BvtvdShi.mjs",
     "name": "_id_",
     "src": "src/client/pages/plans/[id].vue",
     "isDynamicEntry": true,
     "imports": [
-      "_index-C4oIW2_2.mjs",
-      "_index.es-BISz4hkw.mjs"
+      "_index-B9rv2bDL.mjs",
+      "_index.es-CkLm2C0q.mjs"
     ]
   },
   "src/client/pages/plans/index.vue": {
-    "file": "index-CaNiQjGa.mjs",
+    "file": "index-BCg3_2pk.mjs",
     "name": "index",
     "src": "src/client/pages/plans/index.vue",
     "isDynamicEntry": true,
     "imports": [
-      "_components-C9f3-UCt.mjs",
-      "_index.es-BISz4hkw.mjs",
-      "_index-C4oIW2_2.mjs"
+      "_components-CbgjsZpt.mjs",
+      "_index.es-CkLm2C0q.mjs",
+      "_index-B9rv2bDL.mjs"
     ]
   },
   "src/client/pages/triggers/index.vue": {
-    "file": "index-IQQUBsia.mjs",
+    "file": "index-uVgkdpC6.mjs",
     "name": "index",
     "src": "src/client/pages/triggers/index.vue",
     "isDynamicEntry": true,
     "imports": [
-      "_components-C9f3-UCt.mjs",
-      "_index.es-BISz4hkw.mjs",
-      "_index-C4oIW2_2.mjs"
+      "_components-CbgjsZpt.mjs",
+      "_index.es-CkLm2C0q.mjs",
+      "_index-B9rv2bDL.mjs"
     ]
   }
 }

@@ -1,0 +1,1 @@
+import{router as e}from"@sidekick-coder/zenith-kit/server";var t=e;export{t as default};
