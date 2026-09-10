@@ -20,7 +20,7 @@
     "scripts": {
         "start": "NODE_PRODUCTION=true zenith serve",
         "dev": "zenith serve",
-        "build": "zkit build"
+        "build": "zenith plugin:build"
     },
     "dependencies": {
         "@sidekick-coder/zenith-kit": "^0.4.5",
