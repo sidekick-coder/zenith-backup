@@ -4,6 +4,7 @@ import authMiddleware from '#server/middlewares/auth.middleware.ts'
 import root from '#server/facades/router.facade.ts'
 import RouterResourceConfig from '#server/services/routerResourceConfig.service.ts'
 import { AuthorizationMiddleware } from '#server/middlewares/authorization.middleware.ts'
+import { ShellException, tryCatch } from '@sidekick-coder/zenith-kit/shared'
 
 
 const router = root.prefix('/api/zbackup/plans')
@@ -36,10 +37,24 @@ router.post('/:id/backup', async ({ acl, params, body }) => {
 
     const plan = await Plan.findOrFail(planId)
 
-    await backup.backup(plan, {
+    const [error, result] = await tryCatch(() => backup.execute(plan, {
         trigger_type: 'manual',
         description: body?.description || $t('Manual backup executed via API'),
-    })
+    }))
+
+    const isShellException = (err: unknown): err is ShellException => {
+        return (err as any)?.output !== undefined
+    }
+
+    if (isShellException(error)) {
+        error.message += `\n\n${error.output}`
+    }
+
+    if (error) {
+        throw error
+    }
+
+    return result
 })
 
 const read = AuthorizationMiddleware.create({

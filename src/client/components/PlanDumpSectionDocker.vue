@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import FormTextField from '#client/components/FormTextField.vue'
+import { FormTextField, FormTextarea } from '@sidekick-coder/zenith-kit/components'
 import {
     Card,
     CardContent,
@@ -24,6 +24,12 @@ import {
                 :placeholder="$t('postgres:latest')"
                 :hint="$t('Docker image used to run the dump command.')"
             />
+            <FormTextarea 
+                name="config.docker_extra_args"
+                :label="$t('Docker Extra Args')"
+                :placeholder="$t('--network host')"
+                :hint="$t('Extra arguments to pass to the docker run command.')"
+                />
         </CardContent>
     </Card>
 </template>

@@ -31,6 +31,7 @@ export default class DumpStrategy extends BaseStrategy {
     public docker_image: string
     public docker_env?: Record<string, string>
     public docker_args?: string[]
+    public docker_extra_args?: string[]
 
     /** Backup shell command string; use {output} as the dump file path inside the container */
     public backup_command: string
@@ -52,6 +53,10 @@ export default class DumpStrategy extends BaseStrategy {
 
         this.docker_image = config.docker_image
         this.docker_args = config.docker_args
+
+        if (config.docker_extra_args && typeof config.docker_extra_args === 'string') {
+            this.docker_extra_args = config.docker_extra_args.split(' ')
+        }
 
         this.backup_command = config.backup_command
         this.backup_filename = config.backup_filename || this.backup_filename
@@ -104,6 +109,10 @@ export default class DumpStrategy extends BaseStrategy {
 
         for (const key of Object.keys(this.docker_env || {})) {
             args.push('-e', key)
+        }
+
+        if (this.docker_extra_args) {
+            args.push(...this.docker_extra_args)
         }
 
         args.push(this.docker_image)
