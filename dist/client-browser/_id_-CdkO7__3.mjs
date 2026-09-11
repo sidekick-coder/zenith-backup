@@ -1,6 +1,6 @@
-import { isVNode as I, defineComponent as V, ref as z, onMounted as ee, openBlock as h, createBlock as y, unref as s, withCtx as t, createVNode as e, createElementVNode as $, createTextVNode as r, toDisplayString as u, normalizeClass as ce, createCommentVNode as U, useModel as q, isRef as N, computed as we, onServerPrefetch as ke, createElementBlock as O, Fragment as ie, withModifiers as De, renderList as Se } from "vue";
-import { Z as pe, z as fe, f as Te, U as Ce, C as Pe, b as K, p as Re, o as Ee, a as Me, c as oe, r as Fe, s as W, d as Ve, e as ze, G as je } from "./index-Bm1UxfJk.mjs";
-import { x as D, I as S, T, q as C, v as L, M as F, e as A, S as P, a as me, b as he, C as ve, O as be, $ as ge, _ as J, c as k, Z as Ae, A as X, k as H, d as G, o as Y, i as v, r as b, F as $e, p as Be, f as Ie, g as ue, h as re, j as de } from "./index.es-DEDvEmxx.mjs";
+import { isVNode as I, defineComponent as V, ref as z, onMounted as ee, openBlock as h, createBlock as y, unref as s, withCtx as t, createVNode as e, createElementVNode as $, createTextVNode as r, toDisplayString as u, normalizeClass as ce, createCommentVNode as U, useModel as N, isRef as H, computed as we, onServerPrefetch as ke, createElementBlock as O, Fragment as ie, withModifiers as De, renderList as Se } from "vue";
+import { Z as pe, z as fe, f as Te, U as Ce, C as Pe, b as W, p as Re, o as Ee, a as Me, c as oe, r as Fe, s as J, d as Ve, e as ze, G as Ae } from "./index-DmjTtCIm.mjs";
+import { x as D, I as S, T, q as C, v as L, M as F, e as j, S as P, a as me, b as he, C as ve, O as be, $ as ge, _ as X, c as k, Z as je, A as q, k as G, d as Y, o as Z, i as v, r as b, F as $e, p as Be, f as Ie, g as ue, h as re, j as de } from "./index.es-DEDvEmxx.mjs";
 let x = 1;
 var Oe = class {
   subscribers;
@@ -99,7 +99,7 @@ var Oe = class {
         });
       else if (Le(o) && !o.ok) {
         d = !1;
-        const c = typeof a.error == "function" ? await a.error(`HTTP error! status: ${o.status}`) : a.error, R = typeof a.description == "function" ? await a.description(`HTTP error! status: ${o.status}`) : a.description, j = typeof c == "object" && !I(c) ? c : {
+        const c = typeof a.error == "function" ? await a.error(`HTTP error! status: ${o.status}`) : a.error, R = typeof a.description == "function" ? await a.description(`HTTP error! status: ${o.status}`) : a.description, A = typeof c == "object" && !I(c) ? c : {
           message: c || "",
           id: n || ""
         };
@@ -107,11 +107,11 @@ var Oe = class {
           id: n,
           type: "error",
           description: R,
-          ...j
+          ...A
         });
       } else if (o instanceof Error) {
         d = !1;
-        const c = typeof a.error == "function" ? await a.error(o) : a.error, R = typeof a.description == "function" ? await a.description(o) : a.description, j = typeof c == "object" && !I(c) ? c : {
+        const c = typeof a.error == "function" ? await a.error(o) : a.error, R = typeof a.description == "function" ? await a.description(o) : a.description, A = typeof c == "object" && !I(c) ? c : {
           message: c || "",
           id: n || ""
         };
@@ -119,11 +119,11 @@ var Oe = class {
           id: n,
           type: "error",
           description: R,
-          ...j
+          ...A
         });
       } else if (a.success !== void 0) {
         d = !1;
-        const c = typeof a.success == "function" ? await a.success(o) : a.success, R = typeof a.description == "function" ? await a.description(o) : a.description, j = typeof c == "object" && !I(c) ? c : {
+        const c = typeof a.success == "function" ? await a.success(o) : a.success, R = typeof a.description == "function" ? await a.description(o) : a.description, A = typeof c == "object" && !I(c) ? c : {
           message: c || "",
           id: n || ""
         };
@@ -131,7 +131,7 @@ var Oe = class {
           id: n,
           type: "success",
           description: R,
-          ...j
+          ...A
         });
       }
     }).catch(async (o) => {
@@ -297,7 +297,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
                   _: 1
                   /* STABLE */
                 }, 8, ["fetch", "tooltip", "description", "toast-on-success"]),
-                e(A, {
+                e(j, {
                   variant: "outline",
                   onClick: _
                 }, {
@@ -385,7 +385,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
                       default: t(() => [
                         e(be, { "as-child": "" }, {
                           default: t(() => [
-                            e(A, {
+                            e(j, {
                               variant: "ghost",
                               class: "w-8 h-8 p-0"
                             }, {
@@ -414,7 +414,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
                           { class: "max-h-60 overflow-y-auto" },
                           {
                             default: t(() => [
-                              e(J, {
+                              e(X, {
                                 class: "cursor-pointer",
                                 onClick: (R) => d.value = c.metadata
                               }, {
@@ -456,7 +456,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
       /* STABLE */
     }));
   }
-}), Z = /* @__PURE__ */ V({
+}), K = /* @__PURE__ */ V({
   __name: "PlanDumpSectionDetails",
   setup(i) {
     return (a, n) => (h(), y(s(D), null, {
@@ -496,12 +496,12 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
               label: a.$t("Name"),
               placeholder: a.$t("Enter plan name")
             }, null, 8, ["label", "placeholder"]),
-            e(Ae, {
+            e(je, {
               name: "active",
               label: a.$t("Active"),
               hint: a.$t("Activate or deactivate this backup plan")
             }, null, 8, ["label", "hint"]),
-            e(X, {
+            e(q, {
               name: "description",
               label: a.$t("Description"),
               placeholder: a.$t("Enter plan description"),
@@ -606,11 +606,17 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
         }),
         e(s(P), { class: "space-y-6" }, {
           default: t(() => [
-            e(k, {
+            e(s(k), {
               name: "config.docker_image",
               label: a.$t("Docker Image"),
               placeholder: a.$t("postgres:latest"),
               hint: a.$t("Docker image used to run the dump command.")
+            }, null, 8, ["label", "placeholder", "hint"]),
+            e(s(q), {
+              name: "config.docker_extra_args",
+              label: a.$t("Docker Extra Args"),
+              placeholder: a.$t("--network host"),
+              hint: a.$t("Extra arguments to pass to the docker run command.")
             }, null, 8, ["label", "placeholder", "hint"])
           ]),
           _: 1
@@ -682,15 +688,15 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
   },
   emits: ["update:plan"],
   setup(i) {
-    const a = q(i, "plan"), n = H("tab", "details");
-    return (l, d) => (h(), y(s(G), {
+    const a = N(i, "plan"), n = G("tab", "details");
+    return (l, d) => (h(), y(s(Y), {
       modelValue: s(n),
-      "onUpdate:modelValue": d[0] || (d[0] = (p) => N(n) ? n.value = p : null),
+      "onUpdate:modelValue": d[0] || (d[0] = (p) => H(n) ? n.value = p : null),
       class: "w-full",
       "unmount-on-hide": !1
     }, {
       default: t(() => [
-        e(s(Y), null, {
+        e(s(Z), null, {
           default: t(() => [
             e(s(v), {
               value: "details",
@@ -782,7 +788,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
         }),
         e(s(b), { value: "details" }, {
           default: t(() => [
-            e(Z)
+            e(K)
           ]),
           _: 1
           /* STABLE */
@@ -887,15 +893,15 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
   },
   emits: ["update:plan"],
   setup(i) {
-    const a = q(i, "plan"), n = H("tab", "details");
-    return (l, d) => (h(), y(s(G), {
+    const a = N(i, "plan"), n = G("tab", "details");
+    return (l, d) => (h(), y(s(Y), {
       modelValue: s(n),
-      "onUpdate:modelValue": d[0] || (d[0] = (p) => N(n) ? n.value = p : null),
+      "onUpdate:modelValue": d[0] || (d[0] = (p) => H(n) ? n.value = p : null),
       class: "w-full",
       "unmount-on-hide": !1
     }, {
       default: t(() => [
-        e(s(Y), null, {
+        e(s(Z), null, {
           default: t(() => [
             e(s(v), {
               value: "details",
@@ -973,7 +979,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
         }),
         e(s(b), { value: "details" }, {
           default: t(() => [
-            e(Z)
+            e(K)
           ]),
           _: 1
           /* STABLE */
@@ -1069,15 +1075,15 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
   },
   emits: ["update:plan"],
   setup(i) {
-    const a = q(i, "plan"), n = H("tab", "details");
-    return (l, d) => (h(), y(s(G), {
+    const a = N(i, "plan"), n = G("tab", "details");
+    return (l, d) => (h(), y(s(Y), {
       modelValue: s(n),
-      "onUpdate:modelValue": d[0] || (d[0] = (p) => N(n) ? n.value = p : null),
+      "onUpdate:modelValue": d[0] || (d[0] = (p) => H(n) ? n.value = p : null),
       class: "w-full",
       "unmount-on-hide": !1
     }, {
       default: t(() => [
-        e(s(Y), null, {
+        e(s(Z), null, {
           default: t(() => [
             e(s(v), {
               value: "details",
@@ -1169,7 +1175,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
         }),
         e(s(b), { value: "details" }, {
           default: t(() => [
-            e(Z)
+            e(K)
           ]),
           _: 1
           /* STABLE */
@@ -1359,7 +1365,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
                 })
               ]),
               $("div", xe, [
-                e(A, {
+                e(j, {
                   variant: "outline",
                   onClick: _
                 }, {
@@ -1446,7 +1452,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
                       default: t(() => [
                         e(be, { "as-child": "" }, {
                           default: t(() => [
-                            e(A, {
+                            e(j, {
                               variant: "ghost",
                               class: "w-8 h-8 p-0"
                             }, {
@@ -1475,7 +1481,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
                           { class: "max-h-60 overflow-y-auto" },
                           {
                             default: t(() => [
-                              e(J, {
+                              e(X, {
                                 class: "cursor-pointer",
                                 onClick: (R) => d.value = c.metadata
                               }, {
@@ -1489,7 +1495,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
                                 _: 1
                                 /* STABLE */
                               }, 8, ["onClick"]),
-                              e(J, {
+                              e(X, {
                                 class: "cursor-pointer",
                                 onClick: (R) => d.value = c.data
                               }, {
@@ -1542,15 +1548,15 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
   },
   emits: ["update:plan"],
   setup(i) {
-    const a = q(i, "plan"), n = H("tab", "details");
-    return (l, d) => (h(), y(s(G), {
+    const a = N(i, "plan"), n = G("tab", "details");
+    return (l, d) => (h(), y(s(Y), {
       modelValue: s(n),
-      "onUpdate:modelValue": d[0] || (d[0] = (p) => N(n) ? n.value = p : null),
+      "onUpdate:modelValue": d[0] || (d[0] = (p) => H(n) ? n.value = p : null),
       class: "w-full",
       "unmount-on-hide": !1
     }, {
       default: t(() => [
-        e(s(Y), null, {
+        e(s(Z), null, {
           default: t(() => [
             e(s(v), {
               value: "details",
@@ -1642,7 +1648,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
         }),
         e(s(b), { value: "details" }, {
           default: t(() => [
-            e(Z)
+            e(K)
           ]),
           _: 1
           /* STABLE */
@@ -1745,7 +1751,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
                       placeholder: l.$t("Absolute path to file or directory (e.g., /var/www/html)"),
                       hint: l.$t("List of file and directory paths to include in the backup.")
                     }, null, 8, ["label", "placeholder", "hint"]),
-                    e(X, {
+                    e(q, {
                       name: "config.backup_flags",
                       label: l.$t("Backup Flags"),
                       placeholder: l.$t("--exclude /path/to/exclude"),
@@ -1807,7 +1813,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
                         { value: !1, label: l.$t("No") }
                       ]
                     }, null, 8, ["label", "hint", "options"]),
-                    e(X, {
+                    e(q, {
                       name: "config.forget_flags",
                       label: l.$t("Forget Flags"),
                       placeholder: l.$t("--keep-daily 7 --keep-weekly 4"),
@@ -1898,10 +1904,10 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
   __name: "[id]",
   setup(i) {
     const a = we(() => String(Ce.params.id)), n = z(), l = z(!1), d = z(!1), p = z(!1), w = Re(Ee({
-      name: W(),
-      description: ze(W(), ""),
+      name: J(),
+      description: ze(J(), ""),
       active: Ve(),
-      config: Fe(W(), oe()),
+      config: Fe(J(), oe()),
       triggers: Me(oe())
     })), { handleSubmit: _, resetForm: o, values: f, errors: c } = Pe(w, {
       initialValues: {
@@ -1913,7 +1919,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
       }
     }), R = _(async (m) => {
       d.value = !0;
-      const [g] = await K.try(`/api/zbackup/plans/${a.value}`, {
+      const [g] = await W.try(`/api/zbackup/plans/${a.value}`, {
         method: "PATCH",
         data: {
           name: m.name,
@@ -1941,9 +1947,9 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
       };
       n.value && o({ values: m });
     }
-    async function j(m) {
+    async function A(m) {
       p.value = !0;
-      const [g] = await K.try(`/api/zbackup/plans/${a.value}/backup`, {
+      const [g] = await W.try(`/api/zbackup/plans/${a.value}/backup`, {
         method: "POST",
         data: m
       });
@@ -1957,9 +1963,9 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
     }
     async function _e() {
       l.value = !0;
-      const [m, g] = await K.try(`/api/zbackup/plans/${a.value}`);
+      const [m, g] = await W.try(`/api/zbackup/plans/${a.value}`);
       if (m) {
-        l.value = !1, Q.error($t("Failed to load plan details.")), je.push("/admin/zbackup/plans");
+        l.value = !1, Q.error($t("Failed to load plan details.")), Ae.push("/admin/zbackup/plans");
         return;
       }
       n.value = g, l.value = !1, o({
@@ -2017,7 +2023,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
                 )
               ]),
               $("div", rt, [
-                e(A, {
+                e(j, {
                   type: "button",
                   variant: "outline",
                   onClick: B
@@ -2037,7 +2043,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
                   title: m.$t("Execute Backup"),
                   description: m.$t("Execute a manual backup for this plan."),
                   "submit-text": m.$t("Run Backup"),
-                  handle: j,
+                  handle: A,
                   fields: {
                     description: {
                       component: "text-field",
@@ -2046,7 +2052,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
                   }
                 }, {
                   default: t(() => [
-                    e(A, {
+                    e(j, {
                       type: "button",
                       variant: "outline",
                       loading: p.value
@@ -2066,7 +2072,7 @@ const Le = (i) => i && typeof i == "object" && "ok" in i && typeof i.ok == "bool
                   _: 1
                   /* STABLE */
                 }, 8, ["title", "description", "submit-text", "fields"]),
-                e(A, {
+                e(j, {
                   type: "submit",
                   loading: d.value
                 }, {
